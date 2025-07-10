@@ -1,5 +1,5 @@
-import { setupDescriptionButton } from './components/DescriptionButton'
-import { setupTranscriptButton } from './components/TranscriptButton'
+import { setupDescriptionButton } from './components/DescriptionButton.ts'
+import { setupTranscriptButton } from './components/TranscriptButton.ts'
 import './style.css'
 import { getElementById } from './utils/domUtils.ts'
 
