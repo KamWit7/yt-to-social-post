@@ -1,24 +1,21 @@
-import { setupCounter } from './counter.ts'
+import { setupDescriptionButton } from './components/DescriptionButton'
+import { setupTranscriptButton } from './components/TranscriptButton'
 import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
+import { getElementById } from './utils/domUtils.ts'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
+    <h1>🎬 Pobierz Transkrypcję i Opis z YouTube</h1>
+    <input type="text" id="yt-url" placeholder="Wklej link do YouTube..." />
+
+    <button id="transcript-button">📜 Pobierz Transkrypcję</button>
+    <button id="description-button">📝 Pobierz Opis</button>
+    
+    <div class="output">
+      <textarea id="output" rows="20" readonly></textarea>
     </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
   </div>
 `
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+setupTranscriptButton(getElementById<HTMLButtonElement>('transcript-button'))
+setupDescriptionButton(getElementById<HTMLButtonElement>('description-button'))
