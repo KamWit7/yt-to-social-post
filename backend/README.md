@@ -17,7 +17,19 @@ npm install
 cp .env.example .env
 ```
 
-2. Edytuj zmienne środowiskowe w pliku `.env`
+2. **Uzyskaj YouTube Data API v3 Key:**
+
+   - Wejdź na [Google Cloud Console](https://console.cloud.google.com/)
+   - Utwórz nowy projekt lub wybierz istniejący
+   - Włącz YouTube Data API v3
+   - Utwórz klucz API w sekcji "Credentials"
+   - Skopiuj klucz API
+
+3. Edytuj zmienne środowiskowe w pliku `.env`:
+
+```env
+YOUTUBE_API_KEY=your_youtube_api_key_here
+```
 
 ## 🏃‍♂️ Uruchomienie
 
@@ -38,7 +50,7 @@ npm start
 
 ### GET /api/transcript
 
-Pobiera transkrypcję filmu YouTube.
+Pobiera listę dostępnych napisów (captions) filmu YouTube.
 
 **Query Parameters:**
 
@@ -58,12 +70,47 @@ GET /api/transcript?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ
   "data": {
     "transcript": [
       {
-        "text": "Never gonna give you up",
+        "text": "Caption track: en - English",
         "start": 0,
-        "duration": 3
+        "duration": 0,
+        "language": "en",
+        "captionId": "caption_id_here"
       }
     ]
   }
+}
+```
+
+### GET /api/captions
+
+Pobiera szczegółową listę dostępnych napisów filmu YouTube.
+
+**Query Parameters:**
+
+- `url` (string, wymagane) - URL filmu YouTube
+
+**Przykład:**
+
+```bash
+GET /api/captions?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ
+```
+
+**Odpowiedź:**
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "caption_id_here",
+      "snippet": {
+        "videoId": "dQw4w9WgXcQ",
+        "language": "en",
+        "name": "English",
+        "audioTrackType": "PRIMARY"
+      }
+    }
+  ]
 }
 ```
 

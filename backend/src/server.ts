@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
+// @ts-ignore
 import { errorHandler, notFoundHandler } from './middleware/errorHandler'
 import youtubeRoutes from './routes/youtubeRoutes'
 
@@ -32,6 +33,7 @@ const limiter = rateLimit({
     error: 'Too many requests from this IP, please try again later.',
   },
 })
+
 app.use('/api/', limiter)
 
 // Body parsing middleware
@@ -57,7 +59,7 @@ app.use(notFoundHandler)
 app.use(errorHandler)
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`🚀 Server running on port ${PORT}`)
   console.log(`📡 API available at http://localhost:${PORT}/api`)
   console.log(`🏥 Health check at http://localhost:${PORT}/health`)

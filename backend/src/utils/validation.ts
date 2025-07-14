@@ -1,23 +1,11 @@
-import ytdl from 'ytdl-core'
+export function isValidUrl(url: string): boolean {
+  let urlObject
 
-export function isValidYouTubeUrl(url: string): boolean {
-  return ytdl.validateURL(url)
-}
-
-export function extractVideoId(url: string): string | null {
   try {
-    return ytdl.getVideoID(url)
-  } catch {
-    return null
+    urlObject = new URL(url)
+  } catch (_) {
+    return false
   }
-}
 
-export function validateAndExtractVideoId(url: string): {
-  isValid: boolean
-  videoId: string | null
-} {
-  const isValid = isValidYouTubeUrl(url)
-  const videoId = isValid ? extractVideoId(url) : null
-
-  return { isValid, videoId }
+  return urlObject.protocol === 'http:' || urlObject.protocol === 'https:'
 }

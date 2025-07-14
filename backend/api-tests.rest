@@ -2,11 +2,17 @@
 ### REST Client for VS Code
 
 @baseUrl = http://localhost:3001
-@youtubeUrl = https://www.youtube.com/watch?v=dQw4w9WgXcQ
+@youtubeUrl = https://www.youtube.com/watch?v=cxSowU9sDdU&ab_channel=KevinPowell
 
 ### Health Check
 GET {{baseUrl}}/health
 Content-Type: application/json
+
+### Take Screenshot
+GET {{baseUrl}}/api/screenshot?url={{youtubeUrl}}
+Content-Type: application/json
+
+###
 
 ###
 
@@ -28,113 +34,6 @@ Content-Type: application/json
 
 ###
 
-### Test with different YouTube URLs
-
-### Short YouTube URL
-GET {{baseUrl}}/api/transcript?url=https://youtu.be/dQw4w9WgXcQ
+### Get Captions List
+GET {{baseUrl}}/api/captions?url={{youtubeUrl}}
 Content-Type: application/json
-
-###
-
-### YouTube Music URL
-GET {{baseUrl}}/api/transcript?url=https://music.youtube.com/watch?v=dQw4w9WgXcQ
-Content-Type: application/json
-
-###
-
-### Test Error Cases
-
-### Missing URL parameter
-GET {{baseUrl}}/api/transcript
-Content-Type: application/json
-
-###
-
-### Invalid URL
-GET {{baseUrl}}/api/transcript?url=https://invalid-url.com
-Content-Type: application/json
-
-###
-
-### Empty URL
-GET {{baseUrl}}/api/transcript?url=
-Content-Type: application/json
-
-###
-
-### Test Rate Limiting (run multiple times quickly)
-GET {{baseUrl}}/api/transcript?url={{youtubeUrl}}
-Content-Type: application/json
-
-###
-
-### Test 404 Route
-GET {{baseUrl}}/api/nonexistent
-Content-Type: application/json
-
-###
-
-### Environment Variables for different setups
-
-### Development
-@devUrl = http://localhost:3001
-@devYoutubeUrl = https://www.youtube.com/watch?v=dQw4w9WgXcQ
-
-### Production (example)
-@prodUrl = https://your-api-domain.com
-@prodYoutubeUrl = https://www.youtube.com/watch?v=dQw4w9WgXcQ
-
-### Test with production URLs (uncomment when needed)
-# GET {{prodUrl}}/api/transcript?url={{prodYoutubeUrl}}
-# Content-Type: application/json
-
-###
-
-### Test with different video types
-
-### Music Video
-GET {{baseUrl}}/api/transcript?url=https://www.youtube.com/watch?v=9bZkp7q19f0
-Content-Type: application/json
-
-###
-
-### Educational Video
-GET {{baseUrl}}/api/transcript?url=https://www.youtube.com/watch?v=8aRorQc3dGQ
-Content-Type: application/json
-
-###
-
-### Live Stream (might not have transcript)
-GET {{baseUrl}}/api/transcript?url=https://www.youtube.com/watch?v=jfKfPfyJRdk
-Content-Type: application/json
-
-###
-
-### Test all endpoints with same video
-@testVideo = https://www.youtube.com/watch?v=dQw4w9WgXcQ
-
-### 1. Get Video Info
-GET {{baseUrl}}/api/video-info?url={{testVideo}}
-Content-Type: application/json
-
-###
-
-### 2. Get Transcript
-GET {{baseUrl}}/api/transcript?url={{testVideo}}
-Content-Type: application/json
-
-###
-
-### 3. Get Description
-GET {{baseUrl}}/api/description?url={{testVideo}}
-Content-Type: application/json
-
-###
-
-### Test CORS (from different origin)
-# This would be tested from a browser, but you can simulate it
-GET {{baseUrl}}/api/transcript?url={{youtubeUrl}}
-Content-Type: application/json
-Origin: http://localhost:3000
-
-### 

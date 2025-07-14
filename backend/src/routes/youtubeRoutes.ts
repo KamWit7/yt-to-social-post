@@ -12,4 +12,10 @@ router.get('/description', YouTubeController.getDescription)
 // GET /api/video-info?url=<youtube_url>
 router.get('/video-info', YouTubeController.getVideoInfo)
 
+// GET /api/captions?url=<youtube_url>
+router.get('/captions', YouTubeController.getCaptionsList)
+
+// GET /api/screenshot?url=<youtube_url>
+router.get('/screenshot', YouTubeController.takeScreenshot)
+
 export default router

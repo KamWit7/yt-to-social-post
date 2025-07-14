@@ -37,7 +37,7 @@ GET http://localhost:3001/api/video-info?url=https://www.youtube.com/watch?v=dQw
 }
 ```
 
-## Get Transcript
+## Get Transcript (Captions List)
 
 ```http
 GET http://localhost:3001/api/transcript?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ
@@ -51,22 +51,55 @@ GET http://localhost:3001/api/transcript?url=https://www.youtube.com/watch?v=dQw
   "data": {
     "transcript": [
       {
-        "text": "We're no strangers to love",
+        "text": "Caption track: en - English",
         "start": 0,
-        "duration": 3
+        "duration": 0,
+        "language": "en",
+        "captionId": "caption_id_here"
       },
       {
-        "text": "You know the rules and so do I",
-        "start": 3,
-        "duration": 3
-      },
-      {
-        "text": "A full commitment's what I'm thinking of",
-        "start": 6,
-        "duration": 4
+        "text": "Caption track: es - Spanish",
+        "start": 0,
+        "duration": 0,
+        "language": "es",
+        "captionId": "caption_id_here"
       }
     ]
   }
+}
+```
+
+## Get Captions List
+
+```http
+GET http://localhost:3001/api/captions?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ
+```
+
+**Odpowiedź:**
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "caption_id_here",
+      "snippet": {
+        "videoId": "dQw4w9WgXcQ",
+        "language": "en",
+        "name": "English",
+        "audioTrackType": "PRIMARY"
+      }
+    },
+    {
+      "id": "caption_id_here_2",
+      "snippet": {
+        "videoId": "dQw4w9WgXcQ",
+        "language": "es",
+        "name": "Spanish",
+        "audioTrackType": "PRIMARY"
+      }
+    }
+  ]
 }
 ```
 
