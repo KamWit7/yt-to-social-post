@@ -4,6 +4,10 @@ export const SELECTORS = {
   EXPAND_BUTTON: 'tp-yt-paper-button#expand',
   SHOW_TRANSCRIPT:
     'div#primary-button.style-scope.ytd-video-description-transcript-section-renderer ytd-button-renderer yt-button-shape button.yt-spec-button-shape-next',
+
+  TITLE: 'div#title h1 yt-formatted-string',
+  DESCRIPTION: 'div#expanded yt-attributed-string',
+
   BODY: 'body',
 } as const
 

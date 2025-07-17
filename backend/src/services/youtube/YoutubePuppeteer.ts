@@ -32,12 +32,20 @@ export class YoutubePuppeteer {
 
     try {
       const element = await this.page.$(selector)
+
       if (!element) {
         return false
       }
 
-      const isVisible = await element.isIntersectingViewport()
-      return isVisible
+      const isVisible = await element.isVisible()
+
+      if (isVisible) {
+        await element.scrollIntoView()
+      }
+
+      const isIntersectingViewport = await element.isIntersectingViewport()
+
+      return isIntersectingViewport
     } catch (error) {
       return false
     }
@@ -104,7 +112,9 @@ export class YoutubePuppeteer {
 
           try {
             const responseData = await response.json()
+
             console.log('Transcript response data:', responseData)
+
             this.responseData.transcriptData = responseData
             this.responseData.transcriptReceived = true
           } catch (error) {
@@ -159,8 +169,6 @@ export class YoutubePuppeteer {
         if (expandButton) {
           await expandButton.click()
           console.log(`Description expanded (attempt ${retryCount + 1})`)
-
-          await this.wait(1000)
         }
 
         const isTranscriptVisible = await this.isElementVisible(
@@ -173,13 +181,14 @@ export class YoutubePuppeteer {
         }
 
         retryCount++
+
         if (retryCount < maxRetries) {
           console.log(
             `Transcript button not visible, retrying expand (${
               retryCount + 1
             }/${maxRetries})`
           )
-          await this.wait(500)
+          await this.wait(100)
         }
       } catch (error) {
         console.log(
@@ -187,7 +196,7 @@ export class YoutubePuppeteer {
         )
         retryCount++
         if (retryCount < maxRetries) {
-          await this.wait(500)
+          await this.wait(100)
         }
       }
     }
@@ -216,13 +225,55 @@ export class YoutubePuppeteer {
     }
   }
 
+  async getTitle(): Promise<string | null> {
+    if (!this.page) {
+      throw new Error('Browser not initialized')
+    }
+
+    try {
+      const title = await this.page.waitForSelector(SELECTORS.TITLE, {
+        timeout: this.config.timeouts.selector,
+      })
+
+      if (!title) {
+        throw new Error('Title not found')
+      }
+
+      return title.evaluate((el) => el.textContent)
+    } catch (error) {
+      ErrorHandler.handlePuppeteerError(error as Error, 'title retrieval')
+    }
+  }
+
+  async getDescription(): Promise<string | null> {
+    if (!this.page) {
+      throw new Error('Browser not initialized')
+    }
+
+    try {
+      const description = await this.page.waitForSelector(
+        SELECTORS.DESCRIPTION,
+        {
+          timeout: this.config.timeouts.selector,
+        }
+      )
+
+      if (!description) {
+        throw new Error('Description not found')
+      }
+
+      return description.evaluate((el) => el.textContent)
+    } catch (error) {
+      ErrorHandler.handlePuppeteerError(error as Error, 'description retrieval')
+    }
+  }
+
   async showTranscript(): Promise<void> {
     if (!this.page) {
       throw new Error('Browser not initialized')
     }
 
     try {
-      // First check if transcript button is visible
       const isTranscriptVisible = await this.isElementVisible(
         SELECTORS.SHOW_TRANSCRIPT
       )
@@ -256,11 +307,10 @@ export class YoutubePuppeteer {
       !this.responseData.transcriptReceived &&
       Date.now() - startTime < maxWaitTime
     ) {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await this.wait(100)
     }
 
     if (this.responseData.transcriptReceived) {
-      console.log('Transcript data received successfully')
       return this.responseData.transcriptData
     } else {
       ErrorHandler.handleTimeoutError('transcript response', maxWaitTime)

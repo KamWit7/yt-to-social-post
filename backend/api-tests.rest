@@ -12,13 +12,6 @@ Content-Type: application/json
 GET {{baseUrl}}/api/screenshot?url={{youtubeUrl}}
 Content-Type: application/json
 
-###
-
-###
-
-### Get Video Info
-GET {{baseUrl}}/api/video-info?url={{youtubeUrl}}
-Content-Type: application/json
 
 ###
 
@@ -26,14 +19,4 @@ Content-Type: application/json
 GET {{baseUrl}}/api/transcript?url={{youtubeUrl}}
 Content-Type: application/json
 
-###
 
-### Get Description
-GET {{baseUrl}}/api/description?url={{youtubeUrl}}
-Content-Type: application/json
-
-###
-
-### Get Captions List
-GET {{baseUrl}}/api/captions?url={{youtubeUrl}}
-Content-Type: application/json

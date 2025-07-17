@@ -17,6 +17,8 @@ export interface TranscriptData {
 
 export interface TranscriptResult {
   transcript: string
+  title: string
+  description: string
 }
 
 export interface YouTubeErrorData {

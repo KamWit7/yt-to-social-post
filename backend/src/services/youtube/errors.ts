@@ -2,7 +2,9 @@ export const ERROR_MESSAGES = {
   TRANSCRIPT_NOT_FOUND: 'Transcript not found - no API request intercepted',
   TRANSCRIPT_FORMAT_NOT_RECOGNIZED: 'Transcript format not recognized',
   TRANSCRIPT_PROCESSING_ERROR: 'Error processing transcript data',
-  TRANSCRIPT_NOT_AVAILABLE: 'Nie znaleziono transkrypcji w podanym obiekcie.',
+  TRANSCRIPT_NOT_AVAILABLE: 'Transcript not available',
+  TITLE_NOT_FOUND: 'Title not found',
+  DESCRIPTION_NOT_FOUND: 'Description not found',
 } as const
 
 export class YouTubeError extends Error {
