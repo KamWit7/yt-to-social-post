@@ -3,7 +3,9 @@ import { YouTubeService } from '../services/youtubeService'
 import type { ApiResponse } from '../types/youtube'
 
 export class YouTubeController {
-  static async getTranscript(req: Request, res: Response): Promise<void> {
+  constructor(private youtubeService: YouTubeService) {}
+
+  async getTranscript(req: Request, res: Response): Promise<void> {
     const { url } = req.query
 
     if (!url || typeof url !== 'string') {
@@ -16,7 +18,7 @@ export class YouTubeController {
     }
 
     try {
-      const data = await YouTubeService.getTranscript(url)
+      const data = await this.youtubeService.getTranscript(url)
 
       const successResponse: ApiResponse<any> = {
         success: true,
@@ -34,7 +36,7 @@ export class YouTubeController {
     }
   }
 
-  static async takeScreenshot(req: Request, res: Response): Promise<void> {
+  async takeScreenshot(req: Request, res: Response): Promise<void> {
     const { url } = req.query
 
     if (!url || typeof url !== 'string') {
@@ -47,7 +49,7 @@ export class YouTubeController {
     }
 
     try {
-      const data = await YouTubeService.takeScreenshot(url)
+      const data = await this.youtubeService.takeScreenshot(url)
       const successResponse: ApiResponse<typeof data> = {
         success: true,
         data,

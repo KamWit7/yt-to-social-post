@@ -1,12 +1,19 @@
 import { Router } from 'express'
 import { YouTubeController } from '../controllers/youtubeController'
+import { YoutubePuppeteer } from '../services/youtube/YoutubePuppeteer'
+import { YouTubeService } from '../services/youtubeService'
 
 const router = Router()
 
-// GET /api/transcript?url=<youtube_url>
-router.get('/transcript', YouTubeController.getTranscript)
+const youtubeService = new YouTubeService(new YoutubePuppeteer())
+const youtubeController = new YouTubeController(youtubeService)
 
-// GET /api/screenshot?url=<youtube_url>
-router.get('/screenshot', YouTubeController.takeScreenshot)
+router.get('/transcript', (req, res) =>
+  youtubeController.getTranscript(req, res)
+)
+
+router.get('/screenshot', (req, res) =>
+  youtubeController.takeScreenshot(req, res)
+)
 
 export default router

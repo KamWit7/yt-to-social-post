@@ -2,21 +2,27 @@
 ### REST Client for VS Code
 
 @baseUrl = http://localhost:3001
-@youtubeUrl = https://www.youtube.com/watch?v=cxSowU9sDdU&ab_channel=KevinPowell
+@youtubeUrlWithoutTranscript = https://www.youtube.com/watch?v=GhVVi2R-K5k&ab_channel=Przeprogramowani
+@youtubeUrlWithTranscript = https://www.youtube.com/watch?v=dh6BCSzaF6g&ab_channel=ThePrimeTime
 
 ### Health Check
 GET {{baseUrl}}/health
 Content-Type: application/json
 
 ### Take Screenshot
-GET {{baseUrl}}/api/screenshot?url={{youtubeUrl}}
+GET {{baseUrl}}/api/screenshot?url={{youtubeUrlWithoutTranscript}}
 Content-Type: application/json
 
 
 ###
 
-### Get Transcript
-GET {{baseUrl}}/api/transcript?url={{youtubeUrl}}
+### Without Transcript
+GET {{baseUrl}}/api/transcript?url={{youtubeUrlWithoutTranscript}}
+Content-Type: application/json
+
+
+### With Transcript
+GET {{baseUrl}}/api/transcript?url={{youtubeUrlWithTranscript}}
 Content-Type: application/json
 
 

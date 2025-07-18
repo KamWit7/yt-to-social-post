@@ -151,7 +151,7 @@ export class YoutubePuppeteer {
     }
   }
 
-  async expandDescriptionUntilTranscriptVisible(): Promise<void> {
+  async expandDescriptionUntilTranscriptVisible(): Promise<boolean> {
     if (!this.page) {
       throw new Error('Browser not initialized')
     }
@@ -177,7 +177,7 @@ export class YoutubePuppeteer {
 
         if (isTranscriptVisible) {
           console.log('Transcript button is now visible')
-          return
+          return true
         }
 
         retryCount++
@@ -191,17 +191,16 @@ export class YoutubePuppeteer {
           await this.wait(100)
         }
       } catch (error) {
+        retryCount++
+
         console.log(
           `Expand button not found or not clickable (attempt ${retryCount + 1})`
         )
-        retryCount++
-        if (retryCount < maxRetries) {
-          await this.wait(100)
-        }
       }
     }
 
     console.log('Max retries reached for expand button')
+    return false
   }
 
   async expandDescription(): Promise<void> {
@@ -218,10 +217,11 @@ export class YoutubePuppeteer {
       if (expandButton) {
         await expandButton.click()
         console.log('Description expanded')
-        await this.wait(1000) // Wait for UI to update
+
+        await this.wait(300)
       }
     } catch (error) {
-      console.log('Expand button not found or not clickable')
+      ErrorHandler.handlePuppeteerError(error as Error, 'expand description')
     }
   }
 
@@ -295,11 +295,14 @@ export class YoutubePuppeteer {
         console.log('Show transcript button clicked')
       }
     } catch (error) {
-      console.log('Show transcript button not found or not clickable')
+      ErrorHandler.handlePuppeteerError(
+        error as Error,
+        'show transcript button'
+      )
     }
   }
 
-  async waitForTranscriptResponse(): Promise<any> {
+  async waitForTranscriptResponse(): Promise<unknown> {
     const maxWaitTime = this.config.timeouts.transcript
     const startTime = Date.now()
 
@@ -312,9 +315,9 @@ export class YoutubePuppeteer {
 
     if (this.responseData.transcriptReceived) {
       return this.responseData.transcriptData
-    } else {
-      ErrorHandler.handleTimeoutError('transcript response', maxWaitTime)
     }
+
+    return null
   }
 
   async takeScreenshot(path: string): Promise<string> {
@@ -334,14 +337,6 @@ export class YoutubePuppeteer {
       return path
     } catch (error) {
       ErrorHandler.handlePuppeteerError(error as Error, 'screenshot capture')
-    }
-  }
-
-  // Utility method to reset response data for new operations
-  resetResponseData(): void {
-    this.responseData = {
-      transcriptData: null,
-      transcriptReceived: false,
     }
   }
 }

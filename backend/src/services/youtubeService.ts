@@ -1,24 +1,21 @@
 import { isValidUrl } from '../utils/validation'
 import { YoutubePuppeteer } from './youtube/YoutubePuppeteer'
-import { DEFAULT_CONFIG } from './youtube/config'
 import { ERROR_MESSAGES, ErrorHandler } from './youtube/errors'
 import {
   extractTranscriptText,
   isValidTranscriptResponse,
   TranscriptFormatOptions,
 } from './youtube/transcriptParser'
-import type { BrowserConfig, TranscriptResult } from './youtube/types'
+import type { TranscriptResult } from './youtube/types'
 
 export class YouTubeService {
+  constructor(public puppeteer: YoutubePuppeteer) {}
+
   private static validateUrl(url: string): void {
     const isValid = isValidUrl(url)
     if (!isValid) {
       ErrorHandler.handleValidationError('Invalid YouTube URL', url)
     }
-  }
-
-  private static getBrowserConfig(): BrowserConfig {
-    return DEFAULT_CONFIG
   }
 
   private static getTranscriptFormatOptions(): TranscriptFormatOptions {
@@ -29,21 +26,19 @@ export class YouTubeService {
   }
 
   private static formatTranscriptResponse(
-    transcriptData: any,
+    transcriptData: unknown,
     title?: string | null,
     description?: string | null
   ): TranscriptResult {
-    const defaultTitle = ERROR_MESSAGES.TITLE_NOT_FOUND
-    const defaultDescription = ERROR_MESSAGES.DESCRIPTION_NOT_FOUND
-
-    const parsedTitle = title || defaultTitle
-    const parsedDescription = description || defaultDescription
+    const parsedTitle = title ?? ERROR_MESSAGES.TITLE_NOT_FOUND
+    const parsedDescription =
+      description ?? ERROR_MESSAGES.DESCRIPTION_NOT_FOUND
 
     if (!transcriptData) {
       return {
         transcript: ERROR_MESSAGES.TRANSCRIPT_NOT_FOUND,
-        title: defaultTitle,
-        description: defaultDescription,
+        title: parsedTitle,
+        description: parsedDescription,
       }
     }
 
@@ -78,26 +73,33 @@ export class YouTubeService {
     }
   }
 
-  static async getTranscript(url: string) {
-    this.validateUrl(url)
-
-    const puppeteer = new YoutubePuppeteer(this.getBrowserConfig())
-
+  async getTranscript(url: string) {
     try {
-      await puppeteer.initializeBrowser()
-      await puppeteer.navigateToVideo(url)
-      await puppeteer.setupResponseInterception()
+      YouTubeService.validateUrl(url)
 
-      await puppeteer.handleCookieConsent()
-      await puppeteer.expandDescriptionUntilTranscriptVisible()
+      await this.puppeteer.initializeBrowser()
+      await this.puppeteer.navigateToVideo(url)
+      await this.puppeteer.setupResponseInterception()
 
-      const title = await puppeteer.getTitle()
-      const description = await puppeteer.getDescription()
+      await this.puppeteer.handleCookieConsent()
+      const isTranscriptVisible =
+        await this.puppeteer.expandDescriptionUntilTranscriptVisible()
 
-      await puppeteer.showTranscript()
+      const title = await this.puppeteer.getTitle()
+      const description = await this.puppeteer.getDescription()
 
-      const transcriptData = await puppeteer.waitForTranscriptResponse()
-      return this.formatTranscriptResponse(transcriptData, title, description)
+      let transcriptData: unknown
+
+      if (isTranscriptVisible) {
+        await this.puppeteer.showTranscript()
+        transcriptData = await this.puppeteer.waitForTranscriptResponse()
+      }
+
+      return YouTubeService.formatTranscriptResponse(
+        transcriptData,
+        title,
+        description
+      )
     } catch (error) {
       throw new Error(
         `Failed to fetch transcript: ${
@@ -105,19 +107,17 @@ export class YouTubeService {
         }`
       )
     } finally {
-      await puppeteer.closeBrowser()
+      await this.puppeteer.closeBrowser()
     }
   }
 
-  static async takeScreenshot(url: string, path: string = 'screenshot.png') {
-    this.validateUrl(url)
-
-    const puppeteer = new YoutubePuppeteer(this.getBrowserConfig())
-
+  async takeScreenshot(url: string, path: string = 'screenshot.png') {
     try {
-      await puppeteer.initializeBrowser({ headless: true })
-      await puppeteer.navigateToVideo(url)
-      return await puppeteer.takeScreenshot(path)
+      YouTubeService.validateUrl(url)
+
+      await this.puppeteer.initializeBrowser({ headless: true })
+      await this.puppeteer.navigateToVideo(url)
+      return await this.puppeteer.takeScreenshot(path)
     } catch (error) {
       throw new Error(
         `Failed to take screenshot: ${
@@ -125,7 +125,7 @@ export class YouTubeService {
         }`
       )
     } finally {
-      await puppeteer.closeBrowser()
+      await this.puppeteer.closeBrowser()
     }
   }
 }
