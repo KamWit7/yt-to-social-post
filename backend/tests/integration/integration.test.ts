@@ -1,3 +1,4 @@
+import { beforeAll, describe, expect, test } from '@jest/globals'
 import { app, request } from '../setup'
 
 // Integration tests - these can be run with INTEGRATION_TESTS=true to use real Puppeteer

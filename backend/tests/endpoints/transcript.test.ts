@@ -1,3 +1,5 @@
+import { beforeEach, describe, expect, jest, test } from '@jest/globals'
+import { TranscriptResult } from '../../src/puppetieer/youtube/types'
 import { YouTubeService } from '../../src/services/youtubeService'
 import { app, request } from '../setup'
 
@@ -7,11 +9,8 @@ describe('GET /api/transcript', () => {
   })
 
   test('should return transcript for valid YouTube URL', async () => {
-    const mockTranscriptData = {
-      transcript: [
-        { text: 'Hello world', start: 0, duration: 2 },
-        { text: 'This is a test', start: 2, duration: 3 },
-      ],
+    const mockTranscriptData: TranscriptResult = {
+      transcript: 'Hello world This is a test',
       title: 'Test Video',
       description: 'Test Description',
     }
@@ -46,6 +45,8 @@ describe('GET /api/transcript', () => {
       .query({ url: '' })
       .expect(400)
 
+    
+    console.warn('RESPONSE', response.body)
     expect(response.body).toMatchObject({
       success: false,
       error: expect.any(String),
@@ -77,16 +78,6 @@ describe('GET /api/transcript', () => {
   })
 
   test('should handle various YouTube URL formats', async () => {
-    const mockTranscriptData = {
-      transcript: [],
-      title: 'Test',
-      description: 'Test',
-    }
-
-    jest
-      .spyOn(YouTubeService.prototype, 'getTranscript')
-      .mockResolvedValue(mockTranscriptData)
-
     // Test different YouTube URL formats
     const validUrls = [
       'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
@@ -136,8 +127,9 @@ describe('GET /api/transcript', () => {
   })
 
   test('should return empty transcript when no captions available', async () => {
-    const mockEmptyTranscriptData = {
-      transcript: [],
+    const mockEmptyTranscriptData: TranscriptResult = {
+      //TODO: empty transcript should be null
+      transcript: '',
       title: 'Video without captions',
       description: 'Description',
     }
@@ -158,8 +150,8 @@ describe('GET /api/transcript', () => {
   })
 
   test('should have correct content-type header', async () => {
-    const mockTranscriptData = {
-      transcript: [],
+    const mockTranscriptData: TranscriptResult = {
+      transcript: 'Hello world This is a test',
       title: 'Test',
       description: 'Test',
     }
@@ -196,8 +188,8 @@ describe('GET /api/transcript', () => {
 
   test('should respect rate limiting', async () => {
     const url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-    const mockTranscriptData = {
-      transcript: [],
+    const mockTranscriptData: TranscriptResult = {
+      transcript: 'Hello world This is a test',
       title: 'Test',
       description: 'Test',
     }

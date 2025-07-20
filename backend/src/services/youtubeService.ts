@@ -1,11 +1,12 @@
 import { ErrorHandler } from '../puppetieer/youtube/errors'
+import { TranscriptResult } from '../puppetieer/youtube/types'
 import { Utils } from '../puppetieer/youtube/Utils'
 import { YoutubePuppeteer } from '../puppetieer/youtube/YoutubePuppeteer'
 
 export class YouTubeService {
   constructor(public puppeteer: YoutubePuppeteer) {}
 
-  async getTranscript(url: string) {
+  async getTranscript(url: string): Promise<TranscriptResult> {
     try {
       await this.puppeteer.initializeBrowser()
       await this.puppeteer.navigateToVideo(url)

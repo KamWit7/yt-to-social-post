@@ -1,27 +1,39 @@
+import { afterAll, beforeAll, beforeEach, jest } from '@jest/globals'
 import request from 'supertest'
 
+const mockTranscriptData: TranscriptResult = {
+  transcript: 'Hello world This is a test',
+  title: 'Test Video',
+  description: 'Test Description',
+}
+
 // Mock Puppeteer for unit tests - must be done before importing app
-jest.mock('../src/puppetieer/youtube/YoutubePuppeteer', () => {
-  return {
-    YoutubePuppeteer: jest.fn().mockImplementation(() => ({
-      initializeBrowser: jest.fn(),
-      navigateToVideo: jest.fn(),
-      setupResponseInterception: jest.fn(),
-      handleCookieConsent: jest.fn(),
-      expandDescriptionUntilTranscriptVisible: jest
-        .fn()
-        .mockResolvedValue(true),
-      getTitle: jest.fn().mockResolvedValue('Mock Title'),
-      getDescription: jest.fn().mockResolvedValue('Mock Description'),
-      showTranscript: jest.fn(),
-      waitForTranscriptResponse: jest.fn().mockResolvedValue([]),
-      takeScreenshot: jest.fn().mockResolvedValue('screenshot.png'),
-      closeBrowser: jest.fn(),
-    })),
-  }
-})
+jest.mock('../src/puppetieer/youtube/YoutubePuppeteer', () => ({
+  YoutubePuppeteer: jest.fn().mockImplementation(() => ({
+    initializeBrowser: jest.fn().mockImplementation(() => {}),
+    navigateToVideo: jest.fn().mockImplementation(() => {}),
+    setupResponseInterception: jest.fn().mockImplementation(() => {}),
+    showTranscript: jest.fn().mockImplementation(() => {}),
+    waitForTranscriptResponse: jest
+      .fn()
+      .mockImplementation(() => mockTranscriptData.transcript),
+    closeBrowser: jest.fn().mockImplementation(async () => {}),
+    handleCookieConsent: jest.fn().mockImplementation(async () => {}),
+    expandDescriptionUntilTranscriptVisible: jest
+      .fn()
+      .mockImplementation(async () => true),
+    getTitle: jest
+      .fn()
+      .mockImplementation(async () => mockTranscriptData.title),
+    getDescription: jest
+      .fn()
+      .mockImplementation(async () => mockTranscriptData.description),
+    takeScreenshot: jest.fn().mockImplementation(async () => 'screenshot.png'),
+  })),
+}))
 
 // Import app after mocking
+import { TranscriptResult } from '../src/puppetieer/youtube/types'
 import { app } from '../src/server'
 
 beforeAll(async () => {

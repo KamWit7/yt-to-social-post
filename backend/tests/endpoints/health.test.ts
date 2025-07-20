@@ -1,3 +1,4 @@
+import { describe, expect, test } from '@jest/globals'
 import { HealthResponse } from '../../src/services/healtService'
 import { ApiResponse } from '../../src/types/youtube'
 import { app, request } from '../setup'
@@ -5,18 +6,19 @@ import { app, request } from '../setup'
 describe('GET /health', () => {
   test('should return 200 and health status', async () => {
     const response = await request(app).get('/api/health').expect(200)
-    console.warn('RESPONSE', response.body)
 
-    const concurrentResponse: ApiResponse<HealthResponse> = {
+    const concurrentResponse: Required<ApiResponse<HealthResponse>> = {
       success: true,
       data: {
         success: true,
-        timestamp: expect.any(String),
+        timestamp: new Date().toISOString(),
         message: 'YouTube Transcript API is running',
       },
+      error: 'error',
+      details: 'details',
     }
 
-    expect(response.body).toMatchObject(concurrentResponse)
+    expect(response.body).toMatchObject(concurrentResponse.data)
   })
 
   test('should return valid timestamp format', async () => {
