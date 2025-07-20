@@ -13,7 +13,6 @@ Content-Type: application/json
 GET {{baseUrl}}/api/screenshot?url={{youtubeUrlWithoutTranscript}}
 Content-Type: application/json
 
-
 ###
 
 ### Without Transcript
@@ -25,4 +24,11 @@ Content-Type: application/json
 GET {{baseUrl}}/api/transcript?url={{youtubeUrlWithTranscript}}
 Content-Type: application/json
 
+### With Invalid URL
+GET {{baseUrl}}/api/transcript?url=invalid-url
+Content-Type: application/json
+
+### With Missing URL
+GET {{baseUrl}}/api/transcript
+Content-Type: application/json
 

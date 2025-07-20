@@ -1,18 +1,15 @@
 import type { NextFunction, Request, Response } from 'express'
-
-export interface AppError extends Error {
-  statusCode?: number
-  isOperational?: boolean
-}
+import type { YouTubeError } from '../services/youtube/errors'
 
 export function errorHandler(
-  error: AppError,
+  error: YouTubeError,
   req: Request,
   res: Response,
   next: NextFunction
 ): void {
-  const statusCode = error.statusCode || 500
+  const statusCode = error.code || 500
   const message = error.message || 'Internal Server Error'
+  const name = error.name || 'Unknown Error'
 
   console.error(`Error ${statusCode}: ${message}`)
   console.error(error.stack)
@@ -20,6 +17,7 @@ export function errorHandler(
   res.status(statusCode).json({
     success: false,
     error: message,
+    name,
     ...(process.env.NODE_ENV === 'development' && { stack: error.stack }),
   })
 }

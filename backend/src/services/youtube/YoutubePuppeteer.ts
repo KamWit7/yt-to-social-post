@@ -63,10 +63,7 @@ export class YoutubePuppeteer {
 
       await this.page.setViewport(this.config.viewport)
     } catch (error) {
-      ErrorHandler.handlePuppeteerError(
-        error as Error,
-        'browser initialization'
-      )
+      ErrorHandler.handlePuppeteerError(error, 'browser initialization')
     }
   }
 
@@ -78,13 +75,13 @@ export class YoutubePuppeteer {
         this.page = null
       }
     } catch (error) {
-      ErrorHandler.handlePuppeteerError(error as Error, 'browser cleanup')
+      ErrorHandler.handlePuppeteerError(error, 'browser cleanup')
     }
   }
 
   async navigateToVideo(url: string): Promise<void> {
     if (!this.page) {
-      throw new Error('Browser not initialized')
+      ErrorHandler.handlePuppeteerError('Browser not initialized', 'navigation')
     }
 
     try {
@@ -93,13 +90,16 @@ export class YoutubePuppeteer {
         timeout: this.config.timeouts.navigation,
       })
     } catch (error) {
-      ErrorHandler.handlePuppeteerError(error as Error, 'navigation')
+      ErrorHandler.handlePuppeteerError(error, 'navigation to video')
     }
   }
 
   async setupResponseInterception(): Promise<void> {
     if (!this.page) {
-      throw new Error('Browser not initialized')
+      ErrorHandler.handlePuppeteerError(
+        'Browser not initialized',
+        'response interception'
+      )
     }
 
     try {
@@ -124,16 +124,16 @@ export class YoutubePuppeteer {
         }
       })
     } catch (error) {
-      ErrorHandler.handlePuppeteerError(
-        error as Error,
-        'response interception setup'
-      )
+      ErrorHandler.handlePuppeteerError(error, 'response interception setup')
     }
   }
 
   async handleCookieConsent(): Promise<void> {
     if (!this.page) {
-      throw new Error('Browser not initialized')
+      ErrorHandler.handlePuppeteerError(
+        'Browser not initialized',
+        'cookie consent'
+      )
     }
 
     try {
@@ -153,7 +153,10 @@ export class YoutubePuppeteer {
 
   async expandDescriptionUntilTranscriptVisible(): Promise<boolean> {
     if (!this.page) {
-      throw new Error('Browser not initialized')
+      ErrorHandler.handlePuppeteerError(
+        'Browser not initialized',
+        'expand description'
+      )
     }
 
     const maxRetries = 3
@@ -205,7 +208,10 @@ export class YoutubePuppeteer {
 
   async expandDescription(): Promise<void> {
     if (!this.page) {
-      throw new Error('Browser not initialized')
+      ErrorHandler.handlePuppeteerError(
+        'Browser not initialized',
+        'expand description'
+      )
     }
 
     try {
@@ -221,13 +227,16 @@ export class YoutubePuppeteer {
         await this.wait(300)
       }
     } catch (error) {
-      ErrorHandler.handlePuppeteerError(error as Error, 'expand description')
+      ErrorHandler.handlePuppeteerError(error, 'expand description')
     }
   }
 
   async getTitle(): Promise<string | null> {
     if (!this.page) {
-      throw new Error('Browser not initialized')
+      ErrorHandler.handlePuppeteerError(
+        'Browser not initialized',
+        'title retrieval'
+      )
     }
 
     try {
@@ -241,13 +250,16 @@ export class YoutubePuppeteer {
 
       return title.evaluate((el) => el.textContent)
     } catch (error) {
-      ErrorHandler.handlePuppeteerError(error as Error, 'title retrieval')
+      ErrorHandler.handlePuppeteerError(error, 'title retrieval')
     }
   }
 
   async getDescription(): Promise<string | null> {
     if (!this.page) {
-      throw new Error('Browser not initialized')
+      ErrorHandler.handlePuppeteerError(
+        'Browser not initialized',
+        'description retrieval'
+      )
     }
 
     try {
@@ -264,13 +276,16 @@ export class YoutubePuppeteer {
 
       return description.evaluate((el) => el.textContent)
     } catch (error) {
-      ErrorHandler.handlePuppeteerError(error as Error, 'description retrieval')
+      ErrorHandler.handlePuppeteerError(error, 'description retrieval')
     }
   }
 
   async showTranscript(): Promise<void> {
     if (!this.page) {
-      throw new Error('Browser not initialized')
+      ErrorHandler.handlePuppeteerError(
+        'Browser not initialized',
+        'show transcript'
+      )
     }
 
     try {
@@ -295,10 +310,7 @@ export class YoutubePuppeteer {
         console.log('Show transcript button clicked')
       }
     } catch (error) {
-      ErrorHandler.handlePuppeteerError(
-        error as Error,
-        'show transcript button'
-      )
+      ErrorHandler.handlePuppeteerError(error, 'show transcript button')
     }
   }
 
@@ -322,7 +334,10 @@ export class YoutubePuppeteer {
 
   async takeScreenshot(path: string): Promise<string> {
     if (!this.page) {
-      throw new Error('Browser not initialized')
+      ErrorHandler.handlePuppeteerError(
+        'Browser not initialized',
+        'screenshot capture'
+      )
     }
 
     // Puppeteer expects the path to end with .png, .jpeg, or .webp
@@ -336,7 +351,7 @@ export class YoutubePuppeteer {
       })
       return path
     } catch (error) {
-      ErrorHandler.handlePuppeteerError(error as Error, 'screenshot capture')
+      ErrorHandler.handlePuppeteerError(error, 'screenshot capture')
     }
   }
 }

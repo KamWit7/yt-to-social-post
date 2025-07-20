@@ -10,7 +10,8 @@ export const ERROR_MESSAGES = {
 export class YouTubeError extends Error {
   constructor(
     message: string,
-    public readonly code: string,
+    public readonly name: string,
+    public readonly code: number,
     public readonly url?: string
   ) {
     super(message)
@@ -19,28 +20,58 @@ export class YouTubeError extends Error {
 }
 
 export class ErrorHandler {
-  static handlePuppeteerError(error: Error, context: string): never {
+  static handlePuppeteerError(
+    error: string | Error | unknown,
+    context: string
+  ): never {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+
     throw new YouTubeError(
-      `Puppeteer error in ${context}: ${error.message}`,
-      'PUPPETEER_ERROR'
+      `Puppeteer error in ${context}: ${errorMessage}`,
+      'PUPPETEER_ERROR',
+      500
     )
   }
 
   static handleSelectorError(selector: string, action: string): never {
     throw new YouTubeError(
       `Could not ${action} element with selector: ${selector}`,
-      'SELECTOR_ERROR'
+      'SELECTOR_ERROR',
+      500
     )
   }
 
   static handleTimeoutError(operation: string, timeout: number): never {
     throw new YouTubeError(
       `Timeout reached for ${operation} (${timeout}ms)`,
-      'TIMEOUT_ERROR'
+      'TIMEOUT_ERROR',
+      500
     )
   }
 
-  static handleValidationError(message: string, url?: string): never {
-    throw new YouTubeError(message, 'VALIDATION_ERROR', url)
+  static handleValidationError(
+    error: string | Error | unknown,
+    url?: unknown
+  ): never {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+
+    throw new YouTubeError(
+      errorMessage,
+      'VALIDATION_ERROR',
+      400,
+      url ? JSON.stringify(url) : undefined
+    )
+  }
+
+  static handleTranscriptError(error: string | Error | unknown): never {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+
+    throw new YouTubeError(errorMessage, 'TRANSCRIPT_ERROR', 500)
+  }
+
+  static handleScreenshotError(error: string | Error | unknown): never {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+
+    throw new YouTubeError(errorMessage, 'SCREENSHOT_ERROR', 500)
   }
 }
