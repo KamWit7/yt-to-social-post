@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express'
-import type { YouTubeError } from '../services/youtube/errors'
+import type { YouTubeError } from '../puppetieer/youtube/errors'
 
 export function errorHandler(
   error: YouTubeError,

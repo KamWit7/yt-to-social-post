@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { YouTubeController } from '../controllers/youtubeController'
-import { YoutubePuppeteer } from '../services/youtube/YoutubePuppeteer'
+import { YoutubePuppeteer } from '../puppetieer/youtube/YoutubePuppeteer'
 import { YouTubeService } from '../services/youtubeService'
 
 const router = Router()

@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express'
-import { Utils } from '../services/youtube/Utils'
+import { Utils } from '../puppetieer/youtube/Utils'
 import { YouTubeService } from '../services/youtubeService'
 import type { ApiResponse } from '../types/youtube'
 

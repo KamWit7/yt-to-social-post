@@ -1,6 +1,6 @@
-import { ErrorHandler } from './youtube/errors'
-import { Utils } from './youtube/Utils'
-import { YoutubePuppeteer } from './youtube/YoutubePuppeteer'
+import { ErrorHandler } from '../puppetieer/youtube/errors'
+import { Utils } from '../puppetieer/youtube/Utils'
+import { YoutubePuppeteer } from '../puppetieer/youtube/YoutubePuppeteer'
 
 export class YouTubeService {
   constructor(public puppeteer: YoutubePuppeteer) {}
