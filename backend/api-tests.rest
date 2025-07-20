@@ -6,7 +6,7 @@
 @youtubeUrlWithTranscript = https://www.youtube.com/watch?v=dh6BCSzaF6g&ab_channel=ThePrimeTime
 
 ### Health Check
-GET {{baseUrl}}/health
+GET {{baseUrl}}/api/health
 Content-Type: application/json
 
 ### Take Screenshot

@@ -3,8 +3,8 @@ import dotenv from 'dotenv'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
-// @ts-ignore
 import { errorHandler, notFoundHandler } from './middleware/errorHandler'
+import healthRoutes from './routes/healtRoutes'
 import youtubeRoutes from './routes/youtubeRoutes'
 
 // Load environment variables
@@ -40,17 +40,9 @@ app.use('/api/', limiter)
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({
-    success: true,
-    message: 'YouTube Transcript API is running',
-    timestamp: new Date().toISOString(),
-  })
-})
-
 // API routes
 app.use('/api', youtubeRoutes)
+app.use('/api', healthRoutes)
 
 // 404 handler
 app.use(notFoundHandler)
@@ -58,12 +50,14 @@ app.use(notFoundHandler)
 // Error handling middleware
 app.use(errorHandler)
 
-// Start server
-app.listen(PORT, async () => {
-  console.log(`🚀 Server running on port ${PORT}`)
-  console.log(`📡 API available at http://localhost:${PORT}/api`)
-  console.log(`🏥 Health check at http://localhost:${PORT}/health`)
-})
+// Start server only if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, async () => {
+    console.log(`🚀 Server running on port ${PORT}`)
+    console.log(`📡 API available at http://localhost:${PORT}/api`)
+    console.log(`🏥 Health check at http://localhost:${PORT}/api/health`)
+  })
+}
 
 process.on('SIGTERM', () => {
   console.log('SIGTERM received, shutting down gracefully')
@@ -74,3 +68,6 @@ process.on('SIGINT', () => {
   console.log('SIGINT received, shutting down gracefully')
   process.exit(0)
 })
+
+// Export app for testing
+export { app }
