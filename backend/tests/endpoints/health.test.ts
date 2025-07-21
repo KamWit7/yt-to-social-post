@@ -1,29 +1,38 @@
 import { describe, expect, test } from '@jest/globals'
+import { Response } from 'superagent'
 import { HealthResponse } from '../../src/services/healtService'
 import { ApiResponse } from '../../src/types/youtube'
 import { app, request } from '../setup'
 
+type HealthResponseApiType = Omit<Response, 'body'> & {
+  body: ApiResponse<HealthResponse>
+}
+
 describe('GET /health', () => {
   test('should return 200 and health status', async () => {
-    const response = await request(app).get('/api/health').expect(200)
+    const response: HealthResponseApiType = await request(app)
+      .get('/api/health')
+      .expect(200)
 
-    const concurrentResponse: Required<ApiResponse<HealthResponse>> = {
+    const concurrentResponse: ApiResponse<HealthResponse> = {
       success: true,
       data: {
         success: true,
-        timestamp: new Date().toISOString(),
+        timestamp: expect.any(String) as unknown as string,
         message: 'YouTube Transcript API is running',
       },
-      error: 'error',
-      details: 'details',
     }
 
-    expect(response.body).toMatchObject(concurrentResponse.data)
+    expect(response.body.data).toMatchObject(concurrentResponse.data ?? {})
   })
 
   test('should return valid timestamp format', async () => {
-    const response = await request(app).get('/api/health')
-    const timestamp = new Date(response.body.timestamp)
+    const response: HealthResponseApiType = await request(app).get(
+      '/api/health'
+    )
+
+    const timestamp = new Date(response.body.data?.timestamp ?? '')
+
     expect(timestamp).toBeInstanceOf(Date)
     expect(timestamp.getTime()).not.toBeNaN()
   })
@@ -36,10 +45,13 @@ describe('GET /health', () => {
 
   test('should return timestamp within reasonable time range', async () => {
     const beforeRequest = new Date()
-    const response = await request(app).get('/api/health')
+    const response: HealthResponseApiType = await request(app).get(
+      '/api/health'
+    )
+
     const afterRequest = new Date()
 
-    const responseTimestamp = new Date(response.body.timestamp)
+    const responseTimestamp = new Date(response.body.data?.timestamp ?? '')
 
     expect(responseTimestamp.getTime()).toBeGreaterThanOrEqual(
       beforeRequest.getTime() - 1000

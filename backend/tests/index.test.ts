@@ -1,3 +1,5 @@
+import { describe, expect, test } from '@jest/globals'
+
 // Main test entry point - imports all test suites
 
 // Setup must be imported first
@@ -19,5 +21,4 @@ describe('YouTube Transcript API Test Suite', () => {
   })
 })
 
-// Export for programmatic access if needed
 export * from './setup'
