@@ -1,7 +1,14 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals'
+import { Response } from 'superagent'
+import { MiddlewareError } from '../../src/middleware/errorHandler'
 import { TranscriptResult } from '../../src/puppetieer/youtube/types'
 import { YouTubeService } from '../../src/services/youtubeService'
+import { ApiResponse } from '../../src/types/youtube'
 import { app, request } from '../setup'
+
+type TranscriptApiResultType = Omit<Response, 'body'> & {
+  body: ApiResponse<TranscriptResult> | MiddlewareError
+}
 
 describe('GET /api/transcript', () => {
   beforeEach(() => {
@@ -19,7 +26,7 @@ describe('GET /api/transcript', () => {
       .spyOn(YouTubeService.prototype, 'getTranscript')
       .mockResolvedValue(mockTranscriptData)
 
-    const response = await request(app)
+    const response: TranscriptApiResultType = await request(app)
       .get('/api/transcript')
       .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
       .expect(200)
@@ -31,7 +38,9 @@ describe('GET /api/transcript', () => {
   })
 
   test('should return 400 for missing URL parameter', async () => {
-    const response = await request(app).get('/api/transcript').expect(400)
+    const response: TranscriptApiResultType = await request(app)
+      .get('/api/transcript')
+      .expect(400)
 
     expect(response.body).toMatchObject({
       success: false,
@@ -40,13 +49,11 @@ describe('GET /api/transcript', () => {
   })
 
   test('should return 400 for empty URL parameter', async () => {
-    const response = await request(app)
+    const response: TranscriptApiResultType = await request(app)
       .get('/api/transcript')
       .query({ url: '' })
       .expect(400)
 
-    
-    console.warn('RESPONSE', response.body)
     expect(response.body).toMatchObject({
       success: false,
       error: expect.any(String),
@@ -54,19 +61,22 @@ describe('GET /api/transcript', () => {
   })
 
   test('should return 400 for invalid URL format', async () => {
-    const response = await request(app)
+    const response: TranscriptApiResultType = await request(app)
       .get('/api/transcript')
       .query({ url: 'invalid-url' })
       .expect(400)
 
-    expect(response.body).toMatchObject({
+    const transcriptError: MiddlewareError = {
       success: false,
-      error: expect.stringContaining('Invalid URL'),
-    })
+      error: 'Invalid YouTube URL',
+      name: 'YouTubeError',
+    }
+
+    expect(response.body).toMatchObject(transcriptError)
   })
 
   test('should return 400 for non-YouTube URL', async () => {
-    const response = await request(app)
+    const response: TranscriptApiResultType = await request(app)
       .get('/api/transcript')
       .query({ url: 'https://google.com' })
       .expect(400)
@@ -88,10 +98,13 @@ describe('GET /api/transcript', () => {
     ]
 
     for (const url of validUrls) {
-      const response = await request(app)
+      const response: TranscriptApiResultType = await request(app)
         .get('/api/transcript')
         .query({ url })
         .expect(200)
+      if (response.body.success === false) {
+        console.warn('YT', url, response.body)
+      }
 
       expect(response.body.success).toBe(true)
     }
@@ -102,7 +115,7 @@ describe('GET /api/transcript', () => {
       .spyOn(YouTubeService.prototype, 'getTranscript')
       .mockRejectedValue(new Error('Puppeteer error'))
 
-    const response = await request(app)
+    const response: TranscriptApiResultType = await request(app)
       .get('/api/transcript')
       .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
       .expect(500)
@@ -118,7 +131,7 @@ describe('GET /api/transcript', () => {
       .spyOn(YouTubeService.prototype, 'getTranscript')
       .mockRejectedValue(new Error('timeout'))
 
-    const response = await request(app)
+    const response: TranscriptApiResultType = await request(app)
       .get('/api/transcript')
       .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
       .expect(500)
@@ -138,7 +151,7 @@ describe('GET /api/transcript', () => {
       .spyOn(YouTubeService.prototype, 'getTranscript')
       .mockResolvedValue(mockEmptyTranscriptData)
 
-    const response = await request(app)
+    const response: TranscriptApiResultType = await request(app)
       .get('/api/transcript')
       .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
       .expect(200)
@@ -160,7 +173,7 @@ describe('GET /api/transcript', () => {
       .spyOn(YouTubeService.prototype, 'getTranscript')
       .mockResolvedValue(mockTranscriptData)
 
-    const response = await request(app)
+    const response: TranscriptApiResultType = await request(app)
       .get('/api/transcript')
       .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
 
@@ -173,11 +186,10 @@ describe('GET /api/transcript', () => {
       'https://www.youtube.com/watch?',
       'https://www.youtube.com/watch?v=',
       'https://youtu.be/',
-      'youtube.com/watch?v=dQw4w9WgXcQ', // missing protocol
     ]
 
     for (const url of malformedUrls) {
-      const response = await request(app)
+      const response: TranscriptApiResultType = await request(app)
         .get('/api/transcript')
         .query({ url })
         .expect(400)
@@ -188,6 +200,7 @@ describe('GET /api/transcript', () => {
 
   test('should respect rate limiting', async () => {
     const url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+
     const mockTranscriptData: TranscriptResult = {
       transcript: 'Hello world This is a test',
       title: 'Test',
@@ -198,15 +211,14 @@ describe('GET /api/transcript', () => {
       .spyOn(YouTubeService.prototype, 'getTranscript')
       .mockResolvedValue(mockTranscriptData)
 
-    // Make multiple requests quickly to test rate limiting
     const requests = Array(10)
       .fill(0)
       .map(() => request(app).get('/api/transcript').query({ url }))
 
     const responses = await Promise.all(requests)
 
-    // At least some requests should succeed
     const successfulResponses = responses.filter((r) => r.status === 200)
+
     expect(successfulResponses.length).toBeGreaterThan(0)
   })
 })

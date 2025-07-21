@@ -3,7 +3,7 @@ import { YouTubeController } from '../controllers/youtubeController'
 import { YoutubePuppeteer } from '../puppetieer/youtube/YoutubePuppeteer'
 import { YouTubeService } from '../services/youtubeService'
 
-const router = Router()
+const router = Router({ caseSensitive: true })
 
 const youtubePuppeteer = new YoutubePuppeteer()
 const youtubeService = new YouTubeService(youtubePuppeteer)

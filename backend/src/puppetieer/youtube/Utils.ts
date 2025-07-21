@@ -1,4 +1,4 @@
-import { isValidUrl } from '../../utils/validation'
+import { isValidYouTubeUrl } from '../../utils/validation'
 import { ERROR_MESSAGES, ErrorHandler } from './errors'
 import { TranscriptResult, YouTubeTranscriptResponse } from './types'
 
@@ -129,7 +129,7 @@ export class Utils {
   }
 
   static validateUrl(url?: unknown): void {
-    if (url && typeof url === 'string' && isValidUrl(url)) {
+    if (url && typeof url === 'string' && isValidYouTubeUrl(url)) {
       return
     }
 

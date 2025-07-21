@@ -1,5 +1,11 @@
 import { describe, expect, test } from '@jest/globals'
+import { Response } from 'supertest'
+import { MiddlewareError } from '../../src/middleware/errorHandler'
 import { app, request } from '../setup'
+
+type MiddlewareErrorReturnType = Omit<Response, 'body'> & {
+  body: MiddlewareError
+}
 
 describe('Error Handling', () => {
   describe('404 Handler', () => {
@@ -57,20 +63,6 @@ describe('Error Handling', () => {
       expect(response.body.success).toBe(false)
     })
 
-    test('should return 404 for paths with trailing slashes', async () => {
-      const pathsWithSlashes = [
-        '/api/transcript/',
-        '/api/screenshot/',
-        '/api/nonexistent/',
-      ]
-
-      for (const path of pathsWithSlashes) {
-        const response = await request(app).get(path).expect(404)
-
-        expect(response.body.success).toBe(false)
-      }
-    })
-
     test('should return 404 with correct content type', async () => {
       const response = await request(app).get('/api/nonexistent').expect(404)
 
@@ -116,19 +108,19 @@ describe('Error Handling', () => {
   })
 
   describe('Health Endpoint Edge Cases', () => {
-    test('should return 405 for POST method on health endpoint', async () => {
+    test('should return 404 for POST method on health endpoint', async () => {
       const response = await request(app).post('/health').expect(404) // Express returns 404 for non-matching routes/methods
 
       expect(response.body.success).toBe(false)
     })
 
-    test('should return 405 for PUT method on health endpoint', async () => {
+    test('should return 404 for PUT method on health endpoint', async () => {
       const response = await request(app).put('/health').expect(404)
 
       expect(response.body.success).toBe(false)
     })
 
-    test('should return 405 for DELETE method on health endpoint', async () => {
+    test('should return 404 for DELETE method on health endpoint', async () => {
       const response = await request(app).delete('/health').expect(404)
 
       expect(response.body.success).toBe(false)

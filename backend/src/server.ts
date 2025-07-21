@@ -13,6 +13,10 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 3001
 
+// Configure Express routing behavior
+app.set('case sensitive routing', true)
+app.set('strict routing', false) // Allow trailing slashes to be handled by middleware
+
 // Security middleware
 app.use(helmet())
 

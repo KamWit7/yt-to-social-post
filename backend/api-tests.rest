@@ -25,10 +25,13 @@ GET {{baseUrl}}/api/transcript?url={{youtubeUrlWithTranscript}}
 Content-Type: application/json
 
 ### With Invalid URL
-GET {{baseUrl}}/api/transcript?url=invalid-url
+GET {{baseUrl}}/api/transcript?url=https://google.com
 Content-Type: application/json
 
 ### With Missing URL
 GET {{baseUrl}}/api/transcript
 Content-Type: application/json
 
+### Case Sensitive Routes
+GET {{baseUrl}}/api/Transcript/
+Content-Type: application/json

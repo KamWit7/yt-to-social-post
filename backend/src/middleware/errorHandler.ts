@@ -1,6 +1,12 @@
 import type { NextFunction, Request, Response } from 'express'
 import type { YouTubeError } from '../puppetieer/youtube/errors'
 
+export type MiddlewareError = {
+  success: false
+  error: string
+  name: string
+}
+
 export function errorHandler(
   error: YouTubeError,
   req: Request,
@@ -14,12 +20,14 @@ export function errorHandler(
   console.error(`Error ${statusCode}: ${message}`)
   console.error(error.stack)
 
-  res.status(statusCode).json({
+  const responseError: MiddlewareError = {
     success: false,
     error: message,
     name,
     ...(process.env.NODE_ENV === 'development' && { stack: error.stack }),
-  })
+  }
+
+  res.status(statusCode).json(responseError)
 }
 
 export function notFoundHandler(req: Request, res: Response): void {
