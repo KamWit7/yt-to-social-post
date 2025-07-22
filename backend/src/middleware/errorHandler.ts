@@ -13,12 +13,12 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ): void {
-  const statusCode = error.code || 500
+  const statusCode = error.statusCode || 500
   const message = error.message || 'Internal Server Error'
   const name = error.name || 'Unknown Error'
 
   console.error(`Error ${statusCode}: ${message}`)
-  console.error(error.stack)
+  console.error('Error Stack:', error.stack)
 
   const responseError: MiddlewareError = {
     success: false,

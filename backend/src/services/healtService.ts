@@ -9,7 +9,15 @@ export class HealthService {
     return {
       success: true,
       timestamp: new Date().toISOString(),
-      message: 'YouTube Transcript API is running',
+      message: 'get healt check',
+    }
+  }
+
+  postHealthCheck(body: any): HealthResponse {
+    return {
+      success: true,
+      timestamp: new Date().toISOString(),
+      message: `post health check: ${JSON.stringify(body)}`,
     }
   }
 }

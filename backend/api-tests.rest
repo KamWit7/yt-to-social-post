@@ -35,3 +35,14 @@ Content-Type: application/json
 ### Case Sensitive Routes
 GET {{baseUrl}}/api/Transcript/
 Content-Type: application/json
+
+### Malformed JSON
+GET {{baseUrl}}/api/transcript
+Content-Type: application/json
+
+{
+  "invalid": json
+}
+
+### Invalid Content Type
+

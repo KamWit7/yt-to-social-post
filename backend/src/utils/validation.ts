@@ -10,6 +10,16 @@ export function isValidUrl(url: string): boolean {
   return urlObject.protocol === 'http:' || urlObject.protocol === 'https:'
 }
 
+export function isValidYouTubeId(id: string): boolean {
+  if (typeof id !== 'string' || id.length === 0) {
+    return false
+  }
+
+  const regex = /^[a-zA-Z0-9_-]{11}$/
+
+  return regex.test(id)
+}
+
 export function isValidYouTubeUrl(url: string): boolean {
   const isValid = isValidUrl(url)
 
@@ -29,7 +39,7 @@ export function isValidYouTubeUrl(url: string): boolean {
     ]
 
     if (hostname.startsWith('youtu.be')) {
-      const isYtId = urlObject.pathname.split('/').pop()
+      const isYtId = isValidYouTubeId(urlObject.pathname.split('/').pop() ?? '')
 
       if (!isYtId) {
         return false
@@ -38,7 +48,7 @@ export function isValidYouTubeUrl(url: string): boolean {
       return true
     }
 
-    const isYtId = urlObject.searchParams.get('v')
+    const isYtId = isValidYouTubeId(urlObject.searchParams.get('v') ?? '')
 
     if (!isYtId) {
       return false

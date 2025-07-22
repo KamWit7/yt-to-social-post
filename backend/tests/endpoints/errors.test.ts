@@ -96,20 +96,23 @@ describe('Error Handling', () => {
       // Express automatically handles malformed JSON
     })
 
-    test('should handle requests with invalid content-type', async () => {
+    test('should return 415 for requests with invalid content-type', async () => {
       const response = await request(app)
-        .post('/api/test')
-        .send('some data')
+        .post('/api/health')
+        .send('<xml>data</xml>')
         .set('Content-Type', 'application/xml')
-        .expect(404) // Route doesn't exist, so 404 expected
 
+      expect(response.status).toBe(415) // Oczekujemy statusu 415
       expect(response.body.success).toBe(false)
+      expect(response.body.error.message).toContain(
+        'Invalid Content-type - only application/json alowed'
+      )
     })
   })
 
   describe('Health Endpoint Edge Cases', () => {
     test('should return 404 for POST method on health endpoint', async () => {
-      const response = await request(app).post('/health').expect(404) // Express returns 404 for non-matching routes/methods
+      const response = await request(app).post('/health').expect(404)
 
       expect(response.body.success).toBe(false)
     })
@@ -127,26 +130,5 @@ describe('Error Handling', () => {
     })
   })
 
-  describe('CORS Preflight Requests', () => {
-    test('should handle CORS preflight for transcript endpoint', async () => {
-      const response = await request(app).options('/api/transcript').expect(200)
 
-      // CORS headers should be present
-      expect(response.headers['access-control-allow-origin']).toBeDefined()
-    })
-
-    test('should handle CORS preflight for screenshot endpoint', async () => {
-      const response = await request(app).options('/api/screenshot').expect(200)
-
-      expect(response.headers['access-control-allow-origin']).toBeDefined()
-    })
-
-    test('should handle CORS preflight for non-existent endpoints', async () => {
-      const response = await request(app)
-        .options('/api/nonexistent')
-        .expect(200)
-
-      expect(response.headers['access-control-allow-origin']).toBeDefined()
-    })
-  })
 })

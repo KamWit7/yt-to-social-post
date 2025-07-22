@@ -14,16 +14,11 @@ describe('GET /health', () => {
       .get('/api/health')
       .expect(200)
 
-    const concurrentResponse: ApiResponse<HealthResponse> = {
+    expect(response.body.data).toMatchObject({
       success: true,
-      data: {
-        success: true,
-        timestamp: expect.any(String) as unknown as string,
-        message: 'YouTube Transcript API is running',
-      },
-    }
-
-    expect(response.body.data).toMatchObject(concurrentResponse.data ?? {})
+      timestamp: expect.any(String) as unknown as string,
+      message: 'get healt check',
+    })
   })
 
   test('should return valid timestamp format', async () => {

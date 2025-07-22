@@ -19,4 +19,19 @@ export class HealthController {
       next(error)
     }
   }
+
+  postHealthCheck(req: Request, res: Response, next: NextFunction) {
+    try {
+      const health = this.healthService.postHealthCheck(req.body)
+
+      const successResponse: ApiResponse<HealthResponse> = {
+        success: true,
+        data: health,
+      }
+
+      res.json(successResponse)
+    } catch (error) {
+      next(error)
+    }
+  }
 }

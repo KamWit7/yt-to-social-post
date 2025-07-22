@@ -54,7 +54,7 @@ describe('GET /api/screenshot', () => {
 
     expect(response.body).toMatchObject({
       success: false,
-      error: expect.stringContaining('Invalid URL'),
+      error: 'Invalid YouTube URL',
     })
   })
 
@@ -140,14 +140,11 @@ describe('GET /api/screenshot', () => {
   })
 
   test('should have correct content-type header', async () => {
-    const mockScreenshotData = {
-      path: 'screenshot.png',
-      buffer: Buffer.from('test-data'),
-    }
+    const mockScreenshotPath = 'screenshot.png'
 
     jest
       .spyOn(YouTubeService.prototype, 'takeScreenshot')
-      .mockResolvedValue(mockScreenshotData)
+      .mockResolvedValue(mockScreenshotPath)
 
     const response = await request(app)
       .get('/api/screenshot')
@@ -176,24 +173,21 @@ describe('GET /api/screenshot', () => {
   })
 
   test('should return screenshot with expected structure', async () => {
-    const mockScreenshotData = {
-      path: 'test-screenshot.png',
-      buffer: Buffer.from('mock-screenshot-data'),
-      size: 1024,
-      timestamp: new Date().toISOString(),
-    }
+    const mockScreenshotPath = 'test-screenshot.png'
 
     jest
       .spyOn(YouTubeService.prototype, 'takeScreenshot')
-      .mockResolvedValue(mockScreenshotData)
+      .mockResolvedValue(mockScreenshotPath)
 
     const response = await request(app)
       .get('/api/screenshot')
       .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
       .expect(200)
 
-    expect(response.body.data).toHaveProperty('path')
-    expect(response.body.data).toHaveProperty('buffer')
+    expect(response.body).toMatchObject({
+      success: true,
+      data: mockScreenshotPath,
+    })
   })
 
   test('should handle video not found errors', async () => {
@@ -204,7 +198,7 @@ describe('GET /api/screenshot', () => {
     const response = await request(app)
       .get('/api/screenshot')
       .query({ url: 'https://www.youtube.com/watch?v=nonexistentvideo' })
-      .expect(500)
+      .expect(400)
 
     expect(response.body.success).toBe(false)
   })
@@ -221,14 +215,11 @@ describe('GET /api/screenshot', () => {
 
   test('should respect rate limiting', async () => {
     const url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-    const mockScreenshotData = {
-      path: 'screenshot.png',
-      buffer: Buffer.from('test-data'),
-    }
+    const mockScreenshotPath = 'screenshot.png'
 
     jest
       .spyOn(YouTubeService.prototype, 'takeScreenshot')
-      .mockResolvedValue(mockScreenshotData)
+      .mockResolvedValue(mockScreenshotPath)
 
     const requests = Array(10)
       .fill(0)

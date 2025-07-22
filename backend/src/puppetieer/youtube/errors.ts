@@ -11,7 +11,7 @@ export class YouTubeError extends Error {
   constructor(
     message: string,
     public readonly name: string,
-    public readonly code: number,
+    public readonly statusCode: number,
     public readonly url?: string
   ) {
     super(message)

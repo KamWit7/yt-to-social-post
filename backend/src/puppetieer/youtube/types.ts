@@ -21,12 +21,6 @@ export interface TranscriptResult {
   description: string
 }
 
-export interface YouTubeErrorData {
-  code: string
-  url?: string
-  context?: string
-}
-
 export interface ResponseInterceptionData {
   transcriptData: any
   transcriptReceived: boolean

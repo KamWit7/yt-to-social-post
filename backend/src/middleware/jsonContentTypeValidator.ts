@@ -1,0 +1,27 @@
+import { NextFunction, Request, Response } from 'express'
+
+export const jsonContentTypeValidator = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const methodsToValidate = ['POST', 'PUT', 'PATCH']
+
+  if (methodsToValidate.includes(req.method)) {
+    const contentType = req.header('Content-Type')
+
+    console.warn('CONTENT', contentType)
+    if (!contentType || !contentType.includes('application/json')) {
+      res.status(415).json({
+        success: false,
+        error: {
+          message: 'Invalid Content-type - only application/json alowed',
+        },
+      })
+
+      return
+    }
+  }
+
+  next()
+}
