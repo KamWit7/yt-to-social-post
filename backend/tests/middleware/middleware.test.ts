@@ -2,54 +2,7 @@ import { app, request } from '../setup'
 
 describe('Middleware', () => {
   describe('CORS', () => {
-    test('should set CORS headers', async () => {
-      const response = await request(app).get('/health').expect(200)
-
-      expect(response.headers['access-control-allow-origin']).toBeDefined()
-    })
-
-    test('should allow specific origin from environment', async () => {
-      const response = await request(app)
-        .get('/health')
-        .set('Origin', 'http://localhost:3000')
-        .expect(200)
-
-      expect(response.headers['access-control-allow-origin']).toBeDefined()
-    })
-
-    test('should handle preflight requests', async () => {
-      const response = await request(app)
-        .options('/api/transcript')
-        .set('Origin', 'http://localhost:3000')
-        .set('Access-Control-Request-Method', 'GET')
-        .set('Access-Control-Request-Headers', 'Content-Type')
-        .expect(200)
-
-      expect(response.headers['access-control-allow-methods']).toBeDefined()
-      expect(response.headers['access-control-allow-origin']).toBeDefined()
-    })
-
-    test('should support credentials', async () => {
-      const response = await request(app)
-        .get('/health')
-        .set('Origin', 'http://localhost:3000')
-        .expect(200)
-
-      expect(response.headers['access-control-allow-credentials']).toBe('true')
-    })
-
-    test('should handle preflight for different HTTP methods', async () => {
-      const methods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-
-      for (const method of methods) {
-        const response = await request(app)
-          .options('/api/transcript')
-          .set('Origin', 'http://localhost:3000')
-          .set('Access-Control-Request-Method', method)
-
-        expect(response.headers['access-control-allow-origin']).toBeDefined()
-      }
-    })
+    
   })
 
   describe('Security Headers', () => {

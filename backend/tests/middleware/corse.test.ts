@@ -53,4 +53,37 @@ describe('CORS Preflight Requests', () => {
       'Content-Type'
     )
   })
+
+  test('should support credentials', async () => {
+    const response = await request(app)
+      .get('/api/health')
+      .set('Origin', 'http://localhost:3000')
+      .expect(200)
+
+    expect(response.headers['access-control-allow-credentials']).toBe('true')
+  })
+
+  test('should not support credentials', async () => {
+    const response = await request(app)
+      .get('/api/health')
+      .set('Origin', 'http://localhost:6000')
+      .expect(200)
+
+    // TODO: Fix this test
+    expect(response.headers['access-control-allow-credentials']).toBe('false')
+  })
+
+  test('should handle preflight for different HTTP methods', async () => {
+    const methods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+
+    for (const method of methods) {
+      const response = await request(app)
+        .options('/api/transcript')
+        .set('Origin', 'http://localhost:3000')
+        .set('Access-Control-Request-Method', method)
+
+      //
+      expect(response.headers['access-control-allow-origin']).toBeDefined()
+    }
+  })
 })

@@ -21,12 +21,37 @@ app.set('strict routing', false) // Allow trailing slashes to be handled by midd
 app.use(helmet())
 
 // CORS configuration
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true,
-  })
-)
+app.use((req, res, next) => {
+  const allowedOriginsWithCredentials = [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+  ]
+
+  const origin = req.headers.origin
+  const allowCredentials = origin
+    ? allowedOriginsWithCredentials.includes(origin)
+    : true
+
+  // TODO: CHECKT THIS AND FIX TESTS
+  const corsOptions = {
+    origin: (
+      requestOrigin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void
+    ) => {
+      // Allow requests with no origin (like mobile apps or Postman)
+      if (!requestOrigin) {
+        return callback(null, true)
+      }
+
+      // Allow all origins but with different credentials settings
+      callback(null, true)
+    },
+    credentials: allowCredentials,
+    allowedHeaders: ['Content-Type'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  }
+
+  cors(corsOptions)(req, res, next)
+})
 
 // Rate limiting
 const limiter = rateLimit({
