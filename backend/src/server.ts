@@ -1,8 +1,8 @@
-import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
+import { corsConfig } from './cors/cors.config'
 import { errorHandler, notFoundHandler } from './middleware/errorHandler'
 import healthRoutes from './routes/healtRoutes'
 import youtubeRoutes from './routes/youtubeRoutes'
@@ -17,41 +17,9 @@ const PORT = process.env.PORT || 3001
 app.set('case sensitive routing', true)
 app.set('strict routing', false) // Allow trailing slashes to be handled by middleware
 
-// Security middleware
 app.use(helmet())
 
-// CORS configuration
-app.use((req, res, next) => {
-  const allowedOriginsWithCredentials = [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
-  ]
-
-  const origin = req.headers.origin
-  const allowCredentials = origin
-    ? allowedOriginsWithCredentials.includes(origin)
-    : true
-
-  // TODO: CHECKT THIS AND FIX TESTS
-  const corsOptions = {
-    origin: (
-      requestOrigin: string | undefined,
-      callback: (err: Error | null, allow?: boolean) => void
-    ) => {
-      // Allow requests with no origin (like mobile apps or Postman)
-      if (!requestOrigin) {
-        return callback(null, true)
-      }
-
-      // Allow all origins but with different credentials settings
-      callback(null, true)
-    },
-    credentials: allowCredentials,
-    allowedHeaders: ['Content-Type'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  }
-
-  cors(corsOptions)(req, res, next)
-})
+app.use(corsConfig)
 
 // Rate limiting
 const limiter = rateLimit({

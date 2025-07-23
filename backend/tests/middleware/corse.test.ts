@@ -1,3 +1,4 @@
+import { describe, expect, test } from '@jest/globals'
 import { app, request } from '../setup'
 
 describe('CORS Preflight Requests', () => {
@@ -66,11 +67,11 @@ describe('CORS Preflight Requests', () => {
   test('should not support credentials', async () => {
     const response = await request(app)
       .get('/api/health')
+      // not allowed origin
       .set('Origin', 'http://localhost:6000')
       .expect(200)
 
-    // TODO: Fix this test
-    expect(response.headers['access-control-allow-credentials']).toBe('false')
+    expect(response.headers['access-control-allow-credentials']).toBeUndefined()
   })
 
   test('should handle preflight for different HTTP methods', async () => {
