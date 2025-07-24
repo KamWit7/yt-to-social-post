@@ -51,12 +51,19 @@ beforeEach(() => {
   jest.clearAllMocks()
 })
 
-// Suppress console.log during tests unless explicitly needed
 beforeAll(() => {
   const originalConsoleLog = console.log
+  const originalConsoleError = console.error
+
   console.log = (...args: any[]) => {
     if (process.env.VERBOSE_TESTS === 'true') {
       originalConsoleLog(...args)
+    }
+  }
+
+  console.error = (...args: any[]) => {
+    if (process.env.VERBOSE_TESTS === 'true') {
+      originalConsoleError(...args)
     }
   }
 })

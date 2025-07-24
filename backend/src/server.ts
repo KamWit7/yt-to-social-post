@@ -1,53 +1,36 @@
 import dotenv from 'dotenv'
 import express from 'express'
-import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
 import { corsConfig } from './cors/cors.config'
 import { errorHandler, notFoundHandler } from './middleware/errorHandler'
+import { limiter } from './middleware/limiter'
 import healthRoutes from './routes/healtRoutes'
 import youtubeRoutes from './routes/youtubeRoutes'
 
-// Load environment variables
 dotenv.config()
 
 const app = express()
 const PORT = process.env.PORT || 3001
 
-// Configure Express routing behavior
 app.set('case sensitive routing', true)
-app.set('strict routing', false) // Allow trailing slashes to be handled by middleware
+app.set('strict routing', false)
 
 app.use(helmet())
 
 app.use(corsConfig)
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: {
-    success: false,
-    error: 'Too many requests from this IP, please try again later.',
-  },
-})
-
 app.use('/api/', limiter)
 
-// Body parsing middleware
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
-// API routes
 app.use('/api', youtubeRoutes)
 app.use('/api', healthRoutes)
 
-// 404 handler
 app.use(notFoundHandler)
 
-// Error handling middleware
 app.use(errorHandler)
 
-// Start server only if not in test environment
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, async () => {
     console.log(`🚀 Server running on port ${PORT}`)
@@ -66,5 +49,4 @@ process.on('SIGINT', () => {
   process.exit(0)
 })
 
-// Export app for testing
 export { app }

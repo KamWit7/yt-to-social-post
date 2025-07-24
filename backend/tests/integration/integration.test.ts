@@ -162,8 +162,8 @@ describe('Integration Tests', () => {
       })
 
       // Health checks should succeed
-      expect(responses[0].body.success).toBe(true)
-      expect(responses[3].body.success).toBe(true)
+      expect(responses?.[0]?.body.success).toBe(true)
+      expect(responses?.[3]?.body.success).toBe(true)
     })
 
     test('should maintain consistent error format across endpoints', async () => {

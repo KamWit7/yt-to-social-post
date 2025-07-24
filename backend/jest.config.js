@@ -17,4 +17,5 @@ module.exports = {
   collectCoverage: false,
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
+  testSequencer: '<rootDir>/jest.sequencer.js',
 }
