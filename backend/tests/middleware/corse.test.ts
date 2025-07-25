@@ -45,7 +45,6 @@ describe('CORS Preflight Requests', () => {
       .set('Access-Control-Request-Headers', 'Content-Type')
       .expect(204)
 
-    console.warn('HEADERS', response.headers)
     expect(response.headers['access-control-allow-origin']).toContain(
       'http://localhost:3000'
     )

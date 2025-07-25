@@ -10,7 +10,6 @@ export const jsonContentTypeValidator = (
   if (methodsToValidate.includes(req.method)) {
     const contentType = req.header('Content-Type')
 
-    console.warn('CONTENT', contentType)
     if (!contentType || !contentType.includes('application/json')) {
       res.status(415).json({
         success: false,

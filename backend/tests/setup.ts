@@ -1,70 +1,55 @@
 import { afterAll, beforeAll, beforeEach, jest } from '@jest/globals'
+
 import request from 'supertest'
 
-const mockTranscriptData: TranscriptResult = {
-  transcript: 'Hello world This is a test',
-  title: 'Test Video',
-  description: 'Test Description',
+import { app } from '../src/server'
+import { createYoutubePuppeteerMock } from './mock/createYoutubePuppeteerMock'
+import { restoreConsole, setupConsoleControl } from './utils/logs'
+import { validateTestEnvironment } from './utils/validateTestEnvironment'
+
+const setupMocks = (): void => {
+  if (runIntegrationTests) {
+    console.log('🚀 Using real YoutubePuppeteer for integration tests')
+    return
+  }
+
+  console.log('🔧 Mocking YoutubePuppeteer for unit tests')
+
+  jest.mock(
+    '../src/puppetieer/youtube/YoutubePuppeteer',
+    createYoutubePuppeteerMock
+  )
 }
 
-// Mock Puppeteer for unit tests - must be done before importing app
-jest.mock('../src/puppetieer/youtube/YoutubePuppeteer', () => ({
-  YoutubePuppeteer: jest.fn().mockImplementation(() => ({
-    initializeBrowser: jest.fn().mockImplementation(() => {}),
-    navigateToVideo: jest.fn().mockImplementation(() => {}),
-    setupResponseInterception: jest.fn().mockImplementation(() => {}),
-    showTranscript: jest.fn().mockImplementation(() => {}),
-    waitForTranscriptResponse: jest
-      .fn()
-      .mockImplementation(() => mockTranscriptData.transcript),
-    closeBrowser: jest.fn().mockImplementation(async () => {}),
-    handleCookieConsent: jest.fn().mockImplementation(async () => {}),
-    expandDescriptionUntilTranscriptVisible: jest
-      .fn()
-      .mockImplementation(async () => true),
-    getTitle: jest
-      .fn()
-      .mockImplementation(async () => mockTranscriptData.title),
-    getDescription: jest
-      .fn()
-      .mockImplementation(async () => mockTranscriptData.description),
-    takeScreenshot: jest.fn().mockImplementation(async () => 'screenshot.png'),
-  })),
-}))
+const runIntegrationTests = process.env.INTEGRATION_TESTS === 'true'
 
-// Import app after mocking
-import { TranscriptResult } from '../src/puppetieer/youtube/types'
-import { app } from '../src/server'
+setupMocks()
 
 beforeAll(async () => {
-  // Setup przed wszystkimi testami
-  console.log('🧪 Starting test suite...')
+  try {
+    validateTestEnvironment()
+
+    console.log(
+      runIntegrationTests
+        ? '🚀 Starting integration test suite with real Puppeteer...'
+        : '🧪 Starting unit test suite with mocked services...'
+    )
+
+    setupConsoleControl()
+  } catch (error) {
+    console.error('❌ Failed to setup test environment:', error)
+    throw error
+  }
 })
 
-afterAll(async () => {
-  // Cleanup po wszystkich testach
-  console.log('✅ Test suite completed')
+afterAll(() => {
+  restoreConsole()
 })
 
 beforeEach(() => {
-  // Reset mocks przed każdym testem
-  jest.clearAllMocks()
-})
-
-beforeAll(() => {
-  const originalConsoleLog = console.log
-  const originalConsoleError = console.error
-
-  console.log = (...args: any[]) => {
-    if (process.env.VERBOSE_TESTS === 'true') {
-      originalConsoleLog(...args)
-    }
-  }
-
-  console.error = (...args: any[]) => {
-    if (process.env.VERBOSE_TESTS === 'true') {
-      originalConsoleError(...args)
-    }
+  // Reset mocks before each test (only if mocks are active)
+  if (!runIntegrationTests) {
+    jest.clearAllMocks()
   }
 })
 

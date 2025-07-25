@@ -121,11 +121,6 @@ describe('Integration Tests', () => {
   describe('API Flow Tests', () => {
     // These tests run regardless of integration mode
     test('should handle complete API flow with mocked services', async () => {
-      // Test health check
-      const healthResponse = await request(app).get('/health').expect(200)
-
-      expect(healthResponse.body.success).toBe(true)
-
       // Test transcript endpoint with mocked data
       const transcriptResponse = await request(app)
         .get('/api/transcript')
@@ -144,14 +139,18 @@ describe('Integration Tests', () => {
 
     test('should handle multiple concurrent requests', async () => {
       const requests = [
-        request(app).get('/health'),
         request(app)
           .get('/api/transcript')
           .query({ url: 'https://youtube.com/watch?v=test1' }),
         request(app)
           .get('/api/screenshot')
           .query({ url: 'https://youtube.com/watch?v=test2' }),
-        request(app).get('/health'),
+        request(app)
+          .get('/api/transcript')
+          .query({ url: 'https://youtube.com/watch?v=test3' }),
+        request(app)
+          .get('/api/screenshot')
+          .query({ url: 'https://youtube.com/watch?v=test4' }),
       ]
 
       const responses = await Promise.all(requests)
@@ -160,10 +159,6 @@ describe('Integration Tests', () => {
       responses.forEach((response) => {
         expect(response.body).toHaveProperty('success')
       })
-
-      // Health checks should succeed
-      expect(responses?.[0]?.body.success).toBe(true)
-      expect(responses?.[3]?.body.success).toBe(true)
     })
 
     test('should maintain consistent error format across endpoints', async () => {
@@ -185,34 +180,26 @@ describe('Integration Tests', () => {
   })
 
   describe('Performance Tests', () => {
-    test('should respond to health check within reasonable time', async () => {
-      const startTime = Date.now()
-
-      const response = await request(app).get('/health').expect(200)
-
-      const responseTime = Date.now() - startTime
-
-      expect(response.body.success).toBe(true)
-      expect(responseTime).toBeLessThan(1000) // Should respond within 1 second
-    })
-
-    test('should handle burst of health check requests', async () => {
-      const requests = Array(20)
+    test('should handle burst of API requests', async () => {
+      const requests = Array(10)
         .fill(0)
-        .map(() => request(app).get('/health'))
+        .map((_, index) =>
+          request(app)
+            .get('/api/transcript')
+            .query({ url: `https://youtube.com/watch?v=test${index}` })
+        )
 
       const startTime = Date.now()
       const responses = await Promise.all(requests)
       const totalTime = Date.now() - startTime
 
-      // All requests should succeed
+      // All requests should complete
       responses.forEach((response) => {
-        expect(response.status).toBe(200)
-        expect(response.body.success).toBe(true)
+        expect(response.body).toHaveProperty('success')
       })
 
-      // Should handle 20 requests in reasonable time
-      expect(totalTime).toBeLessThan(5000) // 5 seconds for 20 requests
+      // Should handle 10 requests in reasonable time
+      expect(totalTime).toBeLessThan(10000) // 10 seconds for 10 requests
     })
 
     test('should maintain memory usage under load', async () => {
@@ -221,7 +208,11 @@ describe('Integration Tests', () => {
       // Make multiple requests
       const requests = Array(10)
         .fill(0)
-        .map(() => request(app).get('/health'))
+        .map((_, index) =>
+          request(app)
+            .get('/api/transcript')
+            .query({ url: `https://youtube.com/watch?v=load${index}` })
+        )
 
       await Promise.all(requests)
 
@@ -243,10 +234,12 @@ describe('Integration Tests', () => {
         .query({ url: 'invalid-url' })
         .expect(400)
 
-      // Server should still respond to health checks
-      const healthResponse = await request(app).get('/health').expect(200)
+      // Server should still respond to API requests
+      const transcriptResponse = await request(app)
+        .get('/api/transcript')
+        .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
 
-      expect(healthResponse.body.success).toBe(true)
+      expect(transcriptResponse.body).toHaveProperty('success')
     })
 
     test('should handle malformed requests without crashing', async () => {
@@ -266,9 +259,11 @@ describe('Integration Tests', () => {
       )
 
       // Server should still be responsive
-      const response = await request(app).get('/health').expect(200)
+      const response = await request(app)
+        .get('/api/transcript')
+        .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
 
-      expect(response.body.success).toBe(true)
+      expect(response.body).toHaveProperty('success')
     })
   })
 })

@@ -10,13 +10,15 @@
     "build": "tsc",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
-    "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:integration": "INTEGRATION_TESTS=true jest --testNamePattern='Integration Tests'",
-    "test:verbose": "VERBOSE_TESTS=true jest --verbose",
+    "test:integration": "INTEGRATION_TESTS=true jest --testPathPattern=integration",
     "test:endpoints": "jest --testPathPattern=endpoints",
-    "test:middleware": "jest --testPathPattern=middleware"
+    "test:middleware": "jest --testPathPattern=middleware",
+    "test": "jest --testPathPattern=endpoints --testPathPattern=middleware",
+    "test:verbose": "VERBOSE_TESTS=true npm run test --verbose",
+    "test:load": "node scripts/transcript-tester.js",
+    "test:load:heavy": "node scripts/transcript-tester.js --runs 10"
   },
   "keywords": [
     "youtube",

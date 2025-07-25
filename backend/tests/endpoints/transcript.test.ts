@@ -103,7 +103,6 @@ describe('GET /api/transcript', () => {
         .query({ url })
         .expect(200)
       if (response.body.success === false) {
-        console.warn('YT', url, response.body)
       }
 
       expect(response.body.success).toBe(true)
