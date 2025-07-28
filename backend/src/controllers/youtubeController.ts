@@ -1,10 +1,10 @@
 import type { NextFunction, Request, Response } from 'express'
 import { Utils } from '../puppetieer/youtube/Utils'
-import { YouTubeService } from '../services/youtubeService'
+import { YouTubeTranscriptOrchestratorService } from '../services/youtube-transcript-orchestrator.service'
 import type { ApiResponse } from '../types/youtube'
 
 export class YouTubeController {
-  constructor(private youtubeService: YouTubeService) {}
+  private orchestratorService = new YouTubeTranscriptOrchestratorService()
 
   async getTranscript(
     req: Request,
@@ -16,7 +16,7 @@ export class YouTubeController {
     try {
       Utils.validateUrl(url)
 
-      const data = await this.youtubeService.getTranscript(url as string)
+      const data = await this.orchestratorService.getTranscript(url as string)
 
       const successResponse: ApiResponse<any> = {
         success: true,
@@ -39,7 +39,12 @@ export class YouTubeController {
     try {
       Utils.validateUrl(url)
 
-      const data = await this.youtubeService.takeScreenshot(url as string)
+      // Note: Screenshot functionality would need to be implemented separately
+      // as it was removed from the orchestrator service
+      const data = {
+        message:
+          'Screenshot functionality not available in current implementation',
+      }
 
       const successResponse: ApiResponse<typeof data> = {
         success: true,
