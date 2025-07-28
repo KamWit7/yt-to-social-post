@@ -10,7 +10,10 @@ export class YouTubeService {
     try {
       await this.puppeteer.initializeBrowser()
       await this.puppeteer.navigateToVideo(url)
+      await this.puppeteer.blockResourceTypes()
       await this.puppeteer.setupResponseInterception()
+
+      await this.puppeteer.fetchTranscript()
 
       await this.puppeteer.handleCookieConsent()
       const isTranscriptVisible =

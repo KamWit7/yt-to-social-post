@@ -128,6 +128,203 @@ export class YoutubePuppeteer {
     }
   }
 
+  async blockResourceTypes(): Promise<void> {
+    if (!this.page) {
+      ErrorHandler.handlePuppeteerError(
+        'Browser not initialized',
+        'block images loading'
+      )
+    }
+
+    const BANNED_RESOURCE_TYPES = new Set([
+      'image',
+      'stylesheet',
+      'font',
+      'media',
+    ])
+
+    try {
+      this.page.setRequestInterception(true)
+
+      this.page.on('request', (request) => {
+        if (BANNED_RESOURCE_TYPES.has(request.resourceType())) {
+          request.abort()
+        } else {
+          request.continue()
+        }
+      })
+    } catch (error) {
+      ErrorHandler.handlePuppeteerError(error, 'block images loading')
+    }
+  }
+
+  async fetchTranscript(): Promise<void> {
+    if (!this.page) {
+      ErrorHandler.handlePuppeteerError(
+        'Browser not initialized',
+        'fetch transcript'
+      )
+    }
+
+    const dataFromTranscript = await this.page.evaluate(async () => {
+      const response = await fetch(API_ENDPOINTS.TRANSCRIPT, {
+        headers: {
+          'Content-Type': 'application/json',
+          method: 'POST',
+          body: JSON.stringify({
+            context: {
+              client: {
+                hl: 'pl',
+                gl: 'PL',
+                remoteHost: '46.174.215.65',
+                deviceMake: '',
+                deviceModel: '',
+                visitorData:
+                  'Cgt2Y3QtY2hhMkdZdyjjkp7EBjInCgJQTBIhEh0SGwsMDg8QERITFBUWFxgZGhscHR4fICEiIyQlJiBd',
+                userAgent:
+                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36,gzip(gfe)',
+                clientName: 'WEB',
+                clientVersion: '2.20250725.01.00',
+                osName: 'Windows',
+                osVersion: '10.0',
+                originalUrl:
+                  'https://www.youtube.com/watch?v=KiFwzaXCypw&ab_channel=Theo-t3%E2%80%A4gg',
+                screenPixelDensity: 2,
+                platform: 'DESKTOP',
+                clientFormFactor: 'UNKNOWN_FORM_FACTOR',
+                configInfo: {
+                  appInstallData:
+                    'COOSnsQGEKSIgBMQvbauBRCUmYATELnZzhwQn6HPHBDyxM8cEMvRsQUQiIewBRDHyM8cELvZzhwQt-r-EhDFw88cEKv4zhwQzMDPHBDDioATEKOvzxwQ8MTPHBCvhs8cENuvrwUQgc_PHBD8zs8cEOq7zxwQndDPHBDa984cEI3MsAUQkdHPHBDFy88cEOHLzxwQzqzPHBCqnc8cEOLKzxwQzN-uBRDi1K4FEJT-sAUQpcvPHBC9mbAFEJ3QsAUQibDOHBCI468FEImXgBMQ8OLOHBC9irAFEIHNzhwQ0-GvBRD2us8cEKCnzxwQieiuBRD2q7AFENfBsQUQuOTOHBDJ968FEJOGzxwQmY2xBRDjvs8cEOevzxwQs5DPHBCHrM4cEJi5zxwQmZixBRCCj88cEMK-zxwQ3rzOHBDN0bEFEOmIzxwQ4M2xBRD7tM8cEIGzzhwQ9svPHBCmmrAFEPyyzhwQkYz_EhCLgoATELfKzxwQqanPHBD4nYATEKy0zxwqQENBTVNLaFVob0wyd0ROSGtCdmJxQU5rN2ktQUxrZDdtQzRPb0FJVERCZV83QnNzZ2d0TUF0Y3dHd1JNZEJ3PT0%3D',
+                  coldConfigData:
+                    'COOSnsQGEO66rQUQvbauBRDi1K4FEL2KsAUQndCwBRDP0rAFEOP4sAUQpL6xBRDXwbEFEJLUsQUQr6fOHBD8ss4cEIGzzhwQhcrOHBDJ4s4cELSCzxwQr4bPHBCqnc8cELCdzxwQ_Z7PHBCgp88cEKmpzxwQzqzPHBDdrM8cEPWuzxwQo6_PHBCstM8cEIq2zxwQ6rvPHBDjvs8cEMnCzxwQxcPPHBDwxM8cELfGzxwQ-MbPHBDHyM8cEI3JzxwQt8rPHBCly88cELPLzxwQtcvPHBDFy88cEOHLzxwQ9MvPHBD2y88cEIfMzxwQ_M7PHBCBz88cEJ3QzxwQkdHPHBD10c8cGjJBT2pGb3gwYzdLcDNfYURLQlZ3S2pZdkM4b09rZnBFRm9vSkNONmdXTDBMYzFMdTVZZyIyQU9qRm94MzNnOEpxN2pxQUszcUxhYS1hYzZMY0tUb1hhLXZSUWFBTFI0X25HeHNXVkEqcENBTVNUdzBtdU4yM0FxUVpseC1vS3JVRXZSWDlBNE9GbWhDeEFPVU0tUTd1QUJTckhkb1JGUzJac2JjZmhhUUZrWndGdUlBQ0JJcXJCcE11b2FnRWs0MEZuWHYyaUFiSVdyOUZ1QXVtOEFhUTN3WT0%3D',
+                  coldHashData:
+                    'CI2hnsQGEhQxMTcxMTkxMDczMjc1ODA2NTE0OBiImp7EBjIyQU9qRm94MGM3S3AzX2FES0JWd0tqWXZDOG9Pa2ZwRUZvb0pDTjZnV0wwTGMxTHU1WWc6MkFPakZveDMzZzhKcTdqcUFLM3FMYWEtYWM2TGNLVG9YYS12UlFhQUxSNF9uR3hzV1ZBQnBDQU1TVHcwbXVOMjNBcVFabHgtb0tyVUV2Ulg5QTRPRm1oQ3hBT1VNLVE3dUFCU3JIZG9SRlMyWnNiY2ZoYVFGa1p3RnVJQUNCSXFyQnBNdW9hZ0VrNDBGblh2MmlBYklXcjlGdUF1bThBYVEzd1k9',
+                  hotHashData:
+                    'CI2hnsQGEhM1MTg1NzQ0NjI4NDU0NDcwNDE1GIiansQGKJTk_BIopdD9Eiiekf4SKMjK_hIot-r-EijAg_8SKJGM_xIox4CAEyiLgoATKKSIgBMow4qAEyjDi4ATKNiLgBMoppCAEyjLkYATKImXgBMouJeAEyjGl4ATKJSZgBMo85qAEyjTnYATKPGdgBMo-J2AEyiOn4ATKNGggBMyMkFPakZveDBjN0twM19hREtCVndLall2QzhvT2tmcEVGb29KQ042Z1dMMExjMUx1NVlnOjJBT2pGb3gzM2c4SnE3anFBSzNxTGFhLWFjNkxjS1RvWGEtdlJRYUFMUjRfbkd4c1dWQUI0Q0FNU0lRMEtvdGY2RmE3QkJwTk44Z3E1QkJVWDNjX0NETWFuN1F2WXpRbWx3QVhXVnc9PQ%3D%3D',
+                },
+                screenDensityFloat: 1.6500000953674316,
+                userInterfaceTheme: 'USER_INTERFACE_THEME_DARK',
+                timeZone: 'Europe/Warsaw',
+                browserName: 'Chrome',
+                browserVersion: '138.0.0.0',
+                acceptHeader:
+                  'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+                deviceExperimentId:
+                  'ChxOelV6TWpFek9UazJNREV3TWpBME1UUTRNQT09EOOSnsQGGOOSnsQG',
+                rolloutToken: 'CPHVhdu0ye-FFRDGjvem2teNAxiQ5eixxt2OAw%3D%3D',
+                screenWidthPoints: 896,
+                screenHeightPoints: 750,
+                utcOffsetMinutes: 120,
+                connectionType: 'CONN_CELLULAR_4G',
+                memoryTotalKbytes: '8000000',
+                mainAppWebInfo: {
+                  graftUrl:
+                    'https://www.youtube.com/watch?v=KiFwzaXCypw&ab_channel=Theo-t3%E2%80%A4gg',
+                  pwaInstallabilityStatus:
+                    'PWA_INSTALLABILITY_STATUS_CAN_BE_INSTALLED',
+                  webDisplayMode: 'WEB_DISPLAY_MODE_BROWSER',
+                  isWebNativeShareAvailable: true,
+                },
+              },
+              user: {
+                lockedSafetyMode: false,
+              },
+              request: {
+                useSsl: true,
+                internalExperimentFlags: [],
+                consistencyTokenJars: [],
+              },
+              clickTracking: {
+                clickTrackingParams: 'CBcQ040EGAciEwjxqZeB4t-OAxXnYHoFHbkbClU=',
+              },
+              adSignalsInfo: {
+                params: [
+                  {
+                    key: 'dt',
+                    value: '1753712995646',
+                  },
+                  {
+                    key: 'flash',
+                    value: '0',
+                  },
+                  {
+                    key: 'frm',
+                    value: '0',
+                  },
+                  {
+                    key: 'u_tz',
+                    value: '120',
+                  },
+                  {
+                    key: 'u_his',
+                    value: '5',
+                  },
+                  {
+                    key: 'u_h',
+                    value: '960',
+                  },
+                  {
+                    key: 'u_w',
+                    value: '1707',
+                  },
+                  {
+                    key: 'u_ah',
+                    value: '912',
+                  },
+                  {
+                    key: 'u_aw',
+                    value: '1707',
+                  },
+                  {
+                    key: 'u_cd',
+                    value: '24',
+                  },
+                  {
+                    key: 'bc',
+                    value: '31',
+                  },
+                  {
+                    key: 'bih',
+                    value: '750',
+                  },
+                  {
+                    key: 'biw',
+                    value: '882',
+                  },
+                  {
+                    key: 'brdim',
+                    value: '3438,478,3438,478,1707,480,1711,916,896,750',
+                  },
+                  {
+                    key: 'vis',
+                    value: '1',
+                  },
+                  {
+                    key: 'wgl',
+                    value: 'true',
+                  },
+                  {
+                    key: 'ca_type',
+                    value: 'image',
+                  },
+                ],
+                bid: 'ANyPxKp2WChTCuCF7uB9lPKXkjpvFYpCB1BKq3xvgP80tNV3iADjpFmWuAvCI_anomQXxuIwd6GycEDGICcthwaEtW7CGKfmVA',
+              },
+            },
+            params:
+              'CgtLaUZ3emFYQ3lwdxISQ2dOaGMzSVNBbVZ1R2dBJTNEGAEqM2VuZ2FnZW1lbnQtcGFuZWwtc2VhcmNoYWJsZS10cmFuc2NyaXB0LXNlYXJjaC1wYW5lbDABOAFAAQ%3D%3D',
+            externalVideoId: 'KiFwzaXCypw',
+          }),
+        },
+      })
+      const data = await response.json()
+
+      return data
+    })
+
+    console.log('Data from transcript:', dataFromTranscript)
+  }
+
   async handleCookieConsent(): Promise<void> {
     if (!this.page) {
       ErrorHandler.handlePuppeteerError(
@@ -191,7 +388,7 @@ export class YoutubePuppeteer {
               retryCount + 1
             }/${maxRetries})`
           )
-          await this.wait(100)
+          await this.wait(200)
         }
       } catch (error) {
         retryCount++
