@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { HealthResponse, HealthService } from '../services/healtService'
+import { HealthResponse, HealthService } from '../services/healt.service'
 import { ApiResponse } from '../types/youtube'
 
 export class HealthController {

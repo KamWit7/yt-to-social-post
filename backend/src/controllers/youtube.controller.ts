@@ -1,10 +1,12 @@
 import type { NextFunction, Request, Response } from 'express'
+import { IYouTubeTranscriptOrchestrator } from '../interfaces/youtube-orchestrator.interface'
 import { Utils } from '../puppetieer/youtube/Utils'
-import { YouTubeTranscriptOrchestratorService } from '../services/youtube-transcript-orchestrator.service'
 import type { ApiResponse } from '../types/youtube'
 
 export class YouTubeController {
-  private orchestratorService = new YouTubeTranscriptOrchestratorService()
+  constructor(
+    private readonly orchestratorService: IYouTubeTranscriptOrchestrator
+  ) {}
 
   async getTranscript(
     req: Request,

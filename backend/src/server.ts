@@ -4,8 +4,8 @@ import helmet from 'helmet'
 import { corsConfig } from './cors/cors.config'
 import { errorHandler, notFoundHandler } from './middleware/errorHandler'
 import { limiter } from './middleware/limiter'
-import healthRoutes from './routes/healtRoutes'
-import youtubeRoutes from './routes/youtubeRoutes'
+import healthRoutes from './routes/healt.routes'
+import youtubeRoutes from './routes/youtube.routes'
 
 dotenv.config()
 

@@ -128,7 +128,7 @@ export class Utils {
     }
   }
 
-  static validateUrl(url?: unknown): void {
+  static validateUrl(url?: unknown): void | Error {
     if (url && typeof url === 'string' && isValidYouTubeUrl(url)) {
       return
     }

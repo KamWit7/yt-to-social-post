@@ -1,4 +1,6 @@
 import { YouTubeTranscriptOrchestratorService } from './src/services/youtube-transcript-orchestrator.service'
+import { YouTubeService } from './src/services/youtube.service'
+import { Logger } from './src/utils/logger'
 
 /**
  * Demo YouTube URL for testing
@@ -10,8 +12,23 @@ const DEMO_YOUTUBE_URL =
  * Main function to demonstrate YouTube transcript fetching
  */
 async function main(): Promise<void> {
-  const orchestratorService = new YouTubeTranscriptOrchestratorService()
-  await orchestratorService.testUrl(DEMO_YOUTUBE_URL)
+  // Dependency injection setup
+  const youtubeService = new YouTubeService()
+  const orchestratorService = new YouTubeTranscriptOrchestratorService(
+    youtubeService
+  )
+
+  // Test transcript fetching
+  Logger.info('🚀 YouTube Transcript Fetcher Demo\n')
+
+  const result = await orchestratorService.getTranscript(DEMO_YOUTUBE_URL)
+
+  if (result.success) {
+    Logger.success('✅ Successfully fetched transcript!')
+    Logger.info(`📝 Transcript length: ${result.transcript?.length} characters`)
+  } else {
+    Logger.error(`❌ Error: ${result.error}`)
+  }
 }
 
 // Run only if file is executed directly

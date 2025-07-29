@@ -1,14 +1,17 @@
+import { IYouTubeTranscriptOrchestrator } from '../interfaces/youtube-orchestrator.interface'
+import { IYouTubeService } from '../interfaces/youtube-service.interface'
 import { YouTubeParser } from '../parsers/youtube-parser'
 import { Utils } from '../puppetieer/youtube/Utils'
 import { TranscriptRequestBody } from '../types/youtube.types'
 import { Logger } from '../utils/logger'
-import { TranscriptService } from './transcript.service'
-import { YouTubeFetcher } from './youtube-fetcher.service'
 
 /**
  * Service class that coordinates all YouTube transcript operations
  */
-export class YouTubeTranscriptOrchestratorService {
+export class YouTubeTranscriptOrchestratorService
+  implements IYouTubeTranscriptOrchestrator
+{
+  constructor(private readonly youtubeService: IYouTubeService) {}
   /**
    * Main method for fetching YouTube transcript
    */
@@ -19,7 +22,7 @@ export class YouTubeTranscriptOrchestratorService {
   }> {
     try {
       // URL validation
-      if (!YouTubeFetcher.isValidYouTubeUrl(youtubeUrl)) {
+      if (!this.youtubeService.isValidYouTubeUrl(youtubeUrl)) {
         return {
           success: false,
           error: 'Invalid YouTube URL',
@@ -27,7 +30,7 @@ export class YouTubeTranscriptOrchestratorService {
       }
 
       // 1. Fetch YouTube page HTML
-      const html = await YouTubeFetcher.fetchPage(youtubeUrl)
+      const html = await this.youtubeService.fetchPage(youtubeUrl)
       if (!html) {
         return {
           success: false,
@@ -71,14 +74,14 @@ export class YouTubeTranscriptOrchestratorService {
       Logger.progress(`Fetching transcript for video: ${videoId}`)
 
       // 5. Fetch transcript from YouTube API
-      const transcriptData = await TranscriptService.fetchTranscript(
+      const transcriptData = await this.youtubeService.fetchTranscript(
         transcriptParams.apiUrl,
         requestBody,
         youtubeUrl
       )
 
       if (!transcriptData) {
-        TranscriptService.displayErrorReasons()
+        this.youtubeService.displayErrorReasons()
         return {
           success: false,
           error: 'Failed to fetch transcript from YouTube API',
@@ -104,7 +107,7 @@ export class YouTubeTranscriptOrchestratorService {
       }
 
       // 7. Display transcript info
-      TranscriptService.displayTranscriptInfo(transcriptData)
+      this.youtubeService.displayTranscriptInfo(transcriptData)
 
       Logger.info('--- Transcript fragment ---')
       Logger.info(transcript.substring(0, 1000) + '...')
@@ -121,24 +124,6 @@ export class YouTubeTranscriptOrchestratorService {
           error instanceof Error ? error.message : 'Unknown error'
         }`,
       }
-    }
-  }
-
-  /**
-   * Helper method for testing a single URL with logging
-   */
-  async testUrl(youtubeUrl: string): Promise<void> {
-    Logger.info('🚀 YouTube Transcript Fetcher Demo\n')
-
-    const result = await this.getTranscript(youtubeUrl)
-
-    if (result.success) {
-      Logger.success('✅ Successfully fetched transcript!')
-      Logger.info(
-        `📝 Transcript length: ${result.transcript?.length} characters`
-      )
-    } else {
-      Logger.error(`❌ Error: ${result.error}`)
     }
   }
 }

@@ -1,15 +1,65 @@
 import { TranscriptRequestBody } from '../types/youtube.types'
+import { IYouTubeService } from '../interfaces/youtube-service.interface'
 import { YOUTUBE_CONSTANTS } from '../utils/constants'
 import { ErrorHandler, Logger } from '../utils/logger'
 
 /**
- * Service for handling YouTube transcript API operations
+ * Unified service for all YouTube operations including page fetching and transcript retrieval
  */
-export class TranscriptService {
+export class YouTubeService implements IYouTubeService {
+  // ===== URL & PAGE OPERATIONS =====
+
+  /**
+   * Validates if URL is a valid YouTube link
+   */
+  isValidYouTubeUrl(url: string): boolean {
+    const youtubeUrlPattern =
+      /^https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/
+    return youtubeUrlPattern.test(url)
+  }
+
+  /**
+   * Extracts video ID from YouTube URL
+   */
+  extractVideoIdFromUrl(url: string): string | null {
+    const match = url.match(/[?&]v=([^&]+)/) || url.match(/youtu\.be\/([^?&]+)/)
+    return match ? match[1] || null : null
+  }
+
+  /**
+   * Fetches HTML content from YouTube page
+   */
+  async fetchPage(youtubeUrl: string): Promise<string | null> {
+    try {
+      Logger.progress(`Fetching YouTube page: ${youtubeUrl}`)
+
+      const response = await fetch(youtubeUrl, {
+        method: 'GET',
+      })
+
+      if (!response.ok) {
+        Logger.error(`HTTP Error: ${response.status} ${response.statusText}`)
+        return null
+      }
+
+      const html = await response.text()
+      Logger.success(
+        `Successfully fetched YouTube page (${html.length} characters)`
+      )
+
+      return html
+    } catch (error) {
+      ErrorHandler.handleFetchError(error, 'fetching YouTube page')
+      return null
+    }
+  }
+
+  // ===== TRANSCRIPT OPERATIONS =====
+
   /**
    * Fetches transcript from YouTube API
    */
-  static async fetchTranscript(
+  async fetchTranscript(
     apiUrl: string,
     body: TranscriptRequestBody,
     refererUrl: string
@@ -48,7 +98,7 @@ export class TranscriptService {
   /**
    * Builds HTTP headers for YouTube API request
    */
-  private static buildHeaders(refererUrl: string): Record<string, string> {
+  private buildHeaders(refererUrl: string): Record<string, string> {
     return {
       'content-type': 'application/json',
       'x-youtube-client-name': YOUTUBE_CONSTANTS.CLIENT.NAME,
@@ -56,17 +106,19 @@ export class TranscriptService {
     }
   }
 
+  // ===== TRANSCRIPT VALIDATION & DIAGNOSTICS =====
+
   /**
    * Checks if response contains transcript data
    */
-  static hasTranscriptData(transcriptData: any): boolean {
+  hasTranscriptData(transcriptData: any): boolean {
     return !!(transcriptData?.actions || transcriptData?.contents)
   }
 
   /**
    * Displays diagnostic information about transcript
    */
-  static displayTranscriptInfo(transcriptData: any): void {
+  displayTranscriptInfo(transcriptData: any): void {
     if (this.hasTranscriptData(transcriptData)) {
       Logger.result('Response contains transcript data')
     } else {
@@ -79,7 +131,7 @@ export class TranscriptService {
   /**
    * Displays possible error reasons for transcript fetch failure
    */
-  static displayErrorReasons(): void {
+  displayErrorReasons(): void {
     Logger.error('Failed to fetch transcript')
     Logger.info('💡 Possible reasons:')
     Logger.info('   - Missing permissions (requires cookies/authentication)')
