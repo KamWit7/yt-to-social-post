@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals'
 import { Response } from 'superagent'
-import { MiddlewareError } from '../../src/middleware/errorHandler'
+import { MiddlewareError } from '../../src/middleware/error-handler.middleware'
 import { YouTubeService } from '../../src/services/youtube.service'
 import { TranscriptResult } from '../../src/types/transcript.types'
-import { ApiResponse } from '../../src/types/youtube'
+import { ApiResponse } from '../../src/types/youtube.types'
+import { mockFetchTranscript } from '../mock/youtube-service.mock'
 import { app, request } from '../setup'
 
 type TranscriptApiResultType = Omit<Response, 'body'> & {
@@ -22,9 +23,8 @@ describe('GET /api/transcript', () => {
       description: 'Test Description',
     }
 
-    jest
-      .spyOn(YouTubeService.prototype, 'fetchTranscript')
-      .mockResolvedValue(mockTranscriptData)
+    // Override default mock for this specific test
+    mockFetchTranscript(mockTranscriptData.transcript)
 
     const response: TranscriptApiResultType = await request(app)
       .get('/api/transcript')
@@ -33,7 +33,43 @@ describe('GET /api/transcript', () => {
 
     expect(response.body).toMatchObject({
       success: true,
-      data: mockTranscriptData,
+      data: {
+        success: true,
+        transcript: mockTranscriptData.transcript,
+      },
+    })
+  })
+
+  test('should use default mocks without overriding', async () => {
+    // This test uses the default global mocks set up in beforeEach
+    const response: TranscriptApiResultType = await request(app)
+      .get('/api/transcript')
+      .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
+      .expect(200)
+
+    expect(response.body).toMatchObject({
+      success: true,
+      data: {
+        success: true,
+        transcript: 'mock-transcript',
+      },
+    })
+  })
+
+  test('should override global mocks for specific test', async () => {
+    mockFetchTranscript()
+
+    const response: TranscriptApiResultType = await request(app)
+      .get('/api/transcript')
+      .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
+      .expect(200)
+
+    expect(response.body).toMatchObject({
+      success: true,
+      data: {
+        success: true,
+        transcript: 'mock-transcript',
+      },
     })
   })
 
@@ -102,8 +138,6 @@ describe('GET /api/transcript', () => {
         .get('/api/transcript')
         .query({ url })
         .expect(200)
-      if (response.body.success === false) {
-      }
 
       expect(response.body.success).toBe(true)
     }
@@ -112,7 +146,7 @@ describe('GET /api/transcript', () => {
   test('should handle service errors gracefully', async () => {
     jest
       .spyOn(YouTubeService.prototype, 'fetchTranscript')
-      .mockRejectedValue(new Error('Puppeteer error'))
+      .mockResolvedValue(new Error('mock-error'))
 
     const response: TranscriptApiResultType = await request(app)
       .get('/api/transcript')
@@ -146,9 +180,7 @@ describe('GET /api/transcript', () => {
       description: 'Description',
     }
 
-    jest
-      .spyOn(YouTubeService.prototype, 'fetchTranscript')
-      .mockResolvedValue(mockEmptyTranscriptData)
+    mockFetchTranscript(mockEmptyTranscriptData.transcript)
 
     const response: TranscriptApiResultType = await request(app)
       .get('/api/transcript')
@@ -168,9 +200,7 @@ describe('GET /api/transcript', () => {
       description: 'Test',
     }
 
-    jest
-      .spyOn(YouTubeService.prototype, 'fetchTranscript')
-      .mockResolvedValue(mockTranscriptData)
+    mockFetchTranscript(mockTranscriptData.transcript)
 
     const response: TranscriptApiResultType = await request(app)
       .get('/api/transcript')
@@ -206,9 +236,7 @@ describe('GET /api/transcript', () => {
       description: 'Test',
     }
 
-    jest
-      .spyOn(YouTubeService.prototype, 'fetchTranscript')
-      .mockResolvedValue(mockTranscriptData)
+    mockFetchTranscript(mockTranscriptData.transcript)
 
     const requests = Array(10)
       .fill(0)

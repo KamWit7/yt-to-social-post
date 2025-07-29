@@ -98,6 +98,7 @@ export class Utils {
         transcript: ERROR_MESSAGES.TRANSCRIPT_NOT_FOUND,
         title: parsedTitle,
         description: parsedDescription,
+        success: false,
       }
     }
 
@@ -108,6 +109,7 @@ export class Utils {
         transcript: ERROR_MESSAGES.TRANSCRIPT_FORMAT_NOT_RECOGNIZED,
         title: parsedTitle,
         description: parsedDescription,
+        success: false,
       }
     }
 
@@ -121,6 +123,7 @@ export class Utils {
         transcript: ERROR_MESSAGES.TRANSCRIPT_PROCESSING_ERROR,
         title: parsedTitle,
         description: parsedDescription,
+        success: false,
       }
     }
 
@@ -128,6 +131,7 @@ export class Utils {
       transcript: extractedText,
       title: parsedTitle,
       description: parsedDescription,
+      success: true,
     }
   }
 

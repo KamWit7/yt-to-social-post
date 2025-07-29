@@ -8,7 +8,6 @@ tests/
 ├── endpoints/               # Testy endpointów API
 │   ├── health.test.ts       # Testy /health
 │   ├── transcript.test.ts   # Testy /api/transcript
-│   ├── screenshot.test.ts   # Testy /api/screenshot
 │   └── errors.test.ts       # Testy obsługi błędów
 ├── middleware/              # Testy middleware
 │   └── middleware.test.ts   # CORS, Security, Rate Limiting
@@ -44,7 +43,7 @@ npm run test:endpoints
 # Tylko testy middleware
 npm run test:middleware
 
-# Testy integracyjne (z prawdziwym Puppeteer)
+# Testy integracyjne (z prawdziwymi wywołaniami API)
 npm run test:integration
 ```
 
@@ -52,7 +51,7 @@ npm run test:integration
 
 ### Zmienne środowiskowe
 
-- `INTEGRATION_TESTS=true` - Włącza testy integracyjne z prawdziwym Puppeteer
+- `INTEGRATION_TESTS=true` - Włącza testy integracyjne z prawdziwymi wywołaniami API
 - `VERBOSE_TESTS=true` - Pokazuje wszystkie logi podczas testów
 
 ### Przykłady
@@ -89,7 +88,7 @@ Docelowe pokrycie kodu testami:
 ### Integration Tests
 
 - Testują przepływ całej aplikacji
-- Mogą używać prawdziwego Puppeteer
+- Mogą używać prawdziwych wywołań API YouTube
 - Wolniejsze (kilka sekund)
 
 ### API Tests
@@ -100,20 +99,19 @@ Docelowe pokrycie kodu testami:
 
 ## 🛠️ Mockowanie
 
-### Puppeteer
+### Serwisy zewnętrzne
 
-Domyślnie zmockowany w `setup.ts`:
+Domyślnie zmockowane w `setup.ts`:
 
-- Wszystkie metody Puppeteer są zastąpione mockami
+- Wszystkie wywołania do zewnętrznych API są zastąpione mockami
 - Zwraca przewidywalne dane testowe
-- Nie uruchamia prawdziwej przeglądarki
+- Nie wykonuje prawdziwych wywołań sieciowych
 
 ### YouTube Service
 
 Mockowany na poziomie klasy:
 
 - `getTranscript()` zwraca mock dane
-- `takeScreenshot()` zwraca mock bufor
 - Błędy są symulowane przez `mockRejectedValue()`
 
 ## ⚠️ Ważne uwagi
@@ -121,7 +119,7 @@ Mockowany na poziomie klasy:
 1. **Testy integracyjne są wolne** - używaj oszczędnie
 2. **Mockowanie jest włączone domyślnie** - dla szybkości testów
 3. **Rate limiting** może wpływać na testy - uwzględnione w testach
-4. **Puppeteer wymaga Chrome/Chromium** - dla testów integracyjnych
+4. **Testy integracyjne wymagają połączenia internetowego** - dla wywołań API YouTube
 
 ## 🐛 Debugowanie testów
 

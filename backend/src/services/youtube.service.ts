@@ -1,4 +1,5 @@
 import { IYouTubeService } from '../interfaces/youtube-service.interface'
+import { YouTubeTranscriptResponse } from '../types/transcript.types'
 import { TranscriptRequestBody } from '../types/youtube.types'
 import { YOUTUBE_CONSTANTS } from '../utils/constants'
 import { ErrorHandler, Logger } from '../utils/logger'
@@ -62,7 +63,7 @@ export class YouTubeService implements IYouTubeService {
     apiUrl: string,
     body: TranscriptRequestBody,
     refererUrl: string
-  ): Promise<any | null> {
+  ): Promise<YouTubeTranscriptResponse | null | undefined> {
     try {
       const fullUrl = `${YOUTUBE_CONSTANTS.API.BASE_URL}${apiUrl}?prettyPrint=false`
 
@@ -85,9 +86,10 @@ export class YouTubeService implements IYouTubeService {
       }
 
       const data = await response.json()
+
       Logger.success('Successfully fetched transcript data')
 
-      return data
+      return data 
     } catch (error) {
       ErrorHandler.handleFetchError(error, 'fetching transcript')
       return null

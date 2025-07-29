@@ -1,3 +1,4 @@
+import { YouTubeTranscriptResponse } from '../types/transcript.types'
 import { TranscriptRequestBody } from '../types/youtube.types'
 
 /**
@@ -14,7 +15,7 @@ export interface IYouTubeService {
     apiUrl: string,
     body: TranscriptRequestBody,
     refererUrl: string
-  ): Promise<any | null>
+  ): Promise<YouTubeTranscriptResponse | null | undefined>
 
   // Validation & diagnostics
   hasTranscriptData(transcriptData: any): boolean

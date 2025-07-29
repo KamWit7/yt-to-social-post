@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { HealthController } from '../controllers/healt.controller'
-import { jsonContentTypeValidator } from '../middleware/jsonContentTypeValidator'
+import { jsonContentTypeValidator } from '../middleware/json-content-type-validator.middleware'
 import { HealthService } from '../services/healt.service'
 
 const router = Router({ caseSensitive: true })

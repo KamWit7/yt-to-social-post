@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals'
 import { Response } from 'supertest'
-import { MiddlewareError } from '../../src/middleware/errorHandler'
 import { app, request } from '../setup'
+import { MiddlewareError } from '../../src/middleware/error-handler.middleware'
 
 type MiddlewareErrorReturnType = Omit<Response, 'body'> & {
   body: MiddlewareError

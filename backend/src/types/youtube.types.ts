@@ -78,6 +78,8 @@ export interface YouTubeExtractedData {
   context?: YouTubeContext
   transcriptParams?: TranscriptParams
   videoId?: string
+  title?: string
+  description?: string
 }
 
 /**

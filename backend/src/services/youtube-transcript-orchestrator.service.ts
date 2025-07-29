@@ -93,13 +93,11 @@ export class YouTubeTranscriptOrchestratorService
       // 6. Format transcript
       const formattedResponse = Utils.formatTranscriptResponse(
         transcriptData,
-        'title',
-        'description'
+        extractedData.title,
+        extractedData.description
       )
 
-      const transcript = formattedResponse.transcript
-
-      if (!transcript) {
+      if (!formattedResponse.transcript) {
         return {
           success: false,
           error: 'Failed to format transcript',
@@ -110,12 +108,9 @@ export class YouTubeTranscriptOrchestratorService
       this.youtubeService.displayTranscriptInfo(transcriptData)
 
       Logger.info('--- Transcript fragment ---')
-      Logger.info(transcript.substring(0, 1000) + '...')
+      Logger.info(formattedResponse.transcript.substring(0, 1000) + '...')
 
-      return {
-        success: true,
-        transcript,
-      }
+      return formattedResponse
     } catch (error) {
       Logger.error('Unexpected error in orchestrator:', error as Error)
       return {

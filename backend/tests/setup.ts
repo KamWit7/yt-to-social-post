@@ -3,27 +3,20 @@ import { afterAll, beforeAll, beforeEach, jest } from '@jest/globals'
 import request from 'supertest'
 
 import { app } from '../src/server'
-import { createYoutubePuppeteerMock } from './mock/createYoutubePuppeteerMock'
+
+import {
+  mockDisplayErrorReasons,
+  mockDisplayTranscriptInfo,
+  mockExtractVideoIdFromUrl,
+  mockFetchPage,
+  mockFetchTranscript,
+  mockHasTranscriptData,
+  mockIsValidYouTubeUrl,
+} from './mock/youtube-service.mock'
 import { restoreConsole, setupConsoleControl } from './utils/logs'
 import { validateTestEnvironment } from './utils/validateTestEnvironment'
 
-const setupMocks = (): void => {
-  if (runIntegrationTests) {
-    console.log('🚀 Using real YoutubePuppeteer for integration tests')
-    return
-  }
-
-  console.log('🔧 Mocking YoutubePuppeteer for unit tests')
-
-  jest.mock(
-    '../src/nonexistent/YoutubePuppeteer', // Mock path - file doesn't exist
-    createYoutubePuppeteerMock
-  )
-}
-
 const runIntegrationTests = process.env.INTEGRATION_TESTS === 'true'
-
-setupMocks()
 
 beforeAll(async () => {
   try {
@@ -31,7 +24,7 @@ beforeAll(async () => {
 
     console.log(
       runIntegrationTests
-        ? '🚀 Starting integration test suite with real Puppeteer...'
+        ? '🚀 Starting integration test suite with real API calls...'
         : '🧪 Starting unit test suite with mocked services...'
     )
 
@@ -47,10 +40,20 @@ afterAll(() => {
 })
 
 beforeEach(() => {
-  // Reset mocks before each test (only if mocks are active)
-  if (!runIntegrationTests) {
-    jest.clearAllMocks()
+  if (runIntegrationTests) {
+    console.log('🚀 Skipping mocks for integration tests')
+    return
   }
+
+  jest.clearAllMocks()
+
+  mockFetchPage('mock-video-id')
+  mockFetchTranscript('mock-transcript')
+  mockIsValidYouTubeUrl(true)
+  mockExtractVideoIdFromUrl('mock-video-id')
+  mockHasTranscriptData(true)
+  mockDisplayErrorReasons()
+  mockDisplayTranscriptInfo()
 })
 
 export { app, request }

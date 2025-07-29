@@ -15,8 +15,4 @@ router.get('/transcript', (req, res, next) =>
   youtubeController.getTranscript(req, res, next)
 )
 
-router.get('/screenshot', (req, res, next) =>
-  youtubeController.takeScreenshot(req, res, next)
-)
-
 export default router

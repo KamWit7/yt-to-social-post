@@ -1,14 +1,14 @@
 import { beforeAll, describe, expect, test } from '@jest/globals'
 import { app, request } from '../setup'
 
-// Integration tests - these can be run with INTEGRATION_TESTS=true to use real Puppeteer
+// Integration tests - these can be run with INTEGRATION_TESTS=true
 describe('Integration Tests', () => {
   const runIntegrationTests = process.env.INTEGRATION_TESTS === 'true'
 
   beforeAll(() => {
     if (!runIntegrationTests) {
       console.log(
-        '⚠️  Integration tests skipped. Set INTEGRATION_TESTS=true to run with real Puppeteer.'
+        '⚠️  Integration tests skipped. Set INTEGRATION_TESTS=true to run with real API calls.'
       )
     }
   })
@@ -42,31 +42,6 @@ describe('Integration Tests', () => {
         } else {
           // If the request fails, log the error for debugging
           console.log('Integration test failed:', response.body)
-          expect(response.status).toBeGreaterThanOrEqual(400)
-        }
-      },
-      30000
-    )
-
-    testIfIntegration(
-      'should take real screenshot from YouTube (slow)',
-      async () => {
-        const realYouTubeUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-
-        const response = await request(app)
-          .get('/api/screenshot')
-          .query({ url: realYouTubeUrl })
-          .timeout(30000)
-
-        if (response.status === 200) {
-          expect(response.body.success).toBe(true)
-          expect(response.body.data).toHaveProperty('path')
-          expect(response.body.data).toHaveProperty('buffer')
-
-          // Buffer should be present and non-empty
-          expect(response.body.data.buffer).toBeTruthy()
-        } else {
-          console.log('Integration screenshot test failed:', response.body)
           expect(response.status).toBeGreaterThanOrEqual(400)
         }
       },
@@ -129,12 +104,7 @@ describe('Integration Tests', () => {
       // Should either succeed (with mocked data) or fail with validation error
       expect(transcriptResponse.body).toHaveProperty('success')
 
-      // Test screenshot endpoint
-      const screenshotResponse = await request(app)
-        .get('/api/screenshot')
-        .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
-
-      expect(screenshotResponse.body).toHaveProperty('success')
+      // Screenshot endpoint has been removed
     })
 
     test('should handle multiple concurrent requests', async () => {
@@ -143,13 +113,13 @@ describe('Integration Tests', () => {
           .get('/api/transcript')
           .query({ url: 'https://youtube.com/watch?v=test1' }),
         request(app)
-          .get('/api/screenshot')
+          .get('/api/transcript')
           .query({ url: 'https://youtube.com/watch?v=test2' }),
         request(app)
           .get('/api/transcript')
           .query({ url: 'https://youtube.com/watch?v=test3' }),
         request(app)
-          .get('/api/screenshot')
+          .get('/api/transcript')
           .query({ url: 'https://youtube.com/watch?v=test4' }),
       ]
 
@@ -164,7 +134,6 @@ describe('Integration Tests', () => {
     test('should maintain consistent error format across endpoints', async () => {
       const errorRequests = [
         request(app).get('/api/transcript'), // missing URL
-        request(app).get('/api/screenshot'), // missing URL
         request(app).get('/api/nonexistent'), // 404
       ]
 
@@ -247,7 +216,6 @@ describe('Integration Tests', () => {
       const malformedRequests = [
         request(app).get('/api/transcript').query({ url: null }),
         request(app).get('/api/transcript').query({ url: undefined }),
-        request(app).get('/api/screenshot').query({ noturl: 'test' }),
         request(app).post('/api/transcript').send('invalid-data'),
       ]
 

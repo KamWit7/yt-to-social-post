@@ -24,11 +24,14 @@ export const YOUTUBE_CONSTANTS = {
    * Regular expressions for parsing YouTube HTML
    */
   REGEX: {
-    YT_INITIAL_DATA: /var ytInitialData = ({.+?});/,
     YTCFG: /ytcfg\.set\(({.+?})\)/,
     VIDEO_ID: /"videoId":"([^"]+)"|watch\?v=([^&"]+)/,
     TRANSCRIPT_ENDPOINT: /"getTranscriptEndpoint":\s*{\s*"params":\s*"([^"]+)"/,
     API_URL: /"apiUrl"\s*:\s*"(\/youtubei\/v1\/get_transcript)"/,
+    TITLE:
+      /<title[^>]*>([^<]+)<\/title>|<meta[^>]*property="og:title"[^>]*content="([^"]+)"/,
+    DESCRIPTION:
+      /<meta[^>]*name="description"[^>]*content="([^"]+)"|<meta[^>]*property="og:description"[^>]*content="([^"]+)"/,
   },
 
   /**

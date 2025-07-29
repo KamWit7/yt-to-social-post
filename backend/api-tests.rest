@@ -9,8 +9,7 @@
 GET {{baseUrl}}/api/health
 Content-Type: application/json
 
-### Take Screenshot
-GET {{baseUrl}}/api/screenshot?url={{youtubeUrlWithoutTranscript}}
+
 Content-Type: application/json
 
 ###

@@ -2,11 +2,11 @@
  * Types for YouTube transcript functionality
  */
 
-export interface TranscriptResult {
-  transcript: string
-  title: string
-  description: string
-}
+import { IYouTubeTranscriptOrchestrator } from '../interfaces/youtube-orchestrator.interface'
+
+export type TranscriptResult = Awaited<
+  ReturnType<IYouTubeTranscriptOrchestrator['getTranscript']>
+>
 
 // YouTube Transcript API Types
 export interface TranscriptRun {

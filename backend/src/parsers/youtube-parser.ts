@@ -15,37 +15,25 @@ export class YouTubeParser {
    */
   static extractDataFromHtml(html: string): YouTubeExtractedData {
     try {
-      const ytInitialData = this.extractYtInitialData(html)
       const ytcfg = this.extractYtcfg(html)
       const videoId = this.extractVideoId(html)
       const transcriptParams = this.extractTranscriptParams(html)
       const context = this.buildYouTubeContext(ytcfg, videoId)
+      const title = this.extractTitle(html)
+      const description = this.extractDescription(html)
 
       const result: YouTubeExtractedData = {}
+
       if (context) result.context = context
       if (transcriptParams) result.transcriptParams = transcriptParams
       if (videoId) result.videoId = videoId
+      if (title) result.title = title
+      if (description) result.description = description
       return result
     } catch (error) {
       ErrorHandler.handleParsingError(error, 'extracting data from HTML')
       return {}
     }
-  }
-
-  /**
-   * Extracts ytInitialData from HTML
-   */
-  private static extractYtInitialData(html: string): any {
-    const match = html.match(YOUTUBE_CONSTANTS.REGEX.YT_INITIAL_DATA)
-    if (match) {
-      try {
-        return JSON.parse(match?.[1] ?? '')
-      } catch (error) {
-        Logger.warning('Failed to parse ytInitialData')
-        return null
-      }
-    }
-    return null
   }
 
   /**
@@ -91,6 +79,33 @@ export class YouTubeParser {
     }
 
     return undefined
+  }
+
+  /**
+   * Extracts video title from HTML
+   */
+  private static extractTitle(html: string): string {
+    const match = html.match(YOUTUBE_CONSTANTS.REGEX.TITLE)
+    if (match) {
+      // Try to get title from og:title first, then fallback to <title> tag
+      const title = match[2] || match[1] || ''
+      // Clean up the title by removing " - YouTube" suffix if present
+      return title.replace(/\s*-\s*YouTube\s*$/, '').trim()
+    }
+    return ''
+  }
+
+  /**
+   * Extracts video description from HTML
+   */
+  private static extractDescription(html: string): string {
+    const match = html.match(YOUTUBE_CONSTANTS.REGEX.DESCRIPTION)
+    if (match) {
+      // Try to get description from og:description first, then fallback to meta description
+      const description = match[2] || match[1] || ''
+      return description.trim()
+    }
+    return ''
   }
 
   /**
