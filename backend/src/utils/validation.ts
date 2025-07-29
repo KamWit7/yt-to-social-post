@@ -59,3 +59,21 @@ export function isValidYouTubeUrl(url: string): boolean {
     return false
   }
 }
+
+export function extractVideoIdFromUrl(url: string): string | null {
+  try {
+    const urlObject = new URL(url)
+    
+    // For youtu.be URLs
+    if (urlObject.hostname === 'youtu.be') {
+      const videoId = urlObject.pathname.split('/')[1]
+      return videoId && isValidYouTubeId(videoId) ? videoId : null
+    }
+    
+    // For youtube.com URLs
+    const videoId = urlObject.searchParams.get('v')
+    return videoId && isValidYouTubeId(videoId) ? videoId : null
+  } catch (_) {
+    return null
+  }
+}

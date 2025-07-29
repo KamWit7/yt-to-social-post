@@ -1,8 +1,8 @@
 import { IYouTubeTranscriptOrchestrator } from '../interfaces/youtube-orchestrator.interface'
 import { IYouTubeService } from '../interfaces/youtube-service.interface'
 import { YouTubeParser } from '../parsers/youtube-parser'
-import { Utils } from '../puppetieer/youtube/Utils'
 import { TranscriptRequestBody } from '../types/youtube.types'
+import { Utils } from '../utils/format-transcript'
 import { Logger } from '../utils/logger'
 
 /**

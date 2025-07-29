@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { HealthController } from '../controllers/healt.controllers'
+import { HealthController } from '../controllers/healt.controller'
 import { jsonContentTypeValidator } from '../middleware/jsonContentTypeValidator'
 import { HealthService } from '../services/healt.service'
 

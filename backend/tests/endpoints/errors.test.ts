@@ -33,17 +33,10 @@ describe('Error Handling', () => {
       expect(response.body.success).toBe(false)
     })
 
-    test('should return 404 for DELETE method on screenshot endpoint', async () => {
-      const response = await request(app).delete('/api/screenshot').expect(404)
-
-      expect(response.body.success).toBe(false)
-    })
-
     test('should return 404 for non-existent API paths', async () => {
       const nonExistentPaths = [
         '/api/invalid',
         '/api/transcript/invalid',
-        '/api/screenshot/invalid',
         '/api/v1/transcript',
         '/api/videos',
         '/api/download',
@@ -73,7 +66,6 @@ describe('Error Handling', () => {
       const caseSensitivePaths = [
         '/API/transcript',
         '/api/TRANSCRIPT',
-        '/api/Screenshot',
         '/Api/transcript',
       ]
 
@@ -129,6 +121,4 @@ describe('Error Handling', () => {
       expect(response.body.success).toBe(false)
     })
   })
-
-
 })

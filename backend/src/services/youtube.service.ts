@@ -1,7 +1,8 @@
-import { TranscriptRequestBody } from '../types/youtube.types'
 import { IYouTubeService } from '../interfaces/youtube-service.interface'
+import { TranscriptRequestBody } from '../types/youtube.types'
 import { YOUTUBE_CONSTANTS } from '../utils/constants'
 import { ErrorHandler, Logger } from '../utils/logger'
+import { extractVideoIdFromUrl, isValidYouTubeUrl } from '../utils/validation'
 
 /**
  * Unified service for all YouTube operations including page fetching and transcript retrieval
@@ -13,17 +14,14 @@ export class YouTubeService implements IYouTubeService {
    * Validates if URL is a valid YouTube link
    */
   isValidYouTubeUrl(url: string): boolean {
-    const youtubeUrlPattern =
-      /^https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/
-    return youtubeUrlPattern.test(url)
+    return isValidYouTubeUrl(url)
   }
 
   /**
    * Extracts video ID from YouTube URL
    */
   extractVideoIdFromUrl(url: string): string | null {
-    const match = url.match(/[?&]v=([^&]+)/) || url.match(/youtu\.be\/([^?&]+)/)
-    return match ? match[1] || null : null
+    return extractVideoIdFromUrl(url)
   }
 
   /**
@@ -43,6 +41,7 @@ export class YouTubeService implements IYouTubeService {
       }
 
       const html = await response.text()
+
       Logger.success(
         `Successfully fetched YouTube page (${html.length} characters)`
       )

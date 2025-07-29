@@ -16,7 +16,7 @@ const setupMocks = (): void => {
   console.log('🔧 Mocking YoutubePuppeteer for unit tests')
 
   jest.mock(
-    '../src/puppetieer/youtube/YoutubePuppeteer',
+    '../src/nonexistent/YoutubePuppeteer', // Mock path - file doesn't exist
     createYoutubePuppeteerMock
   )
 }

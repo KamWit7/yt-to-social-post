@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals'
 import { Response } from 'superagent'
 import { MiddlewareError } from '../../src/middleware/errorHandler'
-import { TranscriptResult } from '../../src/puppetieer/youtube/types'
-import { YouTubeService } from '../../src/services/youtubeService'
+import { YouTubeService } from '../../src/services/youtube.service'
+import { TranscriptResult } from '../../src/types/transcript.types'
 import { ApiResponse } from '../../src/types/youtube'
 import { app, request } from '../setup'
 
@@ -23,7 +23,7 @@ describe('GET /api/transcript', () => {
     }
 
     jest
-      .spyOn(YouTubeService.prototype, 'getTranscript')
+      .spyOn(YouTubeService.prototype, 'fetchTranscript')
       .mockResolvedValue(mockTranscriptData)
 
     const response: TranscriptApiResultType = await request(app)
@@ -111,7 +111,7 @@ describe('GET /api/transcript', () => {
 
   test('should handle service errors gracefully', async () => {
     jest
-      .spyOn(YouTubeService.prototype, 'getTranscript')
+      .spyOn(YouTubeService.prototype, 'fetchTranscript')
       .mockRejectedValue(new Error('Puppeteer error'))
 
     const response: TranscriptApiResultType = await request(app)
@@ -127,7 +127,7 @@ describe('GET /api/transcript', () => {
 
   test('should handle timeout errors', async () => {
     jest
-      .spyOn(YouTubeService.prototype, 'getTranscript')
+      .spyOn(YouTubeService.prototype, 'fetchTranscript')
       .mockRejectedValue(new Error('timeout'))
 
     const response: TranscriptApiResultType = await request(app)
@@ -147,7 +147,7 @@ describe('GET /api/transcript', () => {
     }
 
     jest
-      .spyOn(YouTubeService.prototype, 'getTranscript')
+      .spyOn(YouTubeService.prototype, 'fetchTranscript')
       .mockResolvedValue(mockEmptyTranscriptData)
 
     const response: TranscriptApiResultType = await request(app)
@@ -169,7 +169,7 @@ describe('GET /api/transcript', () => {
     }
 
     jest
-      .spyOn(YouTubeService.prototype, 'getTranscript')
+      .spyOn(YouTubeService.prototype, 'fetchTranscript')
       .mockResolvedValue(mockTranscriptData)
 
     const response: TranscriptApiResultType = await request(app)
@@ -207,7 +207,7 @@ describe('GET /api/transcript', () => {
     }
 
     jest
-      .spyOn(YouTubeService.prototype, 'getTranscript')
+      .spyOn(YouTubeService.prototype, 'fetchTranscript')
       .mockResolvedValue(mockTranscriptData)
 
     const requests = Array(10)

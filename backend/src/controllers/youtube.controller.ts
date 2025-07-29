@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express'
 import { IYouTubeTranscriptOrchestrator } from '../interfaces/youtube-orchestrator.interface'
-import { Utils } from '../puppetieer/youtube/Utils'
 import type { ApiResponse } from '../types/youtube'
+import { Utils } from '../utils/format-transcript'
 
 export class YouTubeController {
   constructor(

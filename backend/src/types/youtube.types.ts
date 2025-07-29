@@ -7,28 +7,6 @@ export interface TranscriptParams {
 }
 
 /**
- * YouTube page response structure containing transcript data
- */
-export interface YouTubeApiResponse {
-  engagementPanelSectionListRenderer?: {
-    content?: {
-      continuationItemRenderer?: {
-        continuationEndpoint: {
-          commandMetadata: {
-            webCommandMetadata: {
-              apiUrl: string
-            }
-          }
-          getTranscriptEndpoint: {
-            params: string
-          }
-        }
-      }
-    }
-  }[]
-}
-
-/**
  * YouTube client context for API requests
  */
 export interface YouTubeContext {
@@ -100,4 +78,14 @@ export interface YouTubeExtractedData {
   context?: YouTubeContext
   transcriptParams?: TranscriptParams
   videoId?: string
+}
+
+/**
+ * Generic API response wrapper
+ */
+export interface ApiResponse<T> {
+  success: boolean
+  data?: T
+  error?: string
+  details?: string
 }

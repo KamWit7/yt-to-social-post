@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals'
 import { Response } from 'superagent'
-import { HealthResponse } from '../../src/services/healtService'
-import { ApiResponse } from '../../src/types/youtube'
+import { HealthResponse } from '../../src/services/healt.service'
+import { ApiResponse } from '../../src/types/youtube.types'
 import { app, request } from '../setup'
 
 type HealthResponseApiType = Omit<Response, 'body'> & {

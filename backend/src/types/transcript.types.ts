@@ -1,29 +1,11 @@
-import type { LaunchOptions as PuppeteerLaunchOptions } from 'puppeteer'
-
-export interface BrowserConfig {
-  headless: boolean
-  devtools: boolean
-  viewport: { width: number; height: number }
-  timeouts: {
-    navigation: number
-    selector: number
-    transcript: number
-  }
-}
-
-export interface TranscriptData {
-  transcript: any
-}
+/**
+ * Types for YouTube transcript functionality
+ */
 
 export interface TranscriptResult {
   transcript: string
   title: string
   description: string
-}
-
-export interface ResponseInterceptionData {
-  transcriptData: any
-  transcriptReceived: boolean
 }
 
 // YouTube Transcript API Types
@@ -71,5 +53,3 @@ export interface YouTubeTranscriptResponse {
     }
   }[]
 }
-
-export { PuppeteerLaunchOptions }

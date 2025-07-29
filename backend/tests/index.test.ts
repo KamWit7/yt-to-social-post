@@ -8,7 +8,6 @@ import './setup'
 // Import all test suites
 import './endpoints/errors.test'
 import './endpoints/health.test'
-import './endpoints/screenshot.test'
 import './endpoints/transcript.test'
 import './integration/integration.test'
 import './middleware/bodyParser.test'

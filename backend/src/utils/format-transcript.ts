@@ -1,6 +1,9 @@
-import { isValidYouTubeUrl } from '../../utils/validation'
+import {
+  TranscriptResult,
+  YouTubeTranscriptResponse,
+} from '../types/transcript.types'
 import { ERROR_MESSAGES, ErrorHandler } from './errors'
-import { TranscriptResult, YouTubeTranscriptResponse } from './types'
+import { isValidYouTubeUrl } from './validation'
 
 interface TranscriptFormatOptions {
   segmentSeparator?: string

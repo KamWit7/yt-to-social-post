@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express'
-import type { YouTubeError } from '../puppetieer/youtube/errors'
+import type { YouTubeError } from '../utils/errors'
 
 export type MiddlewareError = {
   success: false

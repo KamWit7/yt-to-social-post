@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals'
-import { TranscriptResult } from '../../src/puppetieer/youtube/types'
+import { TranscriptResult } from '../../src/types/transcript.types'
 
 // Mock data factory
 const createMockTranscriptData = (): TranscriptResult => ({
