@@ -34,7 +34,6 @@ describe('GET /api/transcript', () => {
       .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
       .expect(200)
 
-    console.warn('BODY', response)
 
     expect(response.body).toMatchObject(mockTranscriptData)
   })
