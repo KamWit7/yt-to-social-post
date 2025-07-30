@@ -27,7 +27,6 @@ describe('Integration Tests', () => {
           .query({ url: realYouTubeUrl })
           .timeout(30000) // 30 seconds timeout
 
-        console.warn('BODY', response.body)
         if (response.status === 200) {
           expect(response.body.success).toBe(true)
           expect(response.body).toHaveProperty('transcript')
