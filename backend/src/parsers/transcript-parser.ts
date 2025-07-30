@@ -2,8 +2,8 @@ import {
   TranscriptResult,
   YouTubeTranscriptResponse,
 } from '../types/transcript.types'
-import { ERROR_MESSAGES, ErrorHandler } from './errors'
-import { isValidYouTubeUrl } from './validation'
+import { ERROR_MESSAGES, ErrorHandler } from '../utils/errors'
+import { isValidYouTubeUrl } from '../utils/validation'
 
 interface TranscriptFormatOptions {
   segmentSeparator?: string
@@ -11,7 +11,7 @@ interface TranscriptFormatOptions {
   addTimestamps?: boolean
 }
 
-export class Utils {
+export class TranscriptParser {
   static formatSegmentText(
     text: string,
     options: TranscriptFormatOptions = {}
@@ -47,12 +47,12 @@ export class Utils {
         const rawText = segment.transcriptSegmentRenderer.snippet.runs
           .map((run) => run.text)
           .join('')
-        segmentText = Utils.formatSegmentText(rawText, options)
+        segmentText = TranscriptParser.formatSegmentText(rawText, options)
       } else if (segment.transcriptSectionHeaderRenderer) {
         const rawText =
           segment.transcriptSectionHeaderRenderer.sectionHeader
             .sectionHeaderViewModel.headline.content
-        segmentText = Utils.formatSegmentText(rawText, options)
+        segmentText = TranscriptParser.formatSegmentText(rawText, options)
       }
 
       return segmentText
@@ -102,7 +102,7 @@ export class Utils {
       }
     }
 
-    const isValid = Utils.isValidTranscriptResponse(transcriptData)
+    const isValid = TranscriptParser.isValidTranscriptResponse(transcriptData)
 
     if (!isValid) {
       return {
@@ -113,9 +113,9 @@ export class Utils {
       }
     }
 
-    const extractedText = Utils.extractTranscriptText(
+    const extractedText = TranscriptParser.extractTranscriptText(
       transcriptData,
-      Utils.getTranscriptFormatOptions()
+      TranscriptParser.getTranscriptFormatOptions()
     )
 
     if (!extractedText) {

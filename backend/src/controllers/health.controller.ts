@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express'
-import { HealthResponse, HealthService } from '../services/healt.service'
+import { HealthResponse, HealthService } from '../services/health.service'
 import { ApiResponse } from '../types/youtube.types'
 
 export class HealthController {
   constructor(private healthService: HealthService) {}
 
-  getHealth(_req: Request, res: Response, next: NextFunction) {
+  getHealth(_req: Request, res: Response, next: NextFunction): void {
     try {
       const health = this.healthService.healthCheck()
 
@@ -20,7 +20,7 @@ export class HealthController {
     }
   }
 
-  postHealthCheck(req: Request, res: Response, next: NextFunction) {
+  postHealthCheck(req: Request, res: Response, next: NextFunction): void {
     try {
       const health = this.healthService.postHealthCheck(req.body)
 

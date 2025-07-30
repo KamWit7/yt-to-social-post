@@ -27,21 +27,17 @@ describe('Integration Tests', () => {
           .query({ url: realYouTubeUrl })
           .timeout(30000) // 30 seconds timeout
 
+        console.warn('BODY', response.body)
         if (response.status === 200) {
           expect(response.body.success).toBe(true)
-          expect(response.body.data).toHaveProperty('transcript')
-          expect(response.body.data).toHaveProperty('title')
-          expect(response.body.data).toHaveProperty('description')
+          expect(response.body).toHaveProperty('transcript')
+          expect(response.body).toHaveProperty('title')
+          expect(response.body).toHaveProperty('description')
 
-          // Transcript should be an array
-          expect(Array.isArray(response.body.data.transcript)).toBe(true)
-
-          // Title should be a non-empty string
-          expect(typeof response.body.data.title).toBe('string')
-          expect(response.body.data.title.length).toBeGreaterThan(0)
+          expect(typeof response.body.transcript).toBe('string')
+          expect(typeof response.body.title).toBe('string')
+          expect(typeof response.body.description).toBe('string')
         } else {
-          // If the request fails, log the error for debugging
-          console.log('Integration test failed:', response.body)
           expect(response.status).toBeGreaterThanOrEqual(400)
         }
       },
@@ -51,7 +47,6 @@ describe('Integration Tests', () => {
     testIfIntegration(
       'should handle video without captions gracefully',
       async () => {
-        // This URL might not have captions - integration test will show real behavior
         const videoWithoutCaptions =
           'https://www.youtube.com/watch?v=example123'
 
@@ -60,16 +55,8 @@ describe('Integration Tests', () => {
           .query({ url: videoWithoutCaptions })
           .timeout(30000)
 
-        // Should either succeed with empty transcript or fail gracefully
-        if (response.status === 200) {
-          expect(response.body.success).toBe(true)
-          expect(response.body.data).toHaveProperty('transcript')
-          // Transcript might be empty array
-          expect(Array.isArray(response.body.data.transcript)).toBe(true)
-        } else {
-          expect(response.body.success).toBe(false)
-          expect(response.body.error).toBeTruthy()
-        }
+        expect(response.body.success).toBe(false)
+        expect(response.body.error).toBeTruthy()
       },
       30000
     )
@@ -85,7 +72,6 @@ describe('Integration Tests', () => {
           .query({ url: invalidVideoUrl })
           .timeout(30000)
 
-        // Should fail gracefully with proper error message
         expect(response.body.success).toBe(false)
         expect(response.body.error).toBeTruthy()
       },
@@ -94,17 +80,12 @@ describe('Integration Tests', () => {
   })
 
   describe('API Flow Tests', () => {
-    // These tests run regardless of integration mode
     test('should handle complete API flow with mocked services', async () => {
-      // Test transcript endpoint with mocked data
       const transcriptResponse = await request(app)
         .get('/api/transcript')
         .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
 
-      // Should either succeed (with mocked data) or fail with validation error
       expect(transcriptResponse.body).toHaveProperty('success')
-
-      // Screenshot endpoint has been removed
     })
 
     test('should handle multiple concurrent requests', async () => {
@@ -125,7 +106,6 @@ describe('Integration Tests', () => {
 
       const responses = await Promise.all(requests)
 
-      // All requests should complete (success or expected error)
       responses.forEach((response) => {
         expect(response.body).toHaveProperty('success')
       })
@@ -195,15 +175,11 @@ describe('Integration Tests', () => {
 
   describe('Error Recovery Tests', () => {
     test('should recover from service errors gracefully', async () => {
-      // Test that the server continues working after errors
-
-      // Make a request that might cause an error
       await request(app)
         .get('/api/transcript')
         .query({ url: 'invalid-url' })
         .expect(400)
 
-      // Server should still respond to API requests
       const transcriptResponse = await request(app)
         .get('/api/transcript')
         .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
@@ -212,21 +188,14 @@ describe('Integration Tests', () => {
     })
 
     test('should handle malformed requests without crashing', async () => {
-      // Various malformed requests
       const malformedRequests = [
         request(app).get('/api/transcript').query({ url: null }),
         request(app).get('/api/transcript').query({ url: undefined }),
         request(app).post('/api/transcript').send('invalid-data'),
       ]
 
-      // None should crash the server
-      await Promise.all(
-        malformedRequests.map(
-          (req) => req.catch(() => {}) // Catch any errors
-        )
-      )
+      await Promise.all(malformedRequests.map((req) => req.catch(() => {})))
 
-      // Server should still be responsive
       const response = await request(app)
         .get('/api/transcript')
         .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })

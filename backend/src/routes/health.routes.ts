@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { HealthController } from '../controllers/healt.controller'
-import { jsonContentTypeValidator } from '../middleware/json-content-type-validator.middleware'
-import { HealthService } from '../services/healt.service'
+import { HealthController } from '../controllers/health.controller'
+import { jsonContentTypeValidatorMiddleware } from '../middleware/json-content-type-validator.middleware'
+import { HealthService } from '../services/health.service'
 
 const router = Router({ caseSensitive: true })
 
@@ -12,7 +12,7 @@ router.get('/health', (req, res, next) =>
   healthController.getHealth(req, res, next)
 )
 
-router.post('/health', jsonContentTypeValidator, (req, res, next) =>
+router.post('/health', jsonContentTypeValidatorMiddleware, (req, res, next) =>
   healthController.postHealthCheck(req, res, next)
 )
 

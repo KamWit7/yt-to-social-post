@@ -9,15 +9,20 @@ export class HealthService {
     return {
       success: true,
       timestamp: new Date().toISOString(),
-      message: 'get healt check',
+      message: 'get health check',
     }
   }
 
-  postHealthCheck(body: any): HealthResponse {
+  postHealthCheck(body: unknown): HealthResponse {
+    const sanitizedBody =
+      typeof body === 'object' && body !== null
+        ? JSON.stringify(body)
+        : String(body)
+
     return {
       success: true,
       timestamp: new Date().toISOString(),
-      message: `post health check: ${JSON.stringify(body)}`,
+      message: `post health check: ${sanitizedBody}`,
     }
   }
 }

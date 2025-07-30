@@ -89,7 +89,7 @@ export class YouTubeService implements IYouTubeService {
 
       Logger.success('Successfully fetched transcript data')
 
-      return data 
+      return data
     } catch (error) {
       ErrorHandler.handleFetchError(error, 'fetching transcript')
       return null
@@ -112,14 +112,18 @@ export class YouTubeService implements IYouTubeService {
   /**
    * Checks if response contains transcript data
    */
-  hasTranscriptData(transcriptData: any): boolean {
-    return !!(transcriptData?.actions || transcriptData?.contents)
+  hasTranscriptData(
+    transcriptData: YouTubeTranscriptResponse | null | undefined
+  ): boolean {
+    return !!transcriptData?.actions
   }
 
   /**
    * Displays diagnostic information about transcript
    */
-  displayTranscriptInfo(transcriptData: any): void {
+  displayTranscriptInfo(
+    transcriptData: YouTubeTranscriptResponse | null | undefined
+  ): void {
     if (this.hasTranscriptData(transcriptData)) {
       Logger.result('Response contains transcript data')
     } else {

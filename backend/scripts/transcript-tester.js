@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-// Konfiguracja
+// Configuration
 const API_BASE_URL = 'http://localhost:3001'
 const DEFAULT_RUNS = 5
 
-// URL-e do testowania
+// URLs for testing
 const TEST_URLS = [
-  'https://www.youtube.com/watch?v=dh6BCSzaF6g&ab_channel=ThePrimeTime', // z transkryptem
-  'https://www.youtube.com/watch?v=GhVVi2R-K5k&ab_channel=Przeprogramowani', // bez transkryptu
+  'https://www.youtube.com/watch?v=dh6BCSzaF6g&ab_channel=ThePrimeTime', // with transcript
+  'https://www.youtube.com/watch?v=GhVVi2R-K5k&ab_channel=Przeprogramowani', // without transcript
 ]
 
 class TranscriptTester {
@@ -20,7 +20,7 @@ class TranscriptTester {
     const startTime = Date.now()
 
     try {
-      console.log(`\n🚀 Próba ${runNumber}: Testowanie ${url}`)
+      console.log(`\n🚀 Run ${runNumber}: Testing ${url}`)
 
       const response = await fetch(
         `${this.baseUrl}/api/transcript?url=${encodeURIComponent(url)}`
@@ -34,7 +34,7 @@ class TranscriptTester {
 
       const data = await response.json()
 
-      // Sprawdzenie czy response ma poprawną strukturę
+      // Check if response has correct structure
       if (!data.success) {
         return {
           runNumber,
@@ -46,18 +46,21 @@ class TranscriptTester {
         }
       }
 
-      // Sprawdzenie czy description została zwrócona
-      const hasDescription = this.validateDescription(data.data?.description)
+      // Check if description was returned
+      const hasDescription = this.validateDescription(data.description)
+      const hasTitle = this.validateTitle(data.title)
+      const hasTranscript = this.validateTranscript(data.transcript)
 
       const result = {
         runNumber,
         url,
         success: true,
         hasDescription,
-        description:
-          data.data?.description?.substring(0, 100) + '...' || 'BRAK',
-        title: data.data?.title?.substring(0, 50) + '...' || 'BRAK',
-        hasTranscript: this.validateTranscript(data.data?.transcript),
+        hasTitle,
+        hasTranscript,
+        description: data.description?.substring(0, 100) + '...' || 'MISSING',
+        title: data.title?.substring(0, 50) + '...' || 'MISSING',
+        transcript: data.transcript?.substring(0, 100) + '...' || 'MISSING',
         duration,
       }
 
@@ -74,6 +77,8 @@ class TranscriptTester {
         error: error.message,
         duration,
         hasDescription: false,
+        hasTitle: false,
+        hasTranscript: false,
       }
 
       this.logResult(result)
@@ -90,6 +95,15 @@ class TranscriptTester {
     return true
   }
 
+  validateTitle(title) {
+    if (!title) return false
+    if (typeof title !== 'string') return false
+    if (title.includes('TITLE_NOT_FOUND')) return false
+    if (title.includes('ERROR')) return false
+    if (title.trim().length === 0) return false
+    return true
+  }
+
   validateTranscript(transcript) {
     if (!transcript) return false
     if (typeof transcript !== 'string') return false
@@ -103,35 +117,45 @@ class TranscriptTester {
   logResult(result) {
     const icon = result.success ? '✅' : '❌'
     const descIcon = result.hasDescription ? '📝' : '❌'
+    const titleIcon = result.hasTitle ? '📄' : '❌'
+    const transcriptIcon = result.hasTranscript ? '📜' : '❌'
 
-    console.log(`${icon} Próba ${result.runNumber}:`)
+    console.log(`${icon} Run ${result.runNumber}:`)
+    console.log(
+      `   Title: ${titleIcon} ${result.hasTitle ? 'FOUND' : 'MISSING'}`
+    )
     console.log(
       `   Description: ${descIcon} ${
-        result.hasDescription ? 'ZNALEZIONA' : 'BRAK'
+        result.hasDescription ? 'FOUND' : 'MISSING'
+      }`
+    )
+    console.log(
+      `   Transcript: ${transcriptIcon} ${
+        result.hasTranscript ? 'AVAILABLE' : 'UNAVAILABLE'
       }`
     )
     if (result.success) {
       console.log(`   Title: ${result.title}`)
       console.log(`   Description: ${result.description}`)
-      console.log(
-        `   Transcript: ${result.hasTranscript ? 'Dostępny' : 'Niedostępny'}`
-      )
+      console.log(`   Transcript: ${result.transcript}`)
     } else {
       console.log(`   Error: ${result.error}`)
     }
-    console.log(`   Czas: ${result.duration}ms`)
+    console.log(`   Time: ${result.duration}ms`)
   }
 
   async runTests(urls, numberOfRuns) {
     console.log(
-      `🎯 Rozpoczynanie ${numberOfRuns} testów endpointu /api/transcript`
+      `🎯 Starting ${numberOfRuns} tests for /api/transcript endpoint`
     )
     console.log(`🌐 API URL: ${this.baseUrl}`)
-    console.log(`📋 Testowane URL-e: ${urls.length}`)
+    console.log(`📋 Test URLs: ${urls.length}`)
 
     let totalTests = 0
     let successfulTests = 0
     let testsWithDescription = 0
+    let testsWithTitle = 0
+    let testsWithTranscript = 0
 
     for (let i = 1; i <= numberOfRuns; i++) {
       for (const url of urls) {
@@ -141,83 +165,127 @@ class TranscriptTester {
         totalTests++
         if (result.success) successfulTests++
         if (result.hasDescription) testsWithDescription++
+        if (result.hasTitle) testsWithTitle++
+        if (result.hasTranscript) testsWithTranscript++
 
-        // Krótka pauza między requestami
+        // Short pause between requests
         await new Promise((resolve) => setTimeout(resolve, 1000))
       }
     }
 
-    this.printSummary(totalTests, successfulTests, testsWithDescription)
+    this.printSummary(
+      totalTests,
+      successfulTests,
+      testsWithDescription,
+      testsWithTitle,
+      testsWithTranscript
+    )
 
-    // Zwróć wyniki dla potencjalnego użycia programowego
+    // Return results for potential programmatic use
     return {
       totalTests,
       successfulTests,
       testsWithDescription,
+      testsWithTitle,
+      testsWithTranscript,
       successRate: (successfulTests / totalTests) * 100,
       descriptionRate: (testsWithDescription / totalTests) * 100,
+      titleRate: (testsWithTitle / totalTests) * 100,
+      transcriptRate: (testsWithTranscript / totalTests) * 100,
       results: this.results,
     }
   }
 
-  printSummary(total, successful, withDescription) {
+  printSummary(total, successful, withDescription, withTitle, withTranscript) {
     console.log('\n' + '='.repeat(50))
-    console.log('📊 PODSUMOWANIE TESTÓW')
+    console.log('📊 TEST SUMMARY')
     console.log('='.repeat(50))
-    console.log(`📈 Łączna liczba testów: ${total}`)
+    console.log(`📈 Total tests: ${total}`)
     console.log(
-      `✅ Udane testy: ${successful} (${((successful / total) * 100).toFixed(
+      `✅ Successful tests: ${successful} (${(
+        (successful / total) *
+        100
+      ).toFixed(1)}%)`
+    )
+    console.log(
+      `📄 Tests with title: ${withTitle} (${((withTitle / total) * 100).toFixed(
         1
       )}%)`
     )
     console.log(
-      `📝 Testy z description: ${withDescription} (${(
+      `📝 Tests with description: ${withDescription} (${(
         (withDescription / total) *
         100
       ).toFixed(1)}%)`
     )
     console.log(
-      `❌ Nieudane testy: ${total - successful} (${(
+      `📜 Tests with transcript: ${withTranscript} (${(
+        (withTranscript / total) *
+        100
+      ).toFixed(1)}%)`
+    )
+    console.log(
+      `❌ Failed tests: ${total - successful} (${(
         ((total - successful) / total) *
         100
       ).toFixed(1)}%)`
     )
 
-    // Średni czas odpowiedzi
+    // Average response time
     const avgTime =
       this.results.reduce((sum, r) => sum + r.duration, 0) / this.results.length
-    console.log(`⏱️  Średni czas odpowiedzi: ${avgTime.toFixed(0)}ms`)
+    console.log(`⏱️  Average response time: ${avgTime.toFixed(0)}ms`)
 
-    // Grupa wyników według URL-i
-    console.log('\n📋 WYNIKI WEDŁUG URL-I:')
+    // Group results by URL
+    console.log('\n📋 RESULTS BY URL:')
     const urlGroups = {}
     this.results.forEach((result) => {
       if (!urlGroups[result.url]) {
-        urlGroups[result.url] = { total: 0, withDescription: 0, successful: 0 }
+        urlGroups[result.url] = {
+          total: 0,
+          withDescription: 0,
+          withTitle: 0,
+          withTranscript: 0,
+          successful: 0,
+        }
       }
       urlGroups[result.url].total++
       if (result.success) urlGroups[result.url].successful++
       if (result.hasDescription) urlGroups[result.url].withDescription++
+      if (result.hasTitle) urlGroups[result.url].withTitle++
+      if (result.hasTranscript) urlGroups[result.url].withTranscript++
     })
 
     Object.entries(urlGroups).forEach(([url, stats]) => {
       console.log(`\n🔗 ${url}`)
       console.log(
-        `   Udane: ${stats.successful}/${stats.total} (${(
+        `   Successful: ${stats.successful}/${stats.total} (${(
           (stats.successful / stats.total) *
           100
         ).toFixed(1)}%)`
       )
       console.log(
-        `   Z description: ${stats.withDescription}/${stats.total} (${(
+        `   With title: ${stats.withTitle}/${stats.total} (${(
+          (stats.withTitle / stats.total) *
+          100
+        ).toFixed(1)}%)`
+      )
+      console.log(
+        `   With description: ${stats.withDescription}/${stats.total} (${(
           (stats.withDescription / stats.total) *
+          100
+        ).toFixed(1)}%)`
+      )
+      console.log(
+        `   With transcript: ${stats.withTranscript}/${stats.total} (${(
+          (stats.withTranscript / stats.total) *
           100
         ).toFixed(1)}%)`
       )
     })
   }
 
-  // Metoda do sprawdzania czy API jest dostępne
+  // Method to check if API is available
   async checkApiHealth() {
     try {
       const response = await fetch(`${this.baseUrl}/api/health`)
@@ -228,14 +296,14 @@ class TranscriptTester {
   }
 }
 
-// Główna funkcja
+// Main function
 async function main() {
   const args = process.argv.slice(2)
   let numberOfRuns = DEFAULT_RUNS
   let customUrl = null
   let baseUrl = API_BASE_URL
 
-  // Parsowanie argumentów
+  // Parse arguments
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--runs' || args[i] === '-r') {
       numberOfRuns = parseInt(args[i + 1]) || DEFAULT_RUNS
@@ -250,18 +318,18 @@ async function main() {
       console.log(`
 🧪 Transcript API Load Tester
 
-Użycie:
-  node transcript-tester.js [opcje]
+Usage:
+  node transcript-tester.js [options]
 
-Opcje:
-  -r, --runs <liczba>     Liczba uruchomień dla każdego URL (domyślnie: ${DEFAULT_RUNS})
-  -u, --url <url>         Testuj konkretny URL zamiast domyślnych
-  -a, --api-url <url>     URL backendu (domyślnie: ${API_BASE_URL})
-  -h, --help              Pokaż tę pomoc
+Options:
+  -r, --runs <number>     Number of runs for each URL (default: ${DEFAULT_RUNS})
+  -u, --url <url>         Test specific URL instead of defaults
+  -a, --api-url <url>     Backend URL (default: ${API_BASE_URL})
+  -h, --help              Show this help
 
-Przykłady:
-  node transcript-tester.js                          # ${DEFAULT_RUNS} testów dla każdego domyślnego URL
-  node transcript-tester.js --runs 10                # 10 testów dla każdego domyślnego URL
+Examples:
+  node transcript-tester.js                          # ${DEFAULT_RUNS} tests for each default URL
+  node transcript-tester.js --runs 10                # 10 tests for each default URL
   node transcript-tester.js --url "https://youtube.com/watch?v=abc123" --runs 3
   node transcript-tester.js --api-url "http://localhost:4000" --runs 5
       `)
@@ -276,35 +344,35 @@ Przykłady:
 
   const tester = new TranscriptTester(baseUrl)
 
-  // Sprawdź czy API jest dostępne
-  console.log(`🔍 Sprawdzanie dostępności API na ${baseUrl}...`)
+  // Check if API is available
+  console.log(`🔍 Checking API availability at ${baseUrl}...`)
   const isHealthy = await tester.checkApiHealth()
 
   if (!isHealthy) {
-    console.error(`❌ API nie jest dostępne na ${baseUrl}`)
+    console.error(`❌ API is not available at ${baseUrl}`)
     console.error(
-      '💡 Sprawdź czy backend działa: npm run dev (w katalogu backend/)'
+      '💡 Check if backend is running: npm run dev (in backend/ directory)'
     )
     process.exit(1)
   }
 
-  console.log('✅ API jest dostępne')
+  console.log('✅ API is available')
 
   const results = await tester.runTests(testUrls, numberOfRuns)
 
-  // Exit code bazowany na wynikach
+  // Exit code based on results
   if (results.successRate < 80) {
-    console.log('\n⚠️  Mniej niż 80% testów się powiodło')
+    console.log('\n⚠️  Less than 80% of tests succeeded')
     process.exit(1)
   }
 
-  console.log('\n🎉 Testy zakończone pomyślnie!')
+  console.log('\n🎉 Tests completed successfully!')
 }
 
-// Uruchomienie skryptu
+// Run script
 if (require.main === module) {
   main().catch((error) => {
-    console.error('💥 Błąd podczas wykonywania testów:', error.message)
+    console.error('💥 Error during test execution:', error.message)
     process.exit(1)
   })
 }

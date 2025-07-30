@@ -2,9 +2,12 @@ import dotenv from 'dotenv'
 import express from 'express'
 import helmet from 'helmet'
 import { corsConfig } from './cors/cors.config'
-import { errorHandler, notFoundHandler } from './middleware/error-handler.middleware'
+import {
+  errorHandler,
+  notFoundHandler,
+} from './middleware/error-handler.middleware'
 import { limiter } from './middleware/limiter.middleware'
-import healthRoutes from './routes/healt.routes'
+import healthRoutes from './routes/health.routes'
 import youtubeRoutes from './routes/youtube.routes'
 
 dotenv.config()

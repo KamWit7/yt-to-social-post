@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
 import { Response } from 'superagent'
-import { HealthResponse } from '../../src/services/healt.service'
+import { HealthResponse } from '../../src/services/health.service'
 import { ApiResponse } from '../../src/types/youtube.types'
 import { app, request } from '../setup'
 
@@ -17,7 +17,7 @@ describe('GET /health', () => {
     expect(response.body.data).toMatchObject({
       success: true,
       timestamp: expect.any(String) as unknown as string,
-      message: 'get healt check',
+      message: 'get health check',
     })
   })
 

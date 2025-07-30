@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from 'express'
 import type { YouTubeError } from '../utils/errors'
+import { Logger } from '../utils/logger'
 
 export type MiddlewareError = {
   success: false
@@ -17,8 +18,8 @@ export function errorHandler(
   const message = error.message || 'Internal Server Error'
   const name = error.name || 'Unknown Error'
 
-  console.error(`Error ${statusCode}: ${message}`)
-  console.error('Error Stack:', error.stack)
+  Logger.error(`Error ${statusCode}: ${message}`)
+  Logger.error(`Error Stack: ${error.stack}`)
 
   const responseError: MiddlewareError = {
     success: false,

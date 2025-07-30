@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 
-export const jsonContentTypeValidator = (
+export const jsonContentTypeValidatorMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction

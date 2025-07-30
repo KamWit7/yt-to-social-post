@@ -1,8 +1,8 @@
 import { IYouTubeTranscriptOrchestrator } from '../interfaces/youtube-orchestrator.interface'
 import { IYouTubeService } from '../interfaces/youtube-service.interface'
+import { TranscriptParser } from '../parsers/transcript-parser'
 import { YouTubeParser } from '../parsers/youtube-parser'
 import { TranscriptRequestBody } from '../types/youtube.types'
-import { Utils } from '../utils/format-transcript'
 import { Logger } from '../utils/logger'
 
 /**
@@ -79,6 +79,7 @@ export class YouTubeTranscriptOrchestratorService
         requestBody,
         youtubeUrl
       )
+      console.log('___transcCRIPT', transcriptData)
 
       if (!transcriptData) {
         this.youtubeService.displayErrorReasons()
@@ -91,7 +92,7 @@ export class YouTubeTranscriptOrchestratorService
       Logger.success('Received transcript data!')
 
       // 6. Format transcript
-      const formattedResponse = Utils.formatTranscriptResponse(
+      const formattedResponse = TranscriptParser.formatTranscriptResponse(
         transcriptData,
         extractedData.title,
         extractedData.description

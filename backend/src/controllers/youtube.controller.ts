@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express'
 import { IYouTubeTranscriptOrchestrator } from '../interfaces/youtube-orchestrator.interface'
+import { TranscriptParser } from '../parsers/transcript-parser'
 import { ApiResponse } from '../types/youtube.types'
-import { Utils } from '../utils/format-transcript'
 
 export class YouTubeController {
   constructor(
@@ -16,20 +16,12 @@ export class YouTubeController {
     const { url } = req.query
 
     try {
-      Utils.validateUrl(url)
+      TranscriptParser.validateUrl(url)
 
-      const data = await this.orchestratorService.getTranscript(url as string)
+      const data: ApiResponse<any> =
+        await this.orchestratorService.getTranscript(url as string)
 
-      if (!data.success) {
-        throw new Error(data.error)
-      }
-
-      const successResponse: ApiResponse<any> = {
-        success: true,
-        data,
-      }
-
-      res.json(successResponse)
+      res.json(data)
     } catch (error) {
       next(error)
     }

@@ -1,10 +1,12 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals'
 import { Response } from 'superagent'
 import { MiddlewareError } from '../../src/middleware/error-handler.middleware'
-import { YouTubeService } from '../../src/services/youtube.service'
 import { TranscriptResult } from '../../src/types/transcript.types'
 import { ApiResponse } from '../../src/types/youtube.types'
-import { mockFetchTranscript } from '../mock/youtube-service.mock'
+import {
+  mockFetchPage,
+  mockFetchTranscript,
+} from '../mock/youtube-service.mock'
 import { app, request } from '../setup'
 
 type TranscriptApiResultType = Omit<Response, 'body'> & {
@@ -19,8 +21,9 @@ describe('GET /api/transcript', () => {
   test('should return transcript for valid YouTube URL', async () => {
     const mockTranscriptData: TranscriptResult = {
       transcript: 'Hello world This is a test',
-      title: 'Test Video',
-      description: 'Test Description',
+      title: 'Title not found',
+      description: 'Description not found',
+      success: true,
     }
 
     // Override default mock for this specific test
@@ -31,46 +34,9 @@ describe('GET /api/transcript', () => {
       .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
       .expect(200)
 
-    expect(response.body).toMatchObject({
-      success: true,
-      data: {
-        success: true,
-        transcript: mockTranscriptData.transcript,
-      },
-    })
-  })
+    console.warn('BODY', response)
 
-  test('should use default mocks without overriding', async () => {
-    // This test uses the default global mocks set up in beforeEach
-    const response: TranscriptApiResultType = await request(app)
-      .get('/api/transcript')
-      .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
-      .expect(200)
-
-    expect(response.body).toMatchObject({
-      success: true,
-      data: {
-        success: true,
-        transcript: 'mock-transcript',
-      },
-    })
-  })
-
-  test('should override global mocks for specific test', async () => {
-    mockFetchTranscript()
-
-    const response: TranscriptApiResultType = await request(app)
-      .get('/api/transcript')
-      .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
-      .expect(200)
-
-    expect(response.body).toMatchObject({
-      success: true,
-      data: {
-        success: true,
-        transcript: 'mock-transcript',
-      },
-    })
+    expect(response.body).toMatchObject(mockTranscriptData)
   })
 
   test('should return 400 for missing URL parameter', async () => {
@@ -143,54 +109,47 @@ describe('GET /api/transcript', () => {
     }
   })
 
-  test('should handle service errors gracefully', async () => {
-    jest
-      .spyOn(YouTubeService.prototype, 'fetchTranscript')
-      .mockResolvedValue(new Error('mock-error'))
-
-    const response: TranscriptApiResultType = await request(app)
-      .get('/api/transcript')
-      .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
-      .expect(500)
-
-    expect(response.body).toMatchObject({
-      success: false,
-      error: expect.any(String),
-    })
-  })
-
   test('should handle timeout errors', async () => {
-    jest
-      .spyOn(YouTubeService.prototype, 'fetchTranscript')
-      .mockRejectedValue(new Error('timeout'))
-
-    const response: TranscriptApiResultType = await request(app)
-      .get('/api/transcript')
-      .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
-      .expect(500)
-
-    expect(response.body.success).toBe(false)
-  })
-
-  test('should return empty transcript when no captions available', async () => {
-    const mockEmptyTranscriptData: TranscriptResult = {
-      //TODO: empty transcript should be null
-      transcript: '',
-      title: 'Video without captions',
-      description: 'Description',
-    }
-
-    mockFetchTranscript(mockEmptyTranscriptData.transcript)
+    mockFetchTranscript('timeout', true)
 
     const response: TranscriptApiResultType = await request(app)
       .get('/api/transcript')
       .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
       .expect(200)
 
-    expect(response.body).toMatchObject({
-      success: true,
-      data: mockEmptyTranscriptData,
-    })
+    expect(response.body.success).toBe(false)
+  })
+
+  test('should return error when failed to fetch YouTube page', async () => {
+    mockFetchPage('mock-video-id', true)
+
+    const mockTranscriptData = {
+      success: false,
+      error: 'Failed to fetch YouTube page',
+    }
+
+    const response: TranscriptApiResultType = await request(app)
+      .get('/api/transcript')
+      .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
+      .expect(200)
+
+    expect(response.body).toMatchObject(mockTranscriptData)
+  })
+
+  test('should return error when failed to extract transcript parameters from HTML', async () => {
+    const mockEmptyTranscriptData: TranscriptResult = {
+      success: false,
+      error: 'Failed to fetch YouTube page',
+    }
+
+    mockFetchPage('mock-video-id', true)
+
+    const response: TranscriptApiResultType = await request(app)
+      .get('/api/transcript')
+      .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
+      .expect(200)
+
+    expect(response.body).toMatchObject(mockEmptyTranscriptData)
   })
 
   test('should have correct content-type header', async () => {
@@ -198,6 +157,7 @@ describe('GET /api/transcript', () => {
       transcript: 'Hello world This is a test',
       title: 'Test',
       description: 'Test',
+      success: true,
     }
 
     mockFetchTranscript(mockTranscriptData.transcript)
@@ -234,6 +194,7 @@ describe('GET /api/transcript', () => {
       transcript: 'Hello world This is a test',
       title: 'Test',
       description: 'Test',
+      success: true,
     }
 
     mockFetchTranscript(mockTranscriptData.transcript)

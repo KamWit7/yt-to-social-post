@@ -1,78 +1,83 @@
-# 🛠️ Backend Scripts
+# ��️ Backend Scripts
 
-Narzędzia pomocnicze dla testowania i debugowania API.
+Helper tools for testing and debugging the API.
 
-## 📁 Zawartość
+## 📁 Contents
 
 ### `transcript-tester.js`
 
-Skrypt do load testingu endpointu `/api/transcript` - sprawdza czy `description` jest poprawnie zwracana.
+Script for load testing the `/api/transcript` endpoint - checks if `title`, `description`, and `transcript` are properly returned.
 
-#### 🚀 Szybkie użycie:
+#### 🚀 Quick usage:
 
 ```bash
-# W katalogu backend/
-npm run test:load         # 5 testów dla każdego domyślnego URL
-npm run test:load:heavy   # 10 testów dla każdego domyślnego URL
+# In backend/ directory
+npm run test:load         # 5 tests for each default URL
+npm run test:load:heavy   # 10 tests for each default URL
 ```
 
-#### 📖 Bezpośrednie użycie:
+#### 📖 Direct usage:
 
 ```bash
-# Podstawowe testy
+# Basic tests
 node scripts/transcript-tester.js
 
-# Więcej testów
+# More tests
 node scripts/transcript-tester.js --runs 10
 
-# Testowanie konkretnego URL
+# Test specific URL
 node scripts/transcript-tester.js --url "https://youtube.com/watch?v=abc123" --runs 3
 
-# Inny backend URL
+# Different backend URL
 node scripts/transcript-tester.js --api-url "http://localhost:4000"
 
-# Pomoc
+# Help
 node scripts/transcript-tester.js --help
 ```
 
-#### 📊 Co sprawdza:
+#### 📊 What it checks:
 
-- ✅ **API Health** - czy backend jest dostępny
-- 📝 **Description** - czy zostało poprawnie pobrane (główny cel)
-- 📄 **Title** - czy został pobrany
-- 📜 **Transcript** - czy jest dostępny
-- ⏱️ **Performance** - czasy odpowiedzi
-- 📈 **Success Rate** - statystyki powodzenia
+- ✅ **API Health** - if backend is available
+- 📄 **Title** - if it was properly extracted
+- 📝 **Description** - if it was properly extracted
+- 📜 **Transcript** - if it's available
+- ⏱️ **Performance** - response times
+- 📈 **Success Rate** - success statistics
 
-#### 🎯 Przykładowy wynik:
+#### 🎯 Example output:
 
 ```
 🧪 TRANSCRIPT API LOAD TESTER
 ==============================
-✅ API jest dostępne
-📊 PODSUMOWANIE TESTÓW
-📈 Łączna liczba testów: 10
-✅ Udane testy: 10 (100.0%)
-📝 Testy z description: 4 (40.0%)  ← To jest problem!
-⏱️  Średni czas odpowiedzi: 4002ms
+✅ API is available
+📊 TEST SUMMARY
+📈 Total tests: 10
+✅ Successful tests: 10 (100.0%)
+📄 Tests with title: 8 (80.0%)
+📝 Tests with description: 4 (40.0%)
+📜 Tests with transcript: 10 (100.0%)
+⏱️  Average response time: 4002ms
 ```
 
 #### 🚨 Troubleshooting:
 
-**`❌ API nie jest dostępne`**
-- Sprawdź czy backend działa: `npm run dev`
-- Sprawdź port (domyślnie 3001)
+**`❌ API is not available`**
 
-**`Długie czasy odpowiedzi (>10s)`**
-- Normalne dla web scrapingu
-- Sprawdź połączenie internetowe
+- Check if backend is running: `npm run dev`
+- Check port (default: 3001)
 
-**`Mało description (< 50%)`**
-- Problem z YouTube UI changes
-- Sprawdź czy URL-e są aktualne
+**`Long response times (>10s)`**
+
+- Normal for web scraping
+- Check internet connection
+
+**`Low description rate (< 50%)`**
+
+- Problem with YouTube UI changes
+- Check if URLs are current
 - Debug puppeteer script
 
-## 🔧 Wymagania
+## 🔧 Requirements
 
-- Node.js 18+ (dla wbudowanego `fetch`)
-- Backend API uruchomiony na `localhost:3001` 
+- Node.js 18+ (for built-in `fetch`)
+- Backend API running on `localhost:3001`
