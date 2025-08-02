@@ -1,5 +1,8 @@
 import type { NextFunction, Request, Response } from 'express'
-import { IYouTubeTranscriptOrchestrator } from '../interfaces/youtube-orchestrator.interface'
+import {
+  GetTranscriptReturnType,
+  IYouTubeTranscriptOrchestrator,
+} from '../interfaces/youtube-orchestrator.interface'
 import { TranscriptParser } from '../parsers/transcript-parser'
 import { ApiResponse } from '../types/youtube.types'
 
@@ -18,7 +21,7 @@ export class YouTubeController {
     try {
       TranscriptParser.validateUrl(url)
 
-      const data: ApiResponse<any> =
+      const data: ApiResponse<GetTranscriptReturnType> =
         await this.orchestratorService.getTranscript(url as string)
 
       res.json(data)

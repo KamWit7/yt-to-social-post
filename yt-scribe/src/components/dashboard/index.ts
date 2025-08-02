@@ -1,2 +1,2 @@
-export { default as TranscriptionForm } from './TranscriptionForm'
-export { default as TranscriptionResults } from './TranscriptionResults'
+export { TranscriptionForm } from './TranscriptionForm'
+export { default as TranscriptionResults } from './TranscriptionResults/TranscriptionResults'
