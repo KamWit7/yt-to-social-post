@@ -1,13 +1,17 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { TranscriptResponse } from '../../types'
 import { getTranscript } from '../services/transcriptService'
 
-export function useTranscript(url: string) {
+export const getTranscriptQueryKey = (url?: string) =>
+  ['transcript', url] as const
+
+export function useTranscript(
+  url: string | null,
+  options?: Partial<UseQueryOptions<TranscriptResponse>>
+) {
   return useQuery<TranscriptResponse>({
-    queryKey: ['transcript', url],
-    queryFn: () => getTranscript(url),
-    enabled: !!url,
-    retry: 2,
-    staleTime: 5 * 60 * 1000, // 5 minut
+    ...options,
+    queryKey: getTranscriptQueryKey(url ?? ''),
+    queryFn: () => getTranscript(url ?? ''),
   })
 }

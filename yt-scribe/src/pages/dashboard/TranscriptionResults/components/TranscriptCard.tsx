@@ -1,7 +1,8 @@
 import { FileText } from 'lucide-react'
-import CollapsibleCard from '../../../common/CollapsibleCard'
-import CopyButton from '../../../common/CopyButton'
-import SkeletonLoader from '../../../common/SkeletonLoader'
+import { useState } from 'react'
+import CollapsibleCard from '../../../../components/common/CollapsibleCard'
+import CopyButton from '../../../../components/common/CopyButton'
+import SkeletonLoader from '../../../../components/common/SkeletonLoader'
 import { CopyType } from './types'
 
 interface TranscriptCardProps {
@@ -16,17 +17,17 @@ interface TranscriptCardProps {
 function TranscriptCard({
   isLoading,
   transcript,
-  isVisible,
-  onToggle,
   onCopy,
   copiedItem,
 }: TranscriptCardProps) {
+  const [isVisible, setIsVisible] = useState(true)
+
   return (
     <CollapsibleCard
       icon={<FileText className='w-6 h-6 text-blue-500' />}
       title='Pełna transkrypcja'
       isVisible={isVisible}
-      onToggle={onToggle}
+      onToggle={() => setIsVisible(!isVisible)}
       copyAction={
         !isLoading &&
         transcript && (

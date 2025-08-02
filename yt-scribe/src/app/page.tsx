@@ -1,4 +1,4 @@
-import TranscriptionForm from '@/components/dashboard/TranscriptionForm'
+import { TranscriptionForm } from '@/pages/dashboard'
 
 export default function Home() {
   return (

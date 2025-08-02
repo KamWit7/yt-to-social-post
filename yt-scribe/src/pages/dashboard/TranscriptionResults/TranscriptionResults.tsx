@@ -1,7 +1,11 @@
 'use client'
 
+import { getTranscriptQueryKey } from '@/api/hooks/useTranscript'
+import { queryClient } from '@/components/provider/QueryProvider'
+import { TranscriptResponse } from '@/types'
 import { copyToClipboard } from '@/utils/clipboard'
-import { useState } from 'react'
+import { useIsFetching } from '@tanstack/react-query'
+import { useMemo, useState } from 'react'
 import {
   CopyType,
   SummaryCard,
@@ -9,21 +13,24 @@ import {
   TranscriptCard,
 } from './components/index'
 
-interface TranscriptionResultsProps {
-  isLoading: boolean
-  transcript: string
-  summary: string
-  topics: string[]
-}
-
-function TranscriptionResults({
-  isLoading,
-  transcript,
-  summary,
-  topics,
-}: TranscriptionResultsProps) {
-  const [isTranscriptVisible, setIsTranscriptVisible] = useState(false)
+function TranscriptionResults() {
   const [copiedItem, setCopiedItem] = useState<CopyType | null>(null)
+
+  const isLoading =
+    useIsFetching({
+      queryKey: getTranscriptQueryKey(),
+    }) > 0
+
+  const { summary, topics } = { summary: '', topics: [] }
+
+  const { transcript } = useMemo(
+    () =>
+      queryClient.getQueryData<TranscriptResponse>(getTranscriptQueryKey()) || {
+        transcript: '',
+      },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isLoading]
+  )
 
   const handleCopy = async (text: string, type: CopyType) => {
     const result = await copyToClipboard(text)
@@ -36,11 +43,6 @@ function TranscriptionResults({
     }
   }
 
-  const handleToggleTranscript = () => {
-    setIsTranscriptVisible((prev) => !prev)
-  }
-
-  // Early return if no data and not loading
   if (!isLoading && !transcript && !summary && !topics.length) {
     return null
   }
@@ -65,8 +67,6 @@ function TranscriptionResults({
       <TranscriptCard
         isLoading={isLoading}
         transcript={transcript}
-        isVisible={isTranscriptVisible}
-        onToggle={handleToggleTranscript}
         onCopy={handleCopy}
         copiedItem={copiedItem}
       />

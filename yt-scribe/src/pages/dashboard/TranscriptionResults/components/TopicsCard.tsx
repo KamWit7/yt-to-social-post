@@ -1,7 +1,7 @@
 import { List } from 'lucide-react'
-import CopyButton from '../../../common/CopyButton'
-import CustomCard from '../../../common/CustomCard'
-import SkeletonLoader from '../../../common/SkeletonLoader'
+import CopyButton from '../../../../components/common/CopyButton'
+import CustomCard from '../../../../components/common/CustomCard'
+import SkeletonLoader from '../../../../components/common/SkeletonLoader'
 import TopicsList from './TopicsList'
 import { CopyType } from './types'
 
