@@ -6,10 +6,18 @@ export const PURPOSE_OPTIONS = [
   { value: 'Inny', label: 'Inny...' },
 ]
 
+export const DEFAULT_PURPOSE = 'Do nauki'
+
 export const FORM_FIELD_NAMES = {
   URL: 'url',
   PURPOSE: 'purpose',
   CUSTOM_PURPOSE: 'customPurpose',
+} as const
+
+export const DEFAULT_VALUES = {
+  url: '',
+  purpose: DEFAULT_PURPOSE,
+  customPurpose: '',
 } as const
 
 export const LOADING_MESSAGES = {

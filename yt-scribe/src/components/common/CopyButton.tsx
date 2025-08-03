@@ -1,26 +1,44 @@
 import { Button } from '@/components/ui/button'
+import { copyToClipboard } from '@/utils/clipboard'
 import { Check, Copy } from 'lucide-react'
+import { useState } from 'react'
 
 interface CopyButtonProps {
-  onCopy: () => void
-  isCopied: boolean
+  text: string
   disabled?: boolean
   'aria-label'?: string
 }
 
 function CopyButton({
-  onCopy,
-  isCopied,
+  text,
   disabled = false,
   'aria-label': ariaLabel,
 }: CopyButtonProps) {
+  const [isCopied, setIsCopied] = useState(false)
   const defaultAriaLabel = isCopied
     ? 'Skopiowano do schowka'
     : 'Kopiuj do schowka'
 
+  const handleCopy = async () => {
+    setIsCopied(true)
+    try {
+      const result = await copyToClipboard(text)
+
+      if (result.success) {
+        setTimeout(() => setIsCopied(false), 1000)
+      } else {
+        console.error('Copy failed:', result.error)
+        setIsCopied(false)
+      }
+    } catch (error) {
+      console.error('Copy failed:', error)
+      setIsCopied(false)
+    }
+  }
+
   return (
     <Button
-      onClick={onCopy}
+      onClick={handleCopy}
       variant='ghost'
       size='sm'
       disabled={disabled}

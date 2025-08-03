@@ -14,7 +14,7 @@ export const FORM_STYLES = {
   },
 
   error: {
-    base: 'text-sm font-medium text-destructive',
+    base: 'text-xs font-medium text-destructive',
   },
 
   container: {

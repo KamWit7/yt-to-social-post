@@ -1,10 +1,9 @@
-import { TranscriptionForm } from '@/pages/dashboard'
+import Dashboard from '@/pages/dashboard/Dashboard'
 
 export default function Home() {
   return (
     <div className='max-w-4xl mx-auto'>
-      {/* Input Section */}
-      <div className='text-center my-12 md:my-16'>
+      <div className='text-center my-10 md:my-12'>
         <h1 className='text-4xl md:text-6xl font-bold mb-4 text-gray-800 dark:text-white'>
           Analiza wideo z AI.
         </h1>
@@ -14,7 +13,7 @@ export default function Home() {
         </p>
       </div>
 
-      <TranscriptionForm />
+      <Dashboard />
     </div>
   )
 }

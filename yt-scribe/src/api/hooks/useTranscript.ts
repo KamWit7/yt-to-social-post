@@ -3,7 +3,7 @@ import { TranscriptResponse } from '../../types'
 import { getTranscript } from '../services/transcriptService'
 
 export const getTranscriptQueryKey = (url?: string) =>
-  ['transcript', url] as const
+  url ? ['transcript', url] : ['transcript']
 
 export function useTranscript(
   url: string | null,

@@ -2,34 +2,18 @@ import { Bot } from 'lucide-react'
 import CopyButton from '../../../../components/common/CopyButton'
 import CustomCard from '../../../../components/common/CustomCard'
 import SkeletonLoader from '../../../../components/common/SkeletonLoader'
-import { CopyType } from './types'
 
 interface SummaryCardProps {
   isLoading: boolean
   summary: string
-  onCopy: (text: string, type: CopyType) => void
-  copiedItem: CopyType | null
 }
 
-function SummaryCard({
-  isLoading,
-  summary,
-  onCopy,
-  copiedItem,
-}: SummaryCardProps) {
+function SummaryCard({ isLoading, summary }: SummaryCardProps) {
   return (
     <CustomCard
       icon={<Bot className='w-6 h-6 text-purple-500' />}
       title='Streszczenie AI'
-      copyAction={
-        !isLoading &&
-        summary && (
-          <CopyButton
-            onCopy={() => onCopy(summary, 'summary')}
-            isCopied={copiedItem === 'summary'}
-          />
-        )
-      }>
+      copyAction={!isLoading && summary && <CopyButton text={summary} />}>
       {isLoading && !summary ? <SkeletonLoader lines={5} /> : summary}
     </CustomCard>
   )

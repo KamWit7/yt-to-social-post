@@ -30,13 +30,15 @@ export default function RootLayout({
     <html lang='pl'>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className='bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 font-sans'>
-          <QueryProvider>
+        <QueryProvider>
+          <div
+            className='bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 font-sans
+            flex flex-col'>
             <Header />
-            <main className='p-4 md:p-8 h-[calc(100vh-242px)]'>{children}</main>
+            <main className='p-4 md:p-8 flex-1'>{children}</main>
             <Footer />
-          </QueryProvider>
-        </div>
+          </div>
+        </QueryProvider>
       </body>
     </html>
   )

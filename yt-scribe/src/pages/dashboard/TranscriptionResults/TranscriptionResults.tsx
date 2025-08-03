@@ -1,75 +1,32 @@
 'use client'
 
+import { useCachedGet } from '@/api/hooks/useCachedGet'
 import { getTranscriptQueryKey } from '@/api/hooks/useTranscript'
-import { queryClient } from '@/components/provider/QueryProvider'
 import { TranscriptResponse } from '@/types'
-import { copyToClipboard } from '@/utils/clipboard'
-import { useIsFetching } from '@tanstack/react-query'
-import { useMemo, useState } from 'react'
-import {
-  CopyType,
-  SummaryCard,
-  TopicsCard,
-  TranscriptCard,
-} from './components/index'
+import { SummaryCard, TopicsCard, TranscriptCard } from './components/index'
 
 function TranscriptionResults() {
-  const [copiedItem, setCopiedItem] = useState<CopyType | null>(null)
+  const {
+    cache: { data },
+    isLoading,
+  } = useCachedGet<TranscriptResponse>(getTranscriptQueryKey())
 
-  const isLoading =
-    useIsFetching({
-      queryKey: getTranscriptQueryKey(),
-    }) > 0
+  const { transcript } = data ?? {}
 
-  const { summary, topics } = { summary: '', topics: [] }
+  const { summary, topics } = { summary: ' ', topics: [] }
 
-  const { transcript } = useMemo(
-    () =>
-      queryClient.getQueryData<TranscriptResponse>(getTranscriptQueryKey()) || {
-        transcript: '',
-      },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isLoading]
-  )
-
-  const handleCopy = async (text: string, type: CopyType) => {
-    const result = await copyToClipboard(text)
-
-    if (result.success) {
-      setCopiedItem(type)
-      setTimeout(() => setCopiedItem(null), 2000)
-    } else {
-      console.error('Copy failed:', result.error)
-    }
-  }
-
-  if (!isLoading && !transcript && !summary && !topics.length) {
+  if (!transcript) {
     return null
   }
 
   return (
     <div className='space-y-8'>
       <div className='grid md:grid-cols-2 gap-8'>
-        <SummaryCard
-          isLoading={isLoading}
-          summary={summary}
-          onCopy={handleCopy}
-          copiedItem={copiedItem}
-        />
-        <TopicsCard
-          isLoading={isLoading}
-          topics={topics}
-          onCopy={handleCopy}
-          copiedItem={copiedItem}
-        />
+        <SummaryCard isLoading={isLoading} summary={summary} />
+        <TopicsCard isLoading={isLoading} topics={topics} />
       </div>
 
-      <TranscriptCard
-        isLoading={isLoading}
-        transcript={transcript}
-        onCopy={handleCopy}
-        copiedItem={copiedItem}
-      />
+      <TranscriptCard isLoading={isLoading} transcript={transcript ?? ''} />
     </div>
   )
 }

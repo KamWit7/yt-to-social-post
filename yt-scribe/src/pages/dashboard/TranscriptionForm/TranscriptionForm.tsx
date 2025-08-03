@@ -2,27 +2,28 @@
 
 import { useTranscript } from '@/api/hooks/useTranscript'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { ErrorMessage } from './components/ErrorMessage'
 import { FormFields } from './components/FormFields'
 import { SubmitButton } from './components/SubmitButton'
+import { DEFAULT_VALUES, FORM_FIELD_NAMES } from './constants/formConstants'
 import { transcriptionSchema } from './schemas/transcriptionSchema'
 import { TranscriptionFormData } from './types/formTypes'
 
-const DEFAULT_PURPOSE = 'Do nauki'
+interface TranscriptionFormProps {
+  url: string
+  setUrl: (url: string) => void
+}
 
-export default function TranscriptionForm() {
-  const [url, setUrl] = useState('')
-
+export default function TranscriptionForm({
+  url,
+  setUrl,
+}: TranscriptionFormProps) {
   const methods = useForm<TranscriptionFormData>({
     resolver: zodResolver(transcriptionSchema),
     mode: 'onChange',
-    defaultValues: {
-      url: '',
-      purpose: DEFAULT_PURPOSE,
-      customPurpose: '',
-    },
+    defaultValues: DEFAULT_VALUES,
   })
 
   const {
@@ -36,9 +37,12 @@ export default function TranscriptionForm() {
       retry: 2,
     })
 
-  const onSubmit = useCallback((data: TranscriptionFormData) => {
-    setUrl(data.url)
-  }, [])
+  const onSubmit = useCallback(
+    (data: TranscriptionFormData) => {
+      setUrl(data[FORM_FIELD_NAMES.URL])
+    },
+    [setUrl]
+  )
 
   return (
     <FormProvider {...methods}>
