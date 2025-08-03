@@ -2,7 +2,7 @@
 
 import { useTranscript } from '@/api/hooks/useTranscript'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { ErrorMessage } from './components/ErrorMessage'
 import { FormFields } from './components/FormFields'
@@ -11,15 +11,9 @@ import { DEFAULT_VALUES, FORM_FIELD_NAMES } from './constants/formConstants'
 import { transcriptionSchema } from './schemas/transcriptionSchema'
 import { TranscriptionFormData } from './types/formTypes'
 
-interface TranscriptionFormProps {
-  url: string
-  setUrl: (url: string) => void
-}
+export default function TranscriptionForm() {
+  const [url, setUrl] = useState('')
 
-export default function TranscriptionForm({
-  url,
-  setUrl,
-}: TranscriptionFormProps) {
   const methods = useForm<TranscriptionFormData>({
     resolver: zodResolver(transcriptionSchema),
     mode: 'onChange',
