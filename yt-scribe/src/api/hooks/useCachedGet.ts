@@ -34,8 +34,10 @@ export function useCachedGet<T>(queryKey: QueryKey): UseCahcedGetReturn<T> {
       const queries = queryClient
         .getQueryCache()
         .findAll({ queryKey, exact: false })
-        .map((query) => query.state as QueryState<T, Error>)
-        .filter((query) => query.data)
+        .map((query) =>
+          'state' in query ? (query.state as QueryState<T, Error>) : null
+        )
+        .filter((query) => query?.data)
 
       if (queries.length > 1) {
         return queries.sort((q1, q2) => {

@@ -25,4 +25,7 @@ export interface TextareaProps<T extends FieldValues>
   extends BaseFormFieldProps<T> {
   rows?: number
   maxLength?: number
+  textareaClassName?: string
 }
+
+export type CheckboxProps<T extends FieldValues> = BaseFormFieldProps<T>

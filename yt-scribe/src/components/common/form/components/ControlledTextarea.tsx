@@ -15,6 +15,7 @@ export function ControlledTextarea<T extends FieldValues>({
   className = '',
   rows = 4,
   maxLength,
+  textareaClassName = '',
 }: TextareaProps<T>) {
   const {
     field,
@@ -23,18 +24,21 @@ export function ControlledTextarea<T extends FieldValues>({
 
   return (
     <FormField
+      name={name}
       label={label}
       required={required}
       error={error && <FormError error={error} />}
       className={className}>
       <Textarea
         {...field}
+        id={name}
         rows={rows}
         maxLength={maxLength}
         placeholder={placeholder}
         disabled={disabled}
         aria-label={label}
         aria-invalid={!!error}
+        className={textareaClassName}
       />
     </FormField>
   )

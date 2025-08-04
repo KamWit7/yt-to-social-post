@@ -9,6 +9,7 @@ export interface FormFieldsProps {
   control: Control<TranscriptionFormData>
   errors: FieldErrors<TranscriptionFormData>
   isLoading: boolean
+  isTranscriptLoading?: boolean
 }
 
 export interface SubmitButtonProps {

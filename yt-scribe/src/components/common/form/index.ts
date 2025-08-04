@@ -1,3 +1,4 @@
+export { ControlledCheckbox } from './components/ControlledCheckbox'
 export { ControlledInput } from './components/ControlledInput'
 export { ControlledSelect } from './components/ControlledSelect'
 export { ControlledTextarea } from './components/ControlledTextarea'
@@ -6,6 +7,7 @@ export { FormField } from './components/FormField'
 
 export type {
   BaseFormFieldProps,
+  CheckboxProps,
   InputProps,
   SelectProps,
   TextareaProps,

@@ -28,6 +28,7 @@ export function ControlledSelect<T extends FieldValues>({
 
   return (
     <FormField
+      name={name}
       label={label}
       required={required}
       error={error && <FormError error={error} />}
@@ -38,7 +39,7 @@ export function ControlledSelect<T extends FieldValues>({
         value={field.value}
         aria-label={label}
         aria-invalid={!!error}>
-        <SelectTrigger className={className}>
+        <SelectTrigger id={name} className={className}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>

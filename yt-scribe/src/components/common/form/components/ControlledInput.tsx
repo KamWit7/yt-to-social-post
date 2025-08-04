@@ -26,6 +26,7 @@ export function ControlledInput<T extends FieldValues>({
 
   return (
     <FormField
+      name={name}
       label={label}
       required={required}
       error={error && <FormError error={error} />}
@@ -33,6 +34,7 @@ export function ControlledInput<T extends FieldValues>({
       <div className='relative'>
         <Input
           {...field}
+          id={name}
           type={type}
           placeholder={placeholder}
           disabled={disabled}

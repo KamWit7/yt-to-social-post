@@ -5,6 +5,7 @@ import { ReactNode } from 'react'
 import { FORM_STYLES } from '../constants/formStyles'
 
 interface FormFieldProps {
+  name?: string
   label?: string
   required?: boolean
   error?: ReactNode
@@ -13,6 +14,7 @@ interface FormFieldProps {
 }
 
 export function FormField({
+  name,
   label,
   required = false,
   error,
@@ -22,7 +24,9 @@ export function FormField({
   return (
     <div className={`${FORM_STYLES.container.field} ${className}`}>
       {label && (
-        <Label className={`${required ? FORM_STYLES.label.required : ''}`}>
+        <Label
+          htmlFor={name}
+          className={`${required ? FORM_STYLES.label.required : ''}`}>
           {label}
         </Label>
       )}
