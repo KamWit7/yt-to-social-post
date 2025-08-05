@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import { AIController } from '../controllers/ai.controller'
+import { validateBody } from '../middleware/validation.middleware'
 import { AIProcessingService } from '../services/ai-processing.service'
+import { ProcessTranscriptRequestSchema } from '../validations/ai.validations'
 
 const router = Router({ caseSensitive: true })
 
@@ -18,8 +20,10 @@ function getAIController(): AIController {
   return aiController
 }
 
-router.post('/process', (req, res, next) =>
-  getAIController().processTranscript(req, res, next)
+router.post(
+  '/process-transcript',
+  validateBody(ProcessTranscriptRequestSchema),
+  (req, res, next) => getAIController().processTranscript(req, res, next)
 )
 
 export default router

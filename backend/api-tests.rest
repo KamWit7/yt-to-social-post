@@ -35,13 +35,44 @@ Content-Type: application/json
 GET {{baseUrl}}/api/Transcript/
 Content-Type: application/json
 
-### Malformed JSON
-GET {{baseUrl}}/api/transcript
+
+
+### AI Processing Tests
+
+### Process Transcript - Positive Case
+POST {{baseUrl}}/api/ai/process-transcript
 Content-Type: application/json
 
 {
-  "invalid": json
+  "transcript": "Intro This is the episode though where Casey's going to find out that like he's been calling all three of us web developers, but Trash is the only one who actually knows how to develop for the web. I mean, you can use you could use TypeScript in uh on the server. Okay. So, Trash is a web developer and you guys are web developers is what you're saying. Thank you. I'm just a normie, but everyone's so bad at their craft that I just rise to the top. Which is really funny. You can just be like normal and that's like really good. Nice. Then they give you talks at render ATL. Exactly. They're like, 'This guy's a genius.' I'm like, 'Look, I just know Who’s actually a “web developer”? the basic.' Oh, hey, Prime. Oh, howdy duty. Hello. Hello. Are you ready for some Typescript Prime? I'm so ready for Typescript. Uh, anyways, sorry. All right. Hey, I'm going to do the introduction right now. Okay. Okay. I'm lowkey freaking out. Okay. Okay. Uh, hey, you got this, trash, you're the man. I'm so ready.",
+  "purpose": "social_media",
+  "customPurpose": "Post na Instagram",
+  "options": {
+  }
 }
 
-### Invalid Content Type
+### Process Transcript - Minimal Required Fields
+POST {{baseUrl}}/api/ai/process-transcript
+Content-Type: application/json
+
+{
+  "transcript": "Krótka transkrypcja do przetworzenia.",
+  "purpose": "summary"
+}
+
+### Process Transcript - Missing Transcript (Error Case)
+POST {{baseUrl}}/api/ai/process-transcript
+Content-Type: application/json
+
+{
+  "purpose": "social_media"
+}
+
+### Process Transcript - Missing Purpose (Error Case)
+POST {{baseUrl}}/api/ai/process-transcript
+Content-Type: application/json
+
+{
+  "transcript": "Transkrypcja bez celu przetwarzania."
+}
 

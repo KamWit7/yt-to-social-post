@@ -1,27 +1,22 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GenerativeModel, GoogleGenerativeAI } from '@google/generative-ai'
+import { ProcessTranscriptRequest, Purpose } from '../validations'
 
-interface AIProcessingRequest {
-  transcript: string
-  purpose: string
-  customPurpose?: string
-  options?: {
-    generateMindMap?: boolean
-    generateSocialPost?: boolean
-    customPrompt?: string
-  }
+type PrittifyType<T> = {
+  [K in keyof T]: T[K] & {}
 }
 
-interface AIProcessingResult {
-  summary: string | undefined
-  topics: string | undefined
-  mindMap: string | undefined
-  socialPost: string | undefined
-  customOutput: string | undefined
+export type AIProcessingResult = {
+  summary?: string | undefined
+  topics?: string | undefined
+  mindMap?: string | undefined
+  socialPost?: string | undefined
+  customOutput?: string | undefined
 }
+type AIProcessingResultKeys = PrittifyType<keyof AIProcessingResult>
 
 export class AIProcessingService {
   private genAI: GoogleGenerativeAI
-  private model: any
+  private model: GenerativeModel
 
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY
@@ -30,47 +25,48 @@ export class AIProcessingService {
       throw new Error('GEMINI_API_KEY is required')
     }
 
-    this.genAI = new GoogleGenerativeAI(apiKey as string)
-    
+    this.genAI = new GoogleGenerativeAI(apiKey)
+
     this.model = this.genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash-lite',
+      model: 'gemini-2.5-flash',
     })
   }
 
   async processTranscript(
-    request: AIProcessingRequest
+    request: ProcessTranscriptRequest
   ): Promise<AIProcessingResult> {
-    const { transcript, purpose, customPurpose, options } = request
+    const { transcript, purpose, options } = request
 
-    // Zawsze generuj streszczenie i tematy
-    const tasks = [
-      this.generateSummary(transcript),
-      this.generateTopics(transcript),
-    ]
-
-    // Dodaj opcjonalne zadania na podstawie celu i opcji
-    if (purpose === 'Do nauki' && options?.generateMindMap) {
-      tasks.push(this.generateMindMap(transcript))
+    const result: Record<AIProcessingResultKeys, Promise<string>> = {
+      summary: this.generateSummary(transcript),
+      topics: this.generateTopics(transcript),
+      mindMap: Promise.reject(),
+      socialPost: Promise.reject(),
+      customOutput: Promise.reject(),
     }
 
-    if (purpose === 'Do tworzenia treści' && options?.generateSocialPost) {
-      tasks.push(this.generateSocialPost(transcript))
+    if (purpose === Purpose.Learning && options?.generateMindMap) {
+      result.mindMap = this.generateMindMap(transcript)
     }
 
-    if (purpose === 'Ogólne' && options?.customPrompt) {
-      tasks.push(this.generateCustomOutput(transcript, options.customPrompt))
+    if (purpose === Purpose.SocialMedia && options?.generateSocialPost) {
+      result.socialPost = this.generateSocialPost(transcript)
     }
 
-    // Wykonaj wszystkie zadania równolegle
-    const results = await Promise.all(tasks)
-
-    return {
-      summary: results[0],
-      topics: results[1],
-      mindMap: results[2],
-      socialPost: results[3],
-      customOutput: results[4],
+    if (purpose === Purpose.Custom && options?.customPrompt) {
+      result.customOutput = this.generateCustomOutput(
+        transcript,
+        options.customPrompt
+      )
     }
+
+    const results = await Promise.allSettled(Object.values(result))
+
+    return results.reduce((acc, curr, index) => {
+      const key = Object.keys(result)[index] as AIProcessingResultKeys
+      acc[key] = curr.status === 'fulfilled' ? curr.value : undefined
+      return acc
+    }, {} as AIProcessingResult)
   }
 
   private async generateSummary(transcript: string): Promise<string> {
@@ -105,7 +101,7 @@ export class AIProcessingService {
     return response.text().trim()
   }
 
-  private async generateMindMap(transcript: string): Promise<any> {
+  private async generateMindMap(transcript: string): Promise<string> {
     const prompt = `
       Przeanalizuj poniższą transkrypcję i stwórz mapę myśli w formacie JSON.
       Mapa myśli powinna mieć strukturę hierarchiczną z głównym tematem i podtematami.
@@ -140,7 +136,7 @@ export class AIProcessingService {
       return JSON.parse(jsonText)
     } catch (error) {
       console.error('Error parsing mind map JSON:', error)
-      return null
+      return '{}'
     }
   }
 

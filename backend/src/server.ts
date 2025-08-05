@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
 app.use('/api', youtubeRoutes)
 app.use('/api', healthRoutes)
-app.use('/api', aiRoutes)
+app.use('/api/ai', aiRoutes)
 
 app.use(notFoundHandler)
 
