@@ -1,4 +1,5 @@
 import { GenerativeModel, GoogleGenerativeAI } from '@google/generative-ai'
+import { AVAILABLE_PROMPTS, PromptLoader } from '../prompts'
 import { ProcessTranscriptRequest, Purpose } from '../validations'
 
 type PrittifyType<T> = {
@@ -37,48 +38,47 @@ export class AIProcessingService {
   ): Promise<AIProcessingResult> {
     const { transcript, purpose, options } = request
 
-    const result: Record<AIProcessingResultKeys, Promise<string>> = {
+    const tasks: Record<AIProcessingResultKeys, Promise<string | undefined>> = {
       summary: this.generateSummary(transcript),
       topics: this.generateTopics(transcript),
-      mindMap: Promise.reject(),
-      socialPost: Promise.reject(),
-      customOutput: Promise.reject(),
+      mindMap: Promise.resolve(undefined),
+      socialPost: Promise.resolve(undefined),
+      customOutput: Promise.resolve(undefined),
     }
 
     if (purpose === Purpose.Learning && options?.generateMindMap) {
-      result.mindMap = this.generateMindMap(transcript)
+      tasks.mindMap = this.generateMindMap(transcript)
     }
 
     if (purpose === Purpose.SocialMedia && options?.generateSocialPost) {
-      result.socialPost = this.generateSocialPost(transcript)
+      tasks.socialPost = this.generateSocialPost(transcript)
     }
 
     if (purpose === Purpose.Custom && options?.customPrompt) {
-      result.customOutput = this.generateCustomOutput(
+      tasks.customOutput = this.generateCustomOutput(
         transcript,
         options.customPrompt
       )
     }
 
-    const results = await Promise.allSettled(Object.values(result))
+    const results = await Promise.allSettled(Object.values(tasks))
 
-    return results.reduce((acc, curr, index) => {
-      const key = Object.keys(result)[index] as AIProcessingResultKeys
+    const response = results.reduce((acc, curr, index) => {
+      const key = Object.keys(tasks)[index] as AIProcessingResultKeys
       acc[key] = curr.status === 'fulfilled' ? curr.value : undefined
       return acc
     }, {} as AIProcessingResult)
+
+    console.log('___results', results)
+    console.log('___response', response)
+
+    return response
   }
 
   private async generateSummary(transcript: string): Promise<string> {
-    const prompt = `
-      Przeanalizuj poniższą transkrypcję i stwórz zwięzłe streszczenie w 2-3 zdaniach.
-      Streszczenie powinno zawierać główne punkty i kluczowe informacje.
-      
-      Transkrypcja:
-      ${transcript}
-      
-      Streszczenie:
-    `
+    const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.SUMMARY, {
+      transcript,
+    })
 
     const result = await this.model.generateContent(prompt)
     const response = await result.response
@@ -86,15 +86,9 @@ export class AIProcessingService {
   }
 
   private async generateTopics(transcript: string): Promise<string> {
-    const prompt = `
-      Przeanalizuj poniższą transkrypcję i wyciągnij kluczowe tematy.
-      Przedstaw je w formie listy punktowanej (każdy temat w nowej linii z myślnikiem).
-      
-      Transkrypcja:
-      ${transcript}
-      
-      Kluczowe tematy:
-    `
+    const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.TOPICS, {
+      transcript,
+    })
 
     const result = await this.model.generateContent(prompt)
     const response = await result.response
@@ -102,31 +96,9 @@ export class AIProcessingService {
   }
 
   private async generateMindMap(transcript: string): Promise<string> {
-    const prompt = `
-      Przeanalizuj poniższą transkrypcję i stwórz mapę myśli w formacie JSON.
-      Mapa myśli powinna mieć strukturę hierarchiczną z głównym tematem i podtematami.
-      
-      Format JSON:
-      {
-        "id": "root",
-        "type": "input",
-        "data": { "label": "Główny temat" },
-        "position": { "x": 0, "y": 0 },
-        "children": [
-          {
-            "id": "child1",
-            "type": "default",
-            "data": { "label": "Podtemat 1" },
-            "position": { "x": -200, "y": 100 }
-          }
-        ]
-      }
-      
-      Transkrypcja:
-      ${transcript}
-      
-      Mapa myśli (JSON):
-    `
+    const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.MIND_MAP, {
+      transcript,
+    })
 
     const result = await this.model.generateContent(prompt)
     const response = await result.response
@@ -141,16 +113,9 @@ export class AIProcessingService {
   }
 
   private async generateSocialPost(transcript: string): Promise<string> {
-    const prompt = `
-      Przeanalizuj poniższą transkrypcję i stwórz angażujący post na social media.
-      Post powinien być krótki (maksymalnie 280 znaków), interesujący i zachęcać do interakcji.
-      Dodaj odpowiednie hashtagi na końcu.
-      
-      Transkrypcja:
-      ${transcript}
-      
-      Post na social media:
-    `
+    const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.SOCIAL_POST, {
+      transcript,
+    })
 
     const result = await this.model.generateContent(prompt)
     const response = await result.response
@@ -161,17 +126,10 @@ export class AIProcessingService {
     transcript: string,
     customPrompt: string
   ): Promise<string> {
-    const prompt = `
-      Przeanalizuj poniższą transkrypcję i odpowiedz na pytanie/polecenie użytkownika.
-      
-      Transkrypcja:
-      ${transcript}
-      
-      Polecenie użytkownika:
-      ${customPrompt}
-      
-      Odpowiedź:
-    `
+    const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.CUSTOM_OUTPUT, {
+      transcript,
+      customPrompt,
+    })
 
     const result = await this.model.generateContent(prompt)
     const response = await result.response

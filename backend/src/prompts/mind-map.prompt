@@ -1,0 +1,23 @@
+Przeanalizuj poniższą transkrypcję i stwórz mapę myśli w formacie JSON.
+Mapa myśli powinna mieć strukturę hierarchiczną z głównym tematem i podtematami.
+
+Format JSON:
+{
+  "id": "root",
+  "type": "input",
+  "data": { "label": "Główny temat" },
+  "position": { "x": 0, "y": 0 },
+  "children": [
+    {
+      "id": "child1",
+      "type": "default",
+      "data": { "label": "Podtemat 1" },
+      "position": { "x": -200, "y": 100 }
+    }
+  ]
+}
+
+Transkrypcja:
+{{transcript}}
+
+Mapa myśli (JSON): 

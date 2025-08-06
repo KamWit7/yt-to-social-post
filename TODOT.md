@@ -7,14 +7,14 @@ Jasne, oto lista zadań (to-do list) w formacie Markdown, podsumowująca nasze u
 #### Etap 1: Fundamenty i MVP (Minimum Viable Product)
 
 - [ ] **Architektura:** przetwarzania AI na backendzie.
-- [ ] **API Route:** Stworzyć główną logikę aplikacji wewnątrz API Route w Next.js (np. `/pages/api/summarize`).
-- [ ] **Wybór API AI:** Podjąć decyzję o wyborze API do generowania podsumowań.
+- [+] **API Route:** Stworzyć główną logikę aplikacji wewnątrz API Route w Next.js (np. `/pages/api/summarize`).
+- [+] **Wybór API AI:** Podjąć decyzję o wyborze API do generowania podsumowań.
   - Opcja A: **Google Gemini API** (dobry darmowy próg na start).
   - Opcja B: **OpenAI API** (dojrzałe i wydajne modele).
 - [ ] **Bezpieczeństwo:** Przechowywać klucz do API AI wyłącznie po stronie serwera w zmiennych środowiskowych (`.env.local`).
 - [ ] **Logika API Route:**
-  - [ ] Odbieranie linku do filmu z front-endu.
-  - [ ] Komunikacja z Twoim backendem w celu pobrania transkrypcji.
+  - [+] Odbieranie linku do filmu z front-endu.
+  - [+] Komunikacja z Twoim backendem w celu pobrania transkrypcji.
   - [ ] Wysłanie transkrypcji do wybranego API AI z odpowiednim promptem.
   - [ ] Odesłanie gotowego podsumowania do front-endu.
 - [ ] **Front-end:** Zbudować interfejs do wklejania linku i wyświetlania wyniku.

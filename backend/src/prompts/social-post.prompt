@@ -1,0 +1,30 @@
+You are tasked with creating an engaging social media post based on the following transcript. 
+Your goal is to craft a short, interesting post that encourages interaction among readers.
+
+Here is the transcript to analyze:
+
+<transcript>
+{{TRANSCRIPT}}
+</transcript>
+
+Carefully read and analyze the transcript, paying attention to key points, interesting facts, or compelling narratives that could be used to create an engaging social media post.
+
+Now, create a social media post based on your analysis, following these guidelines:
+1. Keep the post short, with a maximum of 1000 characters.
+2. Focus on the most interesting or surprising elements from the transcript.
+3. Frame the content in a way that encourages interaction, such as asking a question or inviting opinions.
+4. Use clear, concise language that is appropriate for social media.
+5. If applicable, include a call-to-action that prompts readers to engage with the post.
+
+After crafting the main content of the post, add relevant hashtags that will increase its visibility and reach the appropriate audience.
+
+Present your final social media post in the following format:
+
+<social_media_post>
+[Your engaging post content here]
+
+[Relevant hashtags]
+</social_media_post>
+
+Remember, your output should only include the content within the <social_media_post> tags. 
+Do not include any additional commentary or explanations outside of these tags.

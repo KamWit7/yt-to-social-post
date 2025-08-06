@@ -79,7 +79,6 @@ export class YouTubeTranscriptOrchestratorService
         requestBody,
         youtubeUrl
       )
-      console.log('___transcCRIPT', transcriptData)
 
       if (!transcriptData) {
         this.youtubeService.displayErrorReasons()
