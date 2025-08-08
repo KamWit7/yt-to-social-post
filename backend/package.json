@@ -17,6 +17,9 @@
     "test:middleware": "jest --testPathPattern=middleware",
     "test": "jest --testPathPattern=endpoints --testPathPattern=middleware",
     "test:verbose": "VERBOSE_TESTS=true npm run test --verbose",
+    "test:ai": "jest --testPathPattern=\"ai\"",
+    "test:ai:coverage": "jest --testPathPattern=\"ai\" --coverage",
+    "test:ai:watch": "jest --testPathPattern=\"ai\" --watch",
     "test:load": "node scripts/transcript-tester.js",
     "test:load:heavy": "node scripts/transcript-tester.js --runs 10"
   },

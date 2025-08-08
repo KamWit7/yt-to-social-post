@@ -6,6 +6,7 @@ import { describe, expect, test } from '@jest/globals'
 import './setup'
 
 // Import all test suites
+import './endpoints/ai.test'
 import './endpoints/errors.test'
 import './endpoints/health.test'
 import './endpoints/transcript.test'
@@ -16,6 +17,8 @@ import './middleware/corse.test'
 import './middleware/helmet.test'
 import './middleware/rateLimiting.test'
 import './middleware/requestProcessing.test'
+import './services/ai-processing.service.test'
+import './validations/ai.validations.test'
 
 // Test suite summary
 describe('YouTube Transcript API Test Suite', () => {
