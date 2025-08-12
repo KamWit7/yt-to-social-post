@@ -27,10 +27,11 @@ export function FormFields({
     DictionaryCode.Purpose
   )
 
-  console.log('purposeDict', purposeDict)
-
-  const purposeOptions = purposeDict
-    ? purposeDict?.map((item) => ({ label: item.label, value: item.code }))
+  const purposeOptions = Array.isArray(purposeDict?.data)
+    ? purposeDict.data?.map((item) => ({
+        label: item.label,
+        value: item.code,
+      }))
     : []
 
   return (

@@ -1,3 +1,4 @@
+import { ApiResponse } from '@/types'
 import { endpoints } from '../endpoints'
 import { apiFetch } from '../httpClient'
 
@@ -15,16 +16,12 @@ export type DictionaryItem = {
 
 export type DictionaryResponse = DictionaryItem[]
 
-type DictionaryApiResponse = {
-  success: boolean
-  data: DictionaryResponse
-}
-
 export async function getDictionary(
   code: DictionaryCode
-): Promise<DictionaryResponse> {
-  const response = await apiFetch<DictionaryApiResponse>(
+): Promise<ApiResponse<DictionaryResponse>> {
+  const response = await apiFetch<ApiResponse<DictionaryResponse>>(
     endpoints.dictionary.byCode(code)
   )
-  return response.data
+
+  return response
 }

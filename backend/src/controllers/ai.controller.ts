@@ -4,6 +4,7 @@ import {
   AIProcessingService,
 } from '../services/ai-processing.service'
 import { TypedRequestBody } from '../types/ai.types'
+import { ApiResponse } from '../types/api.types'
 import { ProcessTranscriptRequest } from '../validations/ai.validations'
 
 type ProcessTranscriptResponse = AIProcessingResult & {
@@ -18,7 +19,7 @@ export class AIController {
 
   async processTranscript(
     req: ProcessTranscriptRequestBody,
-    res: Response<ProcessTranscriptResponse>,
+    res: Response<ApiResponse<AIProcessingResult>>,
     next: NextFunction
   ) {
     try {
@@ -30,10 +31,7 @@ export class AIController {
         options,
       })
 
-      res.json({
-        success: true,
-        ...result,
-      })
+      res.json({ success: true, data: result })
     } catch (error) {
       next(error)
     }

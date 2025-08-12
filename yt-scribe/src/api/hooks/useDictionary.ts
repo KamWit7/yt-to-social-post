@@ -1,3 +1,4 @@
+import { ApiResponse } from '@/types'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import {
   DictionaryCode,
@@ -10,12 +11,12 @@ export const getDictionaryQueryKey = (code?: DictionaryCode) =>
 
 export function useDictionary(
   code?: DictionaryCode,
-  options?: Partial<UseQueryOptions<DictionaryResponse>>
+  options?: Partial<UseQueryOptions<ApiResponse<DictionaryResponse>>>
 ) {
-  return useQuery<DictionaryResponse>({
+  return useQuery<ApiResponse<DictionaryResponse>>({
     ...options,
     queryKey: getDictionaryQueryKey(code),
-    queryFn: () => getDictionary(code ?? ('' as DictionaryCode)),
+    queryFn: () => getDictionary(code as DictionaryCode),
     enabled: Boolean(code) && (options?.enabled ?? true),
   })
 }

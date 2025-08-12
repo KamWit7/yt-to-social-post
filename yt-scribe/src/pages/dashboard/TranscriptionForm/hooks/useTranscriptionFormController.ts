@@ -49,10 +49,10 @@ export function useTranscriptionFormController(
   })
 
   useEffect(() => {
-    if (transcriptData?.success && transcriptData.transcript) {
-      setValue(FORM_FIELD_NAMES.TRANSCRIPT, transcriptData.transcript)
+    if (transcriptData?.success && transcriptData.data?.transcript) {
+      setValue(FORM_FIELD_NAMES.TRANSCRIPT, transcriptData.data.transcript)
       if (onTranscriptChange) {
-        onTranscriptChange(transcriptData.transcript)
+        onTranscriptChange(transcriptData.data.transcript)
       }
     }
   }, [transcriptData, setValue, onTranscriptChange])
@@ -70,7 +70,7 @@ export function useTranscriptionFormController(
   } = useAIProcessing()
 
   const onSubmit = useCallback(
-    (data: TranscriptionFormData) => {
+    async (data: TranscriptionFormData) => {
       processAI({
         transcript: data[FORM_FIELD_NAMES.TRANSCRIPT],
         purpose: data[FORM_FIELD_NAMES.PURPOSE],

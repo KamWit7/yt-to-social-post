@@ -22,6 +22,7 @@ This document describes the conventions used in `src/api` for defining endpoint 
   - Sends JSON by default; parses JSON responses.
   - Throws `{ status: number; message: string }` on non‑OK responses.
   - Supports generic typing for both request and response.
+  - Services return data wrapped in `ApiResponse<T>` for consistency: `{ success, data?, error?, details? }`.
 
 ### Naming conventions
 
@@ -69,29 +70,32 @@ export const endpoints = {
 GET example:
 
 ```ts
-import { Post } from '../../types'
+import { ApiResponse, Post } from '../../types'
 import { endpoints } from '../endpoints'
 import { apiFetch } from '../httpClient'
 
-export async function getPost(id: string): Promise<Post> {
-  return apiFetch<Post>(endpoints.posts.byId(id))
+export async function getPost(id: string): Promise<ApiResponse<Post>> {
+  return apiFetch<ApiResponse<Post>>(endpoints.posts.byId(id))
 }
 ```
 
 POST example:
 
 ```ts
-import { CreateCommentRequest, Comment } from '../../types'
+import { ApiResponse, CreateCommentRequest, Comment } from '../../types'
 import { endpoints } from '../endpoints'
 import { apiFetch } from '../httpClient'
 
 export async function createComment(
   data: CreateCommentRequest
-): Promise<Comment> {
-  return apiFetch<Comment, CreateCommentRequest>(endpoints.comments.create, {
-    method: 'POST',
-    body: data,
-  })
+): Promise<ApiResponse<Comment>> {
+  return apiFetch<ApiResponse<Comment>, CreateCommentRequest>(
+    endpoints.comments.create,
+    {
+      method: 'POST',
+      body: data,
+    }
+  )
 }
 ```
 
@@ -105,16 +109,16 @@ Query hook example (with disabled state when param missing):
 
 ```ts
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
-import { Post } from '../../types'
+import { ApiResponse, Post } from '../../types'
 import { getPost } from '../services/postService'
 
 export const getPostQueryKey = (id?: string) => (id ? ['post', id] : ['post'])
 
 export function usePost(
   id: string | null,
-  options?: Partial<UseQueryOptions<Post>>
+  options?: Partial<UseQueryOptions<ApiResponse<Post>>>
 ) {
-  return useQuery<Post>({
+  return useQuery<ApiResponse<Post>>({
     ...options,
     queryKey: getPostQueryKey(id ?? ''),
     queryFn: () => getPost(id ?? ''),
@@ -131,17 +135,19 @@ import {
   UseMutationOptions,
   useQueryClient,
 } from '@tanstack/react-query'
-import { CreateCommentRequest, Comment } from '../../types'
+import { ApiResponse, CreateCommentRequest, Comment } from '../../types'
 import { createComment } from '../services/commentService'
 import { getPostQueryKey } from './usePost'
 
 export function useCreateComment(
   postId: string,
-  options?: Partial<UseMutationOptions<Comment, Error, CreateCommentRequest>>
+  options?: Partial<
+    UseMutationOptions<ApiResponse<Comment>, Error, CreateCommentRequest>
+  >
 ) {
   const queryClient = useQueryClient()
 
-  return useMutation<Comment, Error, CreateCommentRequest>({
+  return useMutation<ApiResponse<Comment>, Error, CreateCommentRequest>({
     ...options,
     mutationFn: createComment,
     onSuccess: (data, variables, ctx) => {
@@ -185,8 +191,10 @@ export type DictionaryResponse = DictionaryItem[]
 
 export async function getDictionary(
   code: 'purpose'
-): Promise<DictionaryResponse> {
-  return apiFetch<DictionaryResponse>(endpoints.dictionary.byCode(code))
+): Promise<ApiResponse<DictionaryResponse>> {
+  return apiFetch<ApiResponse<DictionaryResponse>>(
+    endpoints.dictionary.byCode(code)
+  )
 }
 ```
 
@@ -198,15 +206,16 @@ import {
   getDictionary,
   DictionaryResponse,
 } from '../services/dictionaryService'
+import { ApiResponse } from '../../types'
 
 export const getDictionaryQueryKey = (code?: 'purpose') =>
   code ? ['dictionary', code] : ['dictionary']
 
 export function useDictionary(
   code: 'purpose' | null,
-  options?: Partial<UseQueryOptions<DictionaryResponse>>
+  options?: Partial<UseQueryOptions<ApiResponse<DictionaryResponse>>>
 ) {
-  return useQuery<DictionaryResponse>({
+  return useQuery<ApiResponse<DictionaryResponse>>({
     ...options,
     queryKey: getDictionaryQueryKey(code ?? ('' as 'purpose')),
     queryFn: () => getDictionary((code ?? 'purpose') as 'purpose'),

@@ -70,15 +70,16 @@ describe('AI Endpoints', () => {
           .expect(200)
 
         expect(response.body.success).toBe(true)
-        expect(response.body).toHaveProperty('summary')
-        expect(response.body).toHaveProperty('topics')
-        expect(response.body).toHaveProperty('mindMap')
+        expect(response.body).toHaveProperty('data')
+        expect(response.body.data).toHaveProperty('summary')
+        expect(response.body.data).toHaveProperty('topics')
+        expect(response.body.data).toHaveProperty('mindMap')
         // Optional properties may be undefined and not present in response
         expect(['string', 'undefined']).toContain(
-          typeof response.body.socialPost
+          typeof response.body.data.socialPost
         )
         expect(['string', 'undefined']).toContain(
-          typeof response.body.customOutput
+          typeof response.body.data.customOutput
         )
       })
 
@@ -97,9 +98,10 @@ describe('AI Endpoints', () => {
           .expect(200)
 
         expect(response.body.success).toBe(true)
-        expect(response.body).toHaveProperty('summary')
-        expect(response.body).toHaveProperty('topics')
-        expect(response.body).toHaveProperty('socialPost')
+        expect(response.body).toHaveProperty('data')
+        expect(response.body.data).toHaveProperty('summary')
+        expect(response.body.data).toHaveProperty('topics')
+        expect(response.body.data).toHaveProperty('socialPost')
       })
 
       test('should process transcript with Custom purpose and custom prompt', async () => {
@@ -117,9 +119,10 @@ describe('AI Endpoints', () => {
           .expect(200)
 
         expect(response.body.success).toBe(true)
-        expect(response.body).toHaveProperty('summary')
-        expect(response.body).toHaveProperty('topics')
-        expect(response.body).toHaveProperty('customOutput')
+        expect(response.body).toHaveProperty('data')
+        expect(response.body.data).toHaveProperty('summary')
+        expect(response.body.data).toHaveProperty('topics')
+        expect(response.body.data).toHaveProperty('customOutput')
       })
 
       test('should process transcript with all options enabled', async () => {
@@ -139,9 +142,10 @@ describe('AI Endpoints', () => {
           .expect(200)
 
         expect(response.body.success).toBe(true)
-        expect(response.body).toHaveProperty('summary')
-        expect(response.body).toHaveProperty('topics')
-        expect(response.body).toHaveProperty('mindMap')
+        expect(response.body).toHaveProperty('data')
+        expect(response.body.data).toHaveProperty('summary')
+        expect(response.body.data).toHaveProperty('topics')
+        expect(response.body.data).toHaveProperty('mindMap')
       })
 
       test('should process very long transcript', async () => {
@@ -160,8 +164,9 @@ describe('AI Endpoints', () => {
           .expect(200)
 
         expect(response.body.success).toBe(true)
-        expect(response.body).toHaveProperty('summary')
-        expect(response.body).toHaveProperty('topics')
+        expect(response.body).toHaveProperty('data')
+        expect(response.body.data).toHaveProperty('summary')
+        expect(response.body.data).toHaveProperty('topics')
       })
 
       test('should process transcript with special characters', async () => {
@@ -181,8 +186,9 @@ describe('AI Endpoints', () => {
           .expect(200)
 
         expect(response.body.success).toBe(true)
-        expect(response.body).toHaveProperty('summary')
-        expect(response.body).toHaveProperty('topics')
+        expect(response.body).toHaveProperty('data')
+        expect(response.body.data).toHaveProperty('summary')
+        expect(response.body.data).toHaveProperty('topics')
       })
     })
 
@@ -415,7 +421,8 @@ describe('AI Endpoints', () => {
           .expect(200)
 
         expect(response.body.success).toBe(true)
-        expect(response.body).toHaveProperty('customOutput')
+        expect(response.body).toHaveProperty('data')
+        expect(response.body.data).toHaveProperty('customOutput')
       })
 
       test('should handle request with special characters in custom prompt', async () => {
@@ -435,7 +442,8 @@ describe('AI Endpoints', () => {
           .expect(200)
 
         expect(response.body.success).toBe(true)
-        expect(response.body).toHaveProperty('customOutput')
+        expect(response.body).toHaveProperty('data')
+        expect(response.body.data).toHaveProperty('customOutput')
       })
 
       test('should handle request with Learning purpose but no mind map option', async () => {
@@ -453,7 +461,8 @@ describe('AI Endpoints', () => {
           .expect(200)
 
         expect(response.body.success).toBe(true)
-        expect(response.body.mindMap).toBeUndefined()
+        expect(response.body).toHaveProperty('data')
+        expect(response.body.data.mindMap).toBeUndefined()
       })
 
       test('should handle request with SocialMedia purpose but no social post option', async () => {
@@ -471,7 +480,8 @@ describe('AI Endpoints', () => {
           .expect(200)
 
         expect(response.body.success).toBe(true)
-        expect(response.body.socialPost).toBeUndefined()
+        expect(response.body).toHaveProperty('data')
+        expect(response.body.data.socialPost).toBeUndefined()
       })
 
       test('should handle request with Custom purpose but empty custom prompt', async () => {
@@ -489,7 +499,8 @@ describe('AI Endpoints', () => {
           .expect(200)
 
         expect(response.body.success).toBe(true)
-        expect(response.body.customOutput).toBeUndefined()
+        expect(response.body).toHaveProperty('data')
+        expect(response.body.data.customOutput).toBeUndefined()
       })
     })
 
@@ -510,23 +521,24 @@ describe('AI Endpoints', () => {
 
         // Check response structure
         expect(response.body).toHaveProperty('success', true)
-        expect(response.body).toHaveProperty('summary')
-        expect(response.body).toHaveProperty('topics')
-        expect(response.body).toHaveProperty('mindMap')
+        expect(response.body).toHaveProperty('data')
+        expect(response.body.data).toHaveProperty('summary')
+        expect(response.body.data).toHaveProperty('topics')
+        expect(response.body.data).toHaveProperty('mindMap')
         // Optional properties may be undefined and not present in response
         expect(['string', 'undefined']).toContain(
-          typeof response.body.socialPost
+          typeof response.body.data.socialPost
         )
         expect(['string', 'undefined']).toContain(
-          typeof response.body.customOutput
+          typeof response.body.data.customOutput
         )
 
         // Check data types
         expect(typeof response.body.success).toBe('boolean')
-        expect(typeof response.body.summary).toBe('string')
-        expect(typeof response.body.topics).toBe('string')
+        expect(typeof response.body.data.summary).toBe('string')
+        expect(typeof response.body.data.topics).toBe('string')
         expect(['string', 'object', 'undefined']).toContain(
-          typeof response.body.mindMap
+          typeof response.body.data.mindMap
         )
       })
 

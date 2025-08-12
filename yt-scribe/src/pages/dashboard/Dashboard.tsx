@@ -1,6 +1,4 @@
 'use client'
-
-import { useAIProcessing } from '@/api/hooks/useAIProcessing'
 import { Card } from '@/components/ui/card'
 import { Fragment, useState } from 'react'
 import TranscriptionForm from './TranscriptionForm/TranscriptionForm'
@@ -8,12 +6,6 @@ import TranscriptionResults from './TranscriptionResults/TranscriptionResults'
 
 export default function Dashboard() {
   const [currentTranscript, setCurrentTranscript] = useState('')
-
-  const {
-    data: aiResult,
-    isPending: isAIProcessing,
-    error: aiError,
-  } = useAIProcessing()
 
   const handleTranscriptChange = (transcript: string) => {
     setCurrentTranscript(transcript)
@@ -25,9 +17,6 @@ export default function Dashboard() {
         <TranscriptionForm onTranscriptChange={handleTranscriptChange} />
       </Card>
       <TranscriptionResults
-        data={aiResult}
-        isLoading={isAIProcessing}
-        error={aiError}
         transcript={currentTranscript}
         onTranscriptChange={handleTranscriptChange}
       />

@@ -1,7 +1,20 @@
-import { TranscriptResponse } from '../../types'
+import { ApiResponse } from '../../types'
 import { endpoints } from '../endpoints'
 import { apiFetch } from '../httpClient'
 
-export async function getTranscript(url: string): Promise<TranscriptResponse> {
-  return apiFetch<TranscriptResponse>(endpoints.transcript.byUrl(url))
+export interface TranscriptResponse {
+  transcript?: string
+  title?: string
+  description?: string
+  error?: string
+}
+
+export async function getTranscript(
+  url: string
+): Promise<ApiResponse<TranscriptResponse>> {
+  const response = await apiFetch<ApiResponse<TranscriptResponse>>(
+    endpoints.transcript.byUrl(url)
+  )
+
+  return response
 }

@@ -1,15 +1,14 @@
+export interface ApiResponse<T> {
+  success: boolean
+  data?: T
+  error?: string
+  details?: string
+}
+
 export interface TranscriptSegment {
   text: string
   duration: number
   offset: number
-}
-
-export interface TranscriptResponse {
-  success: boolean
-  transcript?: string
-  title?: string
-  description?: string
-  error?: string
 }
 
 export interface ApiError {
@@ -28,7 +27,6 @@ export interface AIProcessingRequest {
 }
 
 export interface AIProcessingResponse {
-  success: boolean
   summary?: string
   topics?: string
   mindMap?: Record<string, unknown>

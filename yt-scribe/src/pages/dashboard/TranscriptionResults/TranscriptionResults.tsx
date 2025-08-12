@@ -3,7 +3,10 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
-import { AIProcessingResponse } from '@/types'
+// types imported previously are no longer needed here
+import { getAIProcessingQueryKey } from '@/api/hooks/useAIProcessing'
+import { useCachedMutation } from '@/hooks/useCachedMutation'
+import { AIProcessingResponse, ApiResponse } from '@/types'
 import {
   Brain,
   Copy,
@@ -16,20 +19,18 @@ import {
 import { useState } from 'react'
 
 interface TranscriptionResultsProps {
-  data?: AIProcessingResponse
-  isLoading: boolean
-  error?: Error | null
   transcript?: string
   onTranscriptChange?: (transcript: string) => void
 }
 
 export default function TranscriptionResults({
-  data,
-  isLoading,
-  error,
   transcript,
   onTranscriptChange,
 }: TranscriptionResultsProps) {
+  const { isLoading, data, error } = useCachedMutation<
+    ApiResponse<AIProcessingResponse>
+  >(getAIProcessingQueryKey())
+
   const [copiedField, setCopiedField] = useState<string | null>(null)
   const [isEditingTranscript, setIsEditingTranscript] = useState(false)
   const [editedTranscript, setEditedTranscript] = useState(transcript || '')
@@ -65,14 +66,14 @@ export default function TranscriptionResults({
         <CardContent className='pt-6'>
           <div className='text-center text-destructive'>
             <p className='font-medium'>Wystąpił błąd podczas przetwarzania</p>
-            <p className='text-sm mt-1'>{error.message}</p>
+            <p className='text-sm mt-1'>{error?.message}</p>
           </div>
         </CardContent>
       </Card>
     )
   }
 
-  if (!data || !data.success) {
+  if (!data || !data.success || !data.data) {
     return null
   }
 
@@ -146,7 +147,7 @@ export default function TranscriptionResults({
       )}
 
       {/* Streszczenie */}
-      {data.summary && (
+      {data.data.summary && (
         <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
@@ -156,11 +157,11 @@ export default function TranscriptionResults({
           </CardHeader>
           <CardContent>
             <div className='flex justify-between items-start gap-4'>
-              <p className='text-sm leading-7 flex-1'>{data.summary}</p>
+              <p className='text-sm leading-7 flex-1'>{data.data.summary}</p>
               <Button
                 variant='outline'
                 size='sm'
-                onClick={() => copyToClipboard(data.summary!, 'summary')}
+                onClick={() => copyToClipboard(data.data!.summary!, 'summary')}
                 className='shrink-0'>
                 <Copy className='w-4 h-4 mr-2' />
                 {copiedField === 'summary' ? 'Skopiowano!' : 'Kopiuj'}
@@ -171,7 +172,7 @@ export default function TranscriptionResults({
       )}
 
       {/* Tematy */}
-      {data.topics && (
+      {data.data.topics && (
         <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
@@ -182,12 +183,12 @@ export default function TranscriptionResults({
           <CardContent>
             <div className='flex justify-between items-start gap-4'>
               <div className='flex-1 whitespace-pre-line text-sm leading-7'>
-                {data.topics}
+                {data.data.topics}
               </div>
               <Button
                 variant='outline'
                 size='sm'
-                onClick={() => copyToClipboard(data.topics!, 'topics')}
+                onClick={() => copyToClipboard(data.data!.topics!, 'topics')}
                 className='shrink-0'>
                 <Copy className='w-4 h-4 mr-2' />
                 {copiedField === 'topics' ? 'Skopiowano!' : 'Kopiuj'}
@@ -198,7 +199,7 @@ export default function TranscriptionResults({
       )}
 
       {/* Mapa myśli */}
-      {data.mindMap && (
+      {data.data.mindMap && (
         <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
@@ -209,14 +210,14 @@ export default function TranscriptionResults({
           <CardContent>
             <div className='flex justify-between items-start gap-4'>
               <pre className='flex-1 text-xs bg-muted p-3 rounded-lg overflow-auto max-h-64'>
-                {JSON.stringify(data.mindMap, null, 2)}
+                {JSON.stringify(data.data.mindMap, null, 2)}
               </pre>
               <Button
                 variant='outline'
                 size='sm'
                 onClick={() =>
                   copyToClipboard(
-                    JSON.stringify(data.mindMap, null, 2),
+                    JSON.stringify(data.data!.mindMap, null, 2),
                     'mindMap'
                   )
                 }
@@ -230,7 +231,7 @@ export default function TranscriptionResults({
       )}
 
       {/* Post na social media */}
-      {data.socialPost && (
+      {data.data.socialPost && (
         <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
@@ -241,12 +242,14 @@ export default function TranscriptionResults({
           <CardContent>
             <div className='flex justify-between items-start gap-4'>
               <div className='flex-1 whitespace-pre-line text-sm leading-7'>
-                {data.socialPost}
+                {data.data.socialPost}
               </div>
               <Button
                 variant='outline'
                 size='sm'
-                onClick={() => copyToClipboard(data.socialPost!, 'socialPost')}
+                onClick={() =>
+                  copyToClipboard(data.data!.socialPost!, 'socialPost')
+                }
                 className='shrink-0'>
                 <Copy className='w-4 h-4 mr-2' />
                 {copiedField === 'socialPost' ? 'Skopiowano!' : 'Kopiuj'}
@@ -257,7 +260,7 @@ export default function TranscriptionResults({
       )}
 
       {/* Własne polecenie */}
-      {data.customOutput && (
+      {data.data.customOutput && (
         <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
@@ -268,13 +271,13 @@ export default function TranscriptionResults({
           <CardContent>
             <div className='flex justify-between items-start gap-4'>
               <div className='flex-1 whitespace-pre-line text-sm leading-7'>
-                {data.customOutput}
+                {data.data.customOutput}
               </div>
               <Button
                 variant='outline'
                 size='sm'
                 onClick={() =>
-                  copyToClipboard(data.customOutput!, 'customOutput')
+                  copyToClipboard(data.data!.customOutput!, 'customOutput')
                 }
                 className='shrink-0'>
                 <Copy className='w-4 h-4 mr-2' />
