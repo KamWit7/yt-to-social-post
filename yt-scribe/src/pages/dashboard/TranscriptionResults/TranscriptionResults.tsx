@@ -48,12 +48,12 @@ export default function TranscriptionResults({
     return (
       <div className='space-y-6'>
         <div className='animate-pulse'>
-          <div className='h-4 bg-gray-200 rounded w-1/4 mb-4'></div>
-          <div className='h-32 bg-gray-200 rounded'></div>
+          <div className='h-4 bg-muted rounded w-1/4 mb-4'></div>
+          <div className='h-32 bg-muted rounded-lg'></div>
         </div>
         <div className='animate-pulse'>
-          <div className='h-4 bg-gray-200 rounded w-1/4 mb-4'></div>
-          <div className='h-24 bg-gray-200 rounded'></div>
+          <div className='h-4 bg-muted rounded w-1/4 mb-4'></div>
+          <div className='h-24 bg-muted rounded-lg'></div>
         </div>
       </div>
     )
@@ -92,7 +92,7 @@ export default function TranscriptionResults({
     <div className='space-y-6'>
       {/* Transkrypcja */}
       {transcript && (
-        <Card>
+        <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
           <CardHeader>
             <CardTitle className='flex items-center justify-between'>
               <div className='flex items-center gap-2'>
@@ -137,7 +137,7 @@ export default function TranscriptionResults({
                 className='w-full'
               />
             ) : (
-              <div className='whitespace-pre-line text-sm max-h-64 overflow-y-auto'>
+              <div className='whitespace-pre-line text-sm leading-7 max-h-64 overflow-y-auto'>
                 {transcript}
               </div>
             )}
@@ -147,7 +147,7 @@ export default function TranscriptionResults({
 
       {/* Streszczenie */}
       {data.summary && (
-        <Card>
+        <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
               <FileText className='w-5 h-5' />
@@ -156,7 +156,7 @@ export default function TranscriptionResults({
           </CardHeader>
           <CardContent>
             <div className='flex justify-between items-start gap-4'>
-              <p className='text-sm leading-relaxed flex-1'>{data.summary}</p>
+              <p className='text-sm leading-7 flex-1'>{data.summary}</p>
               <Button
                 variant='outline'
                 size='sm'
@@ -172,7 +172,7 @@ export default function TranscriptionResults({
 
       {/* Tematy */}
       {data.topics && (
-        <Card>
+        <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
               <Hash className='w-5 h-5' />
@@ -181,7 +181,7 @@ export default function TranscriptionResults({
           </CardHeader>
           <CardContent>
             <div className='flex justify-between items-start gap-4'>
-              <div className='flex-1 whitespace-pre-line text-sm'>
+              <div className='flex-1 whitespace-pre-line text-sm leading-7'>
                 {data.topics}
               </div>
               <Button
@@ -199,7 +199,7 @@ export default function TranscriptionResults({
 
       {/* Mapa myśli */}
       {data.mindMap && (
-        <Card>
+        <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
               <Brain className='w-5 h-5' />
@@ -208,7 +208,7 @@ export default function TranscriptionResults({
           </CardHeader>
           <CardContent>
             <div className='flex justify-between items-start gap-4'>
-              <pre className='flex-1 text-xs bg-gray-50 p-3 rounded overflow-auto max-h-64'>
+              <pre className='flex-1 text-xs bg-muted p-3 rounded-lg overflow-auto max-h-64'>
                 {JSON.stringify(data.mindMap, null, 2)}
               </pre>
               <Button
@@ -231,7 +231,7 @@ export default function TranscriptionResults({
 
       {/* Post na social media */}
       {data.socialPost && (
-        <Card>
+        <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
               <MessageSquare className='w-5 h-5' />
@@ -240,7 +240,7 @@ export default function TranscriptionResults({
           </CardHeader>
           <CardContent>
             <div className='flex justify-between items-start gap-4'>
-              <div className='flex-1 whitespace-pre-line text-sm'>
+              <div className='flex-1 whitespace-pre-line text-sm leading-7'>
                 {data.socialPost}
               </div>
               <Button
@@ -258,7 +258,7 @@ export default function TranscriptionResults({
 
       {/* Własne polecenie */}
       {data.customOutput && (
-        <Card>
+        <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
               <FileText className='w-5 h-5' />
@@ -267,7 +267,7 @@ export default function TranscriptionResults({
           </CardHeader>
           <CardContent>
             <div className='flex justify-between items-start gap-4'>
-              <div className='flex-1 whitespace-pre-line text-sm'>
+              <div className='flex-1 whitespace-pre-line text-sm leading-7'>
                 {data.customOutput}
               </div>
               <Button

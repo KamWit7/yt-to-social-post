@@ -2,7 +2,7 @@ import { queryClient } from '@/components/provider/QueryProvider'
 import { QueryKey, QueryState, useIsFetching } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
-type UseCahcedGetReturn<T> = {
+type UseCachedGetReturn<T> = {
   cache: QueryState<T, Error>
   isLoading: boolean
 }
@@ -22,7 +22,7 @@ const DEFAULT_CACHE = {
   fetchStatus: 'idle' as const,
 }
 
-export function useCachedGet<T>(queryKey: QueryKey): UseCahcedGetReturn<T> {
+export function useCachedGet<T>(queryKey: QueryKey): UseCachedGetReturn<T> {
   const isLoading =
     useIsFetching({
       queryKey,

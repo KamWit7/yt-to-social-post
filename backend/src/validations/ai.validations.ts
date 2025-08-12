@@ -1,20 +1,31 @@
 import { z } from 'zod'
-
-export const Purpose = {
-  Learning: 'learning',
-  SocialMedia: 'social_media',
-  Custom: 'custom',
-} as const
+import { Dictionary } from '../constants/dictionaries'
 
 export const ProcessTranscriptOptionsSchema = z
   .object({
-    generateMindMap: z.boolean().optional(),
-    generateSocialPost: z.boolean().optional(),
-    customPrompt: z.string().optional(),
+    generateMindMap: z.preprocess(
+      (val) => (val === null ? undefined : val),
+      z.boolean().optional()
+    ),
+    generateSocialPost: z.preprocess(
+      (val) => (val === null ? undefined : val),
+      z.boolean().optional()
+    ),
+    customPrompt: z.preprocess(
+      (val) => (val === null ? undefined : val),
+      z.string().optional()
+    ),
   })
   .refine(
-    (data) =>
-      data.generateMindMap || data.generateSocialPost || data.customPrompt,
+    (data) => {
+      const hasValidCustomPrompt =
+        data.customPrompt && data.customPrompt.trim().length > 0
+      return (
+        data.generateMindMap === true ||
+        data.generateSocialPost === true ||
+        hasValidCustomPrompt
+      )
+    },
     {
       message:
         'Musisz wybrać przynajmniej jedną opcję: generateMindMap, generateSocialPost lub customPrompt',
@@ -23,8 +34,10 @@ export const ProcessTranscriptOptionsSchema = z
   )
 
 export const ProcessTranscriptRequestSchema = z.object({
-  transcript: z.string().min(1, 'Transkrypcja nie może być pusta'),
-  purpose: z.enum(Object.values(Purpose)),
+  transcript: z.string().refine((val) => val && val.trim().length > 0, {
+    message: 'Transkrypcja nie może być pusta',
+  }),
+  purpose: z.enum(Object.values(Dictionary.Purpose) as [string, ...string[]]),
   options: ProcessTranscriptOptionsSchema,
 })
 

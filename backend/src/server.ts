@@ -8,6 +8,7 @@ import {
 } from './middleware/error-handler.middleware'
 import { limiter } from './middleware/limiter.middleware'
 import aiRoutes from './routes/ai.routes'
+import dictionaryRoutes from './routes/dictionary.routes'
 import healthRoutes from './routes/health.routes'
 import youtubeRoutes from './routes/youtube.routes'
 
@@ -30,6 +31,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
 app.use('/api', youtubeRoutes)
 app.use('/api', healthRoutes)
+app.use('/api', dictionaryRoutes)
 app.use('/api/ai', aiRoutes)
 
 app.use(notFoundHandler)

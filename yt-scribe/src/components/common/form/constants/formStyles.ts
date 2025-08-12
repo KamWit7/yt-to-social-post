@@ -5,11 +5,11 @@ export const FORM_STYLES = {
   },
 
   textarea: {
-    base: 'flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm resize-none',
+    base: 'flex min-h-[96px] w-full rounded-lg border border-input bg-transparent px-3.5 py-2.5 text-base shadow-xs transition-all duration-200 outline-none placeholder:text-muted-foreground hover:border-ring/60 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm resize-none',
   },
 
   label: {
-    base: 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+    base: 'text-sm font-medium leading-none tracking-tight peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
     required: 'after:content-["*"] after:ml-1 after:text-destructive',
   },
 
@@ -18,8 +18,8 @@ export const FORM_STYLES = {
   },
 
   container: {
-    base: 'space-y-4',
-    field: 'space-y-2',
+    base: 'space-y-5',
+    field: 'space-y-2.5',
   },
 } as const
 

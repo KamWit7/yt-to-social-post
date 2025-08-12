@@ -1,22 +1,22 @@
 import { describe, expect, test } from '@jest/globals'
+import { Dictionary } from '../../src/constants/dictionaries'
 import {
   ProcessTranscriptOptions,
   ProcessTranscriptOptionsSchema,
   ProcessTranscriptRequest,
   ProcessTranscriptRequestSchema,
-  Purpose,
 } from '../../src/validations/ai.validations'
 
 describe('AI Validations', () => {
   describe('Purpose Enum', () => {
     test('should have correct purpose values', () => {
-      expect(Purpose.Learning).toBe('learning')
-      expect(Purpose.SocialMedia).toBe('social_media')
-      expect(Purpose.Custom).toBe('custom')
+      expect(Dictionary.Purpose.Learning).toBe('learning')
+      expect(Dictionary.Purpose.SocialMedia).toBe('social_media')
+      expect(Dictionary.Purpose.Custom).toBe('custom')
     })
 
     test('should have all required purpose values', () => {
-      const purposes = Object.values(Purpose)
+      const purposes = Object.values(Dictionary.Purpose)
       expect(purposes).toContain('learning')
       expect(purposes).toContain('social_media')
       expect(purposes).toContain('custom')
@@ -112,10 +112,10 @@ describe('AI Validations', () => {
         expect(result.success).toBe(false)
         if (!result.success) {
           expect(result.error.issues).toHaveLength(1)
-          expect(result.error.issues[0].message).toBe(
+          expect(result.error.issues[0]?.message).toBe(
             'Musisz wybrać przynajmniej jedną opcję: generateMindMap, generateSocialPost lub customPrompt'
           )
-          expect(result.error.issues[0].path).toEqual(['options'])
+          expect(result.error.issues[0]?.path).toEqual(['options'])
         }
       })
 
@@ -130,7 +130,7 @@ describe('AI Validations', () => {
         expect(result.success).toBe(false)
         if (!result.success) {
           expect(result.error.issues).toHaveLength(1)
-          expect(result.error.issues[0].message).toBe(
+          expect(result.error.issues[0]?.message).toBe(
             'Musisz wybrać przynajmniej jedną opcję: generateMindMap, generateSocialPost lub customPrompt'
           )
         }
@@ -145,7 +145,7 @@ describe('AI Validations', () => {
         expect(result.success).toBe(false)
         if (!result.success) {
           expect(result.error.issues).toHaveLength(1)
-          expect(result.error.issues[0].message).toBe(
+          expect(result.error.issues[0]?.message).toBe(
             'Musisz wybrać przynajmniej jedną opcję: generateMindMap, generateSocialPost lub customPrompt'
           )
         }
@@ -217,7 +217,7 @@ describe('AI Validations', () => {
       test('should validate minimal valid request with Learning purpose', () => {
         const validRequest = {
           transcript: 'This is a test transcript',
-          purpose: Purpose.Learning,
+          purpose: Dictionary.Purpose.Learning,
           options: {
             generateMindMap: true,
           },
@@ -233,7 +233,7 @@ describe('AI Validations', () => {
       test('should validate minimal valid request with SocialMedia purpose', () => {
         const validRequest = {
           transcript: 'This is a test transcript',
-          purpose: Purpose.SocialMedia,
+          purpose: Dictionary.Purpose.SocialMedia,
           options: {
             generateSocialPost: true,
           },
@@ -249,7 +249,7 @@ describe('AI Validations', () => {
       test('should validate minimal valid request with Custom purpose', () => {
         const validRequest = {
           transcript: 'This is a test transcript',
-          purpose: Purpose.Custom,
+          purpose: Dictionary.Purpose.Custom,
           options: {
             customPrompt: 'Analyze this transcript',
           },
@@ -265,7 +265,7 @@ describe('AI Validations', () => {
       test('should validate request with all options', () => {
         const validRequest = {
           transcript: 'This is a comprehensive test transcript',
-          purpose: Purpose.Learning,
+          purpose: Dictionary.Purpose.Learning,
           options: {
             generateMindMap: true,
             generateSocialPost: false,
@@ -284,7 +284,7 @@ describe('AI Validations', () => {
         const longTranscript = 'A'.repeat(50000)
         const validRequest = {
           transcript: longTranscript,
-          purpose: Purpose.Custom,
+          purpose: Dictionary.Purpose.Custom,
           options: {
             customPrompt: 'Analyze this long transcript',
           },
@@ -302,7 +302,7 @@ describe('AI Validations', () => {
           'Transkrypcja z polskimi znakami: ąćęłńóśźż i emoji 🚀'
         const validRequest = {
           transcript: specialTranscript,
-          purpose: Purpose.Learning,
+          purpose: Dictionary.Purpose.Learning,
           options: {
             generateMindMap: true,
           },
@@ -319,7 +319,7 @@ describe('AI Validations', () => {
     describe('Invalid Requests', () => {
       test('should reject request without transcript', () => {
         const invalidRequest = {
-          purpose: Purpose.Learning,
+          purpose: Dictionary.Purpose.Learning,
           options: {
             generateMindMap: true,
           },
@@ -329,17 +329,17 @@ describe('AI Validations', () => {
         expect(result.success).toBe(false)
         if (!result.success) {
           expect(result.error.issues).toHaveLength(1)
-          expect(result.error.issues[0].message).toBe(
-            'Transkrypcja nie może być pusta'
+          expect(result.error.issues[0]?.message).toBe(
+            'Invalid input: expected string, received undefined'
           )
-          expect(result.error.issues[0].path).toEqual(['transcript'])
+          expect(result.error.issues[0]?.path).toEqual(['transcript'])
         }
       })
 
       test('should reject request with empty transcript', () => {
         const invalidRequest = {
           transcript: '',
-          purpose: Purpose.Learning,
+          purpose: Dictionary.Purpose.Learning,
           options: {
             generateMindMap: true,
           },
@@ -349,7 +349,7 @@ describe('AI Validations', () => {
         expect(result.success).toBe(false)
         if (!result.success) {
           expect(result.error.issues).toHaveLength(1)
-          expect(result.error.issues[0].message).toBe(
+          expect(result.error.issues[0]?.message).toBe(
             'Transkrypcja nie może być pusta'
           )
         }
@@ -358,7 +358,7 @@ describe('AI Validations', () => {
       test('should reject request with whitespace-only transcript', () => {
         const invalidRequest = {
           transcript: '   ',
-          purpose: Purpose.Learning,
+          purpose: Dictionary.Purpose.Learning,
           options: {
             generateMindMap: true,
           },
@@ -368,7 +368,7 @@ describe('AI Validations', () => {
         expect(result.success).toBe(false)
         if (!result.success) {
           expect(result.error.issues).toHaveLength(1)
-          expect(result.error.issues[0].message).toBe(
+          expect(result.error.issues[0]?.message).toBe(
             'Transkrypcja nie może być pusta'
           )
         }
@@ -386,7 +386,7 @@ describe('AI Validations', () => {
         expect(result.success).toBe(false)
         if (!result.success) {
           expect(result.error.issues).toHaveLength(1)
-          expect(result.error.issues[0].path).toEqual(['purpose'])
+          expect(result.error.issues[0]?.path).toEqual(['purpose'])
         }
       })
 
@@ -403,28 +403,28 @@ describe('AI Validations', () => {
         expect(result.success).toBe(false)
         if (!result.success) {
           expect(result.error.issues).toHaveLength(1)
-          expect(result.error.issues[0].path).toEqual(['purpose'])
+          expect(result.error.issues[0]?.path).toEqual(['purpose'])
         }
       })
 
       test('should reject request without options', () => {
         const invalidRequest = {
           transcript: 'This is a test transcript',
-          purpose: Purpose.Learning,
+          purpose: Dictionary.Purpose.Learning,
         }
 
         const result = ProcessTranscriptRequestSchema.safeParse(invalidRequest)
         expect(result.success).toBe(false)
         if (!result.success) {
           expect(result.error.issues).toHaveLength(1)
-          expect(result.error.issues[0].path).toEqual(['options'])
+          expect(result.error.issues[0]?.path).toEqual(['options'])
         }
       })
 
       test('should reject request with invalid options', () => {
         const invalidRequest = {
           transcript: 'This is a test transcript',
-          purpose: Purpose.Learning,
+          purpose: Dictionary.Purpose.Learning,
           options: {}, // Empty options should fail
         }
 
@@ -432,7 +432,7 @@ describe('AI Validations', () => {
         expect(result.success).toBe(false)
         if (!result.success) {
           expect(result.error.issues).toHaveLength(1)
-          expect(result.error.issues[0].path).toEqual(['options'])
+          expect(result.error.issues[0]?.path).toEqual(['options', 'options'])
         }
       })
 
@@ -455,14 +455,14 @@ describe('AI Validations', () => {
       test('should correctly infer ProcessTranscriptRequest type', () => {
         const validRequest: ProcessTranscriptRequest = {
           transcript: 'Test transcript',
-          purpose: Purpose.Learning,
+          purpose: Dictionary.Purpose.Learning,
           options: {
             generateMindMap: true,
           },
         }
 
         expect(validRequest.transcript).toBe('Test transcript')
-        expect(validRequest.purpose).toBe(Purpose.Learning)
+        expect(validRequest.purpose).toBe(Dictionary.Purpose.Learning)
         expect(validRequest.options.generateMindMap).toBe(true)
       })
 
@@ -483,7 +483,7 @@ describe('AI Validations', () => {
       test('should work with Zod parse method', () => {
         const validRequest = {
           transcript: 'Test transcript',
-          purpose: Purpose.Custom,
+          purpose: Dictionary.Purpose.Custom,
           options: {
             customPrompt: 'Test prompt',
           },

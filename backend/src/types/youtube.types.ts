@@ -81,13 +81,8 @@ export interface YouTubeExtractedData {
   title?: string
   description?: string
 }
-
-/**
- * Generic API response wrapper
- */
-export interface ApiResponse<T> {
-  success: boolean
-  data?: T
-  error?: string
-  details?: string
+export type TranscriptData = {
+  transcript?: string | undefined
+  title?: string | undefined
+  description?: string | undefined
 }

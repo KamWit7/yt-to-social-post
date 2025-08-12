@@ -2,7 +2,8 @@ import { IYouTubeTranscriptOrchestrator } from '../interfaces/youtube-orchestrat
 import { IYouTubeService } from '../interfaces/youtube-service.interface'
 import { TranscriptParser } from '../parsers/transcript-parser'
 import { YouTubeParser } from '../parsers/youtube-parser'
-import { TranscriptRequestBody } from '../types/youtube.types'
+import { ApiResponse } from '../types/api.types'
+import { TranscriptData, TranscriptRequestBody } from '../types/youtube.types'
 import { Logger } from '../utils/logger'
 
 /**
@@ -15,11 +16,9 @@ export class YouTubeTranscriptOrchestratorService
   /**
    * Main method for fetching YouTube transcript
    */
-  async getTranscript(youtubeUrl: string): Promise<{
-    success: boolean
-    transcript?: string
-    error?: string
-  }> {
+  async getTranscript(
+    youtubeUrl: string
+  ): Promise<ApiResponse<TranscriptData>> {
     try {
       // URL validation
       if (!this.youtubeService.isValidYouTubeUrl(youtubeUrl)) {
@@ -110,7 +109,14 @@ export class YouTubeTranscriptOrchestratorService
       Logger.info('--- Transcript fragment ---')
       Logger.info(formattedResponse.transcript.substring(0, 1000) + '...')
 
-      return formattedResponse
+      return {
+        success: true,
+        data: {
+          transcript: formattedResponse.transcript,
+          title: formattedResponse.title,
+          description: formattedResponse.description,
+        },
+      }
     } catch (error) {
       Logger.error('Unexpected error in orchestrator:', error as Error)
       return {

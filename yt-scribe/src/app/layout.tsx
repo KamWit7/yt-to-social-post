@@ -33,7 +33,7 @@ export default function RootLayout({
         <QueryProvider>
           <div
             className='bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 font-sans
-            flex flex-col'>
+            flex flex-col min-h-screen min-h-dvh'>
             <Header />
             <main className='p-4 md:p-8 flex-1'>{children}</main>
             <Footer />

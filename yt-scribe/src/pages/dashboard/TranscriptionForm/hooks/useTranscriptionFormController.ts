@@ -4,21 +4,29 @@ import { useAIProcessing } from '@/api/hooks/useAIProcessing'
 import { useTranscript } from '@/api/hooks/useTranscript'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback, useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { ErrorMessage } from './components/ErrorMessage'
-import { FormFields } from './components/FormFields'
-import { SubmitButton } from './components/SubmitButton'
-import { DEFAULT_VALUES, FORM_FIELD_NAMES } from './constants/formConstants'
-import { transcriptionSchema } from './schemas/transcriptionSchema'
-import { TranscriptionFormData } from './types/formTypes'
+import { useForm, UseFormReturn } from 'react-hook-form'
+import { DEFAULT_VALUES, FORM_FIELD_NAMES } from '../constants/formConstants'
+import { transcriptionSchema } from '../schemas/transcriptionSchema'
+import { TranscriptionFormData } from '../types/formTypes'
 
-interface TranscriptionFormProps {
+export interface UseTranscriptionFormControllerParams {
   onTranscriptChange?: (transcript: string) => void
 }
 
-export default function TranscriptionForm({
-  onTranscriptChange,
-}: TranscriptionFormProps) {
+export interface UseTranscriptionFormControllerReturn {
+  methods: UseFormReturn<TranscriptionFormData>
+  isTranscriptLoading: boolean
+  isAIProcessing: boolean
+  aiError: Error | null
+  transcriptError: Error | null
+  onSubmit: (data: TranscriptionFormData) => void
+}
+
+export function useTranscriptionFormController(
+  params: UseTranscriptionFormControllerParams = {}
+): UseTranscriptionFormControllerReturn {
+  const { onTranscriptChange } = params
+
   const [url, setUrl] = useState('')
 
   const methods = useForm<TranscriptionFormData>({
@@ -27,17 +35,10 @@ export default function TranscriptionForm({
     defaultValues: DEFAULT_VALUES,
   })
 
-  const {
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { isValid },
-  } = methods
+  const { watch, setValue } = methods
 
-  // Watch URL field for changes
   const watchedUrl = watch(FORM_FIELD_NAMES.URL)
 
-  // Fetch transcript when URL changes
   const {
     data: transcriptData,
     isLoading: isTranscriptLoading,
@@ -47,7 +48,6 @@ export default function TranscriptionForm({
     retry: 2,
   })
 
-  // Update transcript field when data is fetched
   useEffect(() => {
     if (transcriptData?.success && transcriptData.transcript) {
       setValue(FORM_FIELD_NAMES.TRANSCRIPT, transcriptData.transcript)
@@ -57,19 +57,11 @@ export default function TranscriptionForm({
     }
   }, [transcriptData, setValue, onTranscriptChange])
 
-  // Update URL state when form URL changes
   useEffect(() => {
     if (watchedUrl && watchedUrl !== url) {
       setUrl(watchedUrl)
     }
   }, [watchedUrl, url])
-
-  // Function to manually fetch transcript
-  const handleFetchTranscript = useCallback(() => {
-    if (watchedUrl) {
-      setUrl(watchedUrl)
-    }
-  }, [watchedUrl])
 
   const {
     mutate: processAI,
@@ -89,19 +81,12 @@ export default function TranscriptionForm({
     [processAI]
   )
 
-  return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-        <FormFields
-          isLoading={isAIProcessing}
-          isTranscriptLoading={isTranscriptLoading}
-          onFetchTranscript={handleFetchTranscript}
-        />
-        <SubmitButton isLoading={isAIProcessing} isValid={isValid} />
-      </form>
-      <ErrorMessage
-        message={aiError?.message || transcriptError?.message || ''}
-      />
-    </FormProvider>
-  )
+  return {
+    methods,
+    isTranscriptLoading,
+    isAIProcessing,
+    aiError: (aiError as Error) ?? null,
+    transcriptError: (transcriptError as Error) ?? null,
+    onSubmit,
+  }
 }

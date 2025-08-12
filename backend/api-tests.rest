@@ -77,3 +77,8 @@ Content-Type: application/json
   "transcript": "Transkrypcja bez celu przetwarzania."
 }
 
+
+###  Get Dictionary
+
+GET {{baseUrl}}/api/dictionary?code=purpose
+Content-Type: application/json

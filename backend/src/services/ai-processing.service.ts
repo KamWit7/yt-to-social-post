@@ -1,6 +1,7 @@
 import { GenerativeModel, GoogleGenerativeAI } from '@google/generative-ai'
+import { Dictionary } from '../constants/dictionaries'
 import { AVAILABLE_PROMPTS, PromptLoader } from '../prompts'
-import { ProcessTranscriptRequest, Purpose } from '../validations'
+import { ProcessTranscriptRequest } from '../validations'
 
 type PrittifyType<T> = {
   [K in keyof T]: T[K] & {}
@@ -46,15 +47,18 @@ export class AIProcessingService {
       customOutput: Promise.resolve(undefined),
     }
 
-    if (purpose === Purpose.Learning && options?.generateMindMap) {
+    if (purpose === Dictionary.Purpose.Learning && options?.generateMindMap) {
       tasks.mindMap = this.generateMindMap(transcript)
     }
 
-    if (purpose === Purpose.SocialMedia && options?.generateSocialPost) {
+    if (
+      purpose === Dictionary.Purpose.SocialMedia &&
+      options?.generateSocialPost
+    ) {
       tasks.socialPost = this.generateSocialPost(transcript)
     }
 
-    if (purpose === Purpose.Custom && options?.customPrompt) {
+    if (purpose === Dictionary.Purpose.Custom && options?.customPrompt) {
       tasks.customOutput = this.generateCustomOutput(
         transcript,
         options.customPrompt

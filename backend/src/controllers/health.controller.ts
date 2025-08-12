@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { HealthResponse, HealthService } from '../services/health.service'
-import { ApiResponse } from '../types/youtube.types'
+import { ApiResponse } from '../types/api.types'
 
 export class HealthController {
   constructor(private healthService: HealthService) {}

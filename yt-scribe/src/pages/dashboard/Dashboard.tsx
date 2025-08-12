@@ -21,7 +21,7 @@ export default function Dashboard() {
 
   return (
     <Fragment>
-      <Card className='bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-gray-200/50 dark:border-gray-800/50 mb-8'>
+      <Card className='bg-white/60 dark:bg-gray-900/50 backdrop-blur-md rounded-2xl p-6 shadow-md border border-gray-200/60 dark:border-gray-800/60 mb-8'>
         <TranscriptionForm onTranscriptChange={handleTranscriptChange} />
       </Card>
       <TranscriptionResults

@@ -1,5 +1,7 @@
 'use client'
 
+import { useDictionary } from '@/api/hooks/useDictionary'
+import { DictionaryCode } from '@/api/services/dictionaryService'
 import {
   ControlledCheckbox,
   ControlledInput,
@@ -8,21 +10,28 @@ import {
 } from '@/components/common/form'
 import { FileText, Sparkles, Youtube } from 'lucide-react'
 import { useWatch } from 'react-hook-form'
-import { FORM_FIELD_NAMES, PURPOSE_OPTIONS } from '../constants/formConstants'
+import { FORM_FIELD_NAMES } from '../constants/formConstants'
 
 interface FormFieldsProps {
   isLoading: boolean
   isTranscriptLoading?: boolean
-  onFetchTranscript?: () => void
 }
 
 export function FormFields({
   isLoading,
   isTranscriptLoading,
-  onFetchTranscript,
 }: FormFieldsProps) {
   const purpose = useWatch({ name: FORM_FIELD_NAMES.PURPOSE })
-  const url = useWatch({ name: FORM_FIELD_NAMES.URL })
+
+  const { data: purposeDict, isLoading: isPurposeLoading } = useDictionary(
+    DictionaryCode.Purpose
+  )
+
+  console.log('purposeDict', purposeDict)
+
+  const purposeOptions = purposeDict
+    ? purposeDict?.map((item) => ({ label: item.label, value: item.code }))
+    : []
 
   return (
     <div className='space-y-6'>
@@ -42,11 +51,30 @@ export function FormFields({
         name={FORM_FIELD_NAMES.TRANSCRIPT}
         label='Transkrypcja'
         placeholder='Wklej tutaj transkrypcję z filmu YouTube lub pobierz ją z linku powyżej...'
-        disabled={isLoading}
+        disabled={isLoading || isTranscriptLoading}
         required
         rows={8}
-        textareaClassName='max-h-[300px] overflow-y-auto'
-        icon={<FileText className='w-5 h-5' />}
+        textareaClassName='max-h-[300px] overflow-y-auto pr-10'
+        icon={
+          isTranscriptLoading ? (
+            <svg className='w-5 h-5 animate-spin' viewBox='0 0 24 24'>
+              <circle
+                className='opacity-25'
+                cx='12'
+                cy='12'
+                r='10'
+                stroke='currentColor'
+                strokeWidth='4'
+                fill='none'></circle>
+              <path
+                className='opacity-75'
+                fill='currentColor'
+                d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'></path>
+            </svg>
+          ) : (
+            <FileText className='w-5 h-5' />
+          )
+        }
       />
 
       <div className='space-y-3'>
@@ -58,16 +86,16 @@ export function FormFields({
           <ControlledSelect
             name={FORM_FIELD_NAMES.PURPOSE}
             placeholder='Wybierz cel...'
-            disabled={isLoading}
+            disabled={isLoading || isTranscriptLoading || isPurposeLoading}
             required
-            options={PURPOSE_OPTIONS}
+            options={purposeOptions}
             className='sm:w-1/2'
           />
-          {purpose === 'Inny' && (
+          {purpose === 'custom' && (
             <ControlledInput
               name={FORM_FIELD_NAMES.CUSTOM_PURPOSE}
               placeholder='Wpisz własny cel...'
-              disabled={isLoading}
+              disabled={isLoading || isTranscriptLoading}
               className='sm:w-1/2'
             />
           )}
@@ -75,33 +103,33 @@ export function FormFields({
       </div>
 
       {/* Opcje warunkowe */}
-      {purpose === 'Do nauki' && (
+      {purpose === 'learning' && (
         <div className='space-y-3'>
           <ControlledCheckbox
             name={FORM_FIELD_NAMES.GENERATE_MIND_MAP}
             label='Wygeneruj mapę myśli'
-            disabled={isLoading}
+            disabled={isLoading || isTranscriptLoading}
           />
         </div>
       )}
 
-      {purpose === 'Do tworzenia treści' && (
+      {purpose === 'social_media' && (
         <div className='space-y-3'>
           <ControlledCheckbox
             name={FORM_FIELD_NAMES.GENERATE_SOCIAL_POST}
             label='Wygeneruj post na social media'
-            disabled={isLoading}
+            disabled={isLoading || isTranscriptLoading}
           />
         </div>
       )}
 
-      {purpose === 'Ogólne' && (
+      {purpose === 'custom' && (
         <div className='space-y-3'>
           <ControlledInput
             name={FORM_FIELD_NAMES.CUSTOM_PROMPT}
             label='Twoje polecenie'
             placeholder='Wpisz własne polecenie dla AI...'
-            disabled={isLoading}
+            disabled={isLoading || isTranscriptLoading}
           />
         </div>
       )}

@@ -1,129 +1,88 @@
-import { AIProcessingResult } from '../../src/services/ai-processing.service'
-import {
-  ProcessTranscriptRequest,
-  Purpose,
-} from '../../src/validations/ai.validations'
+import { GenerativeModel, GoogleGenerativeAI } from '@google/generative-ai'
+import { jest } from '@jest/globals'
 
-export const mockAIProcessingResult: AIProcessingResult = {
-  summary: 'Mocked summary of the transcript',
-  topics: 'Mocked topics extracted from transcript',
-  mindMap: undefined,
-  socialPost: undefined,
-  customOutput: undefined,
+// Mock Google Generative AI
+jest.mock('@google/generative-ai')
+
+const mockGenerateContent = jest.fn()
+const mockResponse = {
+  text: jest.fn().mockReturnValue('Mocked AI response'),
+}
+const mockResult = {
+  response: Promise.resolve(mockResponse),
 }
 
-export const mockAIProcessingResultWithMindMap: AIProcessingResult = {
-  ...mockAIProcessingResult,
-  mindMap: { nodes: [], edges: [] },
+const mockModel = {
+  generateContent: mockGenerateContent,
+} as unknown as GenerativeModel
+
+const mockGenAI = {
+  getGenerativeModel: jest.fn().mockReturnValue(mockModel),
+} as unknown as GoogleGenerativeAI
+
+// Mock functions for different scenarios
+const mockJsonResponse = {
+  text: jest.fn().mockReturnValue('{"nodes": [], "edges": []}'),
+}
+const mockJsonResult = {
+  response: Promise.resolve(mockJsonResponse),
 }
 
-export const mockAIProcessingResultWithSocialPost: AIProcessingResult = {
-  ...mockAIProcessingResult,
-  socialPost: 'Mocked social media post content',
+const mockInvalidJsonResponse = {
+  text: jest.fn().mockReturnValue('invalid json'),
+}
+const mockInvalidJsonResult = {
+  response: Promise.resolve(mockInvalidJsonResponse),
 }
 
-export const mockAIProcessingResultWithCustomOutput: AIProcessingResult = {
-  ...mockAIProcessingResult,
-  customOutput: 'Mocked custom analysis output',
+// Helper functions to reset and configure mocks
+const resetMocks = () => {
+  jest.clearAllMocks()
+  mockGenerateContent.mockReturnValue(mockResult)
+  mockResponse.text.mockReturnValue('Mocked AI response')
+  mockJsonResponse.text.mockReturnValue('{"nodes": [], "edges": []}')
+  mockInvalidJsonResponse.text.mockReturnValue('invalid json')
 }
 
-export const mockAIProcessingResultComplete: AIProcessingResult = {
-  summary: 'Complete mocked summary',
-  topics: 'Complete mocked topics',
-  mindMap: { nodes: [{ id: '1', label: 'Topic 1' }], edges: [] },
-  socialPost: 'Complete mocked social post',
-  customOutput: 'Complete mocked custom output',
+const mockGoogleGenerativeAI = () => {
+  ;(
+    GoogleGenerativeAI as jest.MockedClass<typeof GoogleGenerativeAI>
+  ).mockImplementation(() => mockGenAI as any)
 }
 
-export const mockProcessTranscriptRequest: ProcessTranscriptRequest = {
-  transcript: 'This is a test transcript for AI processing',
-  purpose: Purpose.Learning,
-  options: {
-    generateMindMap: true,
-  },
+const mockGenerateContentSuccess = () => {
+  mockGenerateContent.mockReturnValue(mockResult)
 }
 
-export const mockProcessTranscriptRequestSocialMedia: ProcessTranscriptRequest =
-  {
-    transcript: 'This is a test transcript for social media',
-    purpose: Purpose.SocialMedia,
-    options: {
-      generateSocialPost: true,
-    },
+const mockGenerateContentError = () => {
+  const mockErrorResult = {
+    response: Promise.reject(new Error('AI service error')),
   }
-
-export const mockProcessTranscriptRequestCustom: ProcessTranscriptRequest = {
-  transcript: 'This is a test transcript for custom analysis',
-  purpose: Purpose.Custom,
-  options: {
-    customPrompt: 'Analyze this transcript and provide insights',
-  },
+  mockGenerateContent.mockReturnValue(mockErrorResult)
 }
 
-export const mockAIProcessingService = {
-  processTranscript: jest.fn().mockResolvedValue(mockAIProcessingResult),
+const mockGenerateContentJson = () => {
+  mockGenerateContent.mockReturnValue(mockJsonResult)
 }
 
-export const mockAIProcessingServiceWithMindMap = {
-  processTranscript: jest
-    .fn()
-    .mockResolvedValue(mockAIProcessingResultWithMindMap),
+const mockGenerateContentInvalidJson = () => {
+  mockGenerateContent.mockReturnValue(mockInvalidJsonResult)
 }
 
-export const mockAIProcessingServiceWithSocialPost = {
-  processTranscript: jest
-    .fn()
-    .mockResolvedValue(mockAIProcessingResultWithSocialPost),
+export {
+  mockGenAI,
+  mockGenerateContent,
+  mockGenerateContentError,
+  mockGenerateContentInvalidJson,
+  mockGenerateContentJson,
+  mockGenerateContentSuccess,
+  mockGoogleGenerativeAI,
+  mockInvalidJsonResponse,
+  mockInvalidJsonResult,
+  mockJsonResponse,
+  mockJsonResult,
+  mockModel,
+  mockResponse,
+  mockResult,
+  resetMocks,
 }
-
-export const mockAIProcessingServiceWithCustomOutput = {
-  processTranscript: jest
-    .fn()
-    .mockResolvedValue(mockAIProcessingResultWithCustomOutput),
-}
-
-export const mockAIProcessingServiceComplete = {
-  processTranscript: jest
-    .fn()
-    .mockResolvedValue(mockAIProcessingResultComplete),
-}
-
-export const mockAIProcessingServiceError = {
-  processTranscript: jest
-    .fn()
-    .mockRejectedValue(new Error('AI processing failed')),
-}
-
-export const mockAIProcessingServicePartialError = {
-  processTranscript: jest.fn().mockResolvedValue({
-    summary: undefined,
-    topics: 'Partial result',
-    mindMap: undefined,
-    socialPost: undefined,
-    customOutput: undefined,
-  }),
-}
-
-// Helper function to create mock service with specific behavior
-export const createMockAIProcessingService = (result: AIProcessingResult) => ({
-  processTranscript: jest.fn().mockResolvedValue(result),
-})
-
-// Helper function to create mock service that throws error
-export const createMockAIProcessingServiceWithError = (error: Error) => ({
-  processTranscript: jest.fn().mockRejectedValue(error),
-})
-
-// Helper function to create mock service with partial failure
-export const createMockAIProcessingServiceWithPartialFailure = (
-  partialResult: Partial<AIProcessingResult>
-) => ({
-  processTranscript: jest.fn().mockResolvedValue({
-    summary: undefined,
-    topics: undefined,
-    mindMap: undefined,
-    socialPost: undefined,
-    customOutput: undefined,
-    ...partialResult,
-  }),
-})

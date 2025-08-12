@@ -1,4 +1,5 @@
 export * from './ai.validations'
+export * from './dictionary.validations'
 export * from './youtube.validations'
 
 import { z } from 'zod'

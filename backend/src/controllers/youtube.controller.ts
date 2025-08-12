@@ -4,7 +4,7 @@ import {
   IYouTubeTranscriptOrchestrator,
 } from '../interfaces/youtube-orchestrator.interface'
 import { TranscriptParser } from '../parsers/transcript-parser'
-import { ApiResponse } from '../types/youtube.types'
+import { ApiResponse } from '../types/api.types'
 
 export class YouTubeController {
   constructor(

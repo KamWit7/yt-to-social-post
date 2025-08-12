@@ -33,13 +33,7 @@
    - Testy metod HTTP
    - Testy nieistniejących endpointów
 
-4. **`tests/mock/ai-processing-service.mock.ts`** - 100+ linii
-
-   - Mocki dla różnych scenariuszy AI processing
-   - Helper functions do tworzenia mocków
-   - Mocki dla błędów i częściowych błędów
-
-5. **`tests/AI_TEST_PLAN.md`** - Dokumentacja planu testów
+4. **`tests/AI_TEST_PLAN.md`** - Dokumentacja planu testów
    - Szczegółowy opis wszystkich testów
    - Instrukcje uruchamiania
    - Metryki i checklisty
@@ -153,31 +147,13 @@ npm test -- --testPathPattern="ai.validations"
 npm test -- --testPathPattern="endpoints/ai"
 ```
 
-## 🔧 Mocki i Helpers
-
-### Dostępne Mocki
-
-- `mockAIProcessingResult` - podstawowy wynik
-- `mockAIProcessingResultWithMindMap` - wynik z mind map
-- `mockAIProcessingResultWithSocialPost` - wynik z social post
-- `mockAIProcessingResultWithCustomOutput` - wynik z custom output
-- `mockAIProcessingResultComplete` - kompletny wynik
-- `mockAIProcessingServiceError` - serwis z błędem
-- `mockAIProcessingServicePartialError` - częściowy błąd
-
-### Helper Functions
-
-- `createMockAIProcessingService(result)` - tworzy mock z określonym wynikiem
-- `createMockAIProcessingServiceWithError(error)` - tworzy mock z błędem
-- `createMockAIProcessingServiceWithPartialFailure(partialResult)` - tworzy mock z częściowym błędem
-
 ## 📝 Checklist Przed Commit
 
 - [ ] Wszystkie testy AI przechodzą (`npm run test:ai`)
 - [ ] Pokrycie kodu > 90% dla AI components
 - [ ] Testy edge cases przechodzą
 - [ ] Testy błędów przechodzą
-- [ ] Mocki są poprawnie skonfigurowane
+
 - [ ] Dokumentacja testów jest aktualna
 - [ ] Linter nie zgłasza błędów
 - [ ] Testy integracyjne działają (jeśli są)

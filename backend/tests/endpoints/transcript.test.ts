@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals'
 import { Response } from 'superagent'
 import { MiddlewareError } from '../../src/middleware/error-handler.middleware'
+import { ApiResponse } from '../../src/types/api.types'
 import { TranscriptResult } from '../../src/types/transcript.types'
-import { ApiResponse } from '../../src/types/youtube.types'
+import { TranscriptData } from '../../src/types/youtube.types'
 import {
   mockFetchPage,
   mockFetchTranscript,
@@ -19,23 +20,24 @@ describe('GET /api/transcript', () => {
   })
 
   test('should return transcript for valid YouTube URL', async () => {
-    const mockTranscriptData: TranscriptResult = {
-      transcript: 'Hello world This is a test',
-      title: 'Title not found',
-      description: 'Description not found',
+    const mockTranscriptData: ApiResponse<TranscriptData> = {
       success: true,
+      data: {
+        transcript: 'Hello world This is a test',
+        title: 'Title not found',
+        description: 'Description not found',
+      },
     }
 
     // Override default mock for this specific test
-    mockFetchTranscript(mockTranscriptData.transcript)
+    mockFetchTranscript(mockTranscriptData?.data?.transcript)
 
-    const response: TranscriptApiResultType = await request(app)
+    const response = await request(app)
       .get('/api/transcript')
       .query({ url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
       .expect(200)
 
-
-    expect(response.body).toMatchObject(mockTranscriptData)
+    expect(response.body).toMatchObject(mockTranscriptData as any)
   })
 
   test('should return 400 for missing URL parameter', async () => {
