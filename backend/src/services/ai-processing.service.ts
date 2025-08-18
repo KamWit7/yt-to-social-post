@@ -65,16 +65,17 @@ export class AIProcessingService {
       )
     }
 
-    const results = await Promise.allSettled(Object.values(tasks))
+    const response = {} as AIProcessingResult
 
-    const response = results.reduce((acc, curr, index) => {
-      const key = Object.keys(tasks)[index] as AIProcessingResultKeys
-      acc[key] = curr.status === 'fulfilled' ? curr.value : undefined
-      return acc
-    }, {} as AIProcessingResult)
-
-    console.log('___results', results)
-    console.log('___response', response)
+    for (const [key, task] of Object.entries(tasks)) {
+      try {
+        const result = await task
+        response[key as AIProcessingResultKeys] = result
+      } catch (error) {
+        console.error(`Error processing ${key}:`, error)
+        response[key as AIProcessingResultKeys] = undefined
+      }
+    }
 
     return response
   }

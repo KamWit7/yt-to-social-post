@@ -25,6 +25,7 @@ export const DEFAULT_VALUES = {
 export const LOADING_MESSAGES = {
   ANALYZING: 'Analizuję...',
   GENERATING: 'Generuję...',
+  FETCHING_TRANSCRIPT: 'Generuję transkrypcję...',
 } as const
 
 export const SUCCESS_MESSAGES = {

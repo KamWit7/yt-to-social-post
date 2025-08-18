@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Loader2, Search } from 'lucide-react'
+import { Loader2, Sparkles } from 'lucide-react'
 import { LOADING_MESSAGES } from '../constants/formConstants'
 
 interface SubmitButtonProps {
@@ -27,8 +27,8 @@ export function SubmitButton({
         </>
       ) : (
         <>
-          <Search className='mr-2 h-5 w-5' />
-          <span>Generuj</span>
+          <Sparkles className='mr-2 h-5 w-5' />
+          <span>Przetwórz z AI</span>
         </>
       )}
     </Button>

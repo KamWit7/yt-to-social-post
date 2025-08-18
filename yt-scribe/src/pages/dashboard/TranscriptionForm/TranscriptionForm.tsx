@@ -20,6 +20,8 @@ export default function TranscriptionForm({
     aiError,
     transcriptError,
     onSubmit,
+    fetchTranscript,
+    canFetchTranscript,
   } = useTranscriptionFormController({ onTranscriptChange })
 
   const {
@@ -33,6 +35,8 @@ export default function TranscriptionForm({
         <FormFields
           isLoading={isAIProcessing}
           isTranscriptLoading={isTranscriptLoading}
+          onFetchTranscript={fetchTranscript}
+          canFetchTranscript={canFetchTranscript}
         />
         <SubmitButton
           isLoading={isAIProcessing}

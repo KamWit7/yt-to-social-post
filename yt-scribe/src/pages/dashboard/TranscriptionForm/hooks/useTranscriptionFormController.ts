@@ -20,6 +20,8 @@ export interface UseTranscriptionFormControllerReturn {
   aiError: Error | null
   transcriptError: Error | null
   onSubmit: (data: TranscriptionFormData) => void
+  fetchTranscript: () => void
+  canFetchTranscript: boolean
 }
 
 export function useTranscriptionFormController(
@@ -40,28 +42,42 @@ export function useTranscriptionFormController(
   const watchedUrl = watch(FORM_FIELD_NAMES.URL)
 
   const {
-    data: transcriptData,
+    data: transcriptResponse,
     isLoading: isTranscriptLoading,
     error: transcriptError,
+    refetch: refetchTranscript,
+    isSuccess: isTranscriptSuccess,
   } = useTranscript(url, {
-    enabled: !!url,
+    enabled: false,
     retry: 2,
   })
 
   useEffect(() => {
-    if (transcriptData?.success && transcriptData.data?.transcript) {
-      setValue(FORM_FIELD_NAMES.TRANSCRIPT, transcriptData.data.transcript)
+    if (
+      isTranscriptSuccess &&
+      transcriptResponse?.success &&
+      transcriptResponse.data?.transcript
+    ) {
+      const transcript = transcriptResponse.data.transcript
+      setValue(FORM_FIELD_NAMES.TRANSCRIPT, transcript)
       if (onTranscriptChange) {
-        onTranscriptChange(transcriptData.data.transcript)
+        onTranscriptChange(transcript)
       }
     }
-  }, [transcriptData, setValue, onTranscriptChange])
+  }, [isTranscriptSuccess, transcriptResponse, setValue, onTranscriptChange])
 
-  useEffect(() => {
-    if (watchedUrl && watchedUrl !== url) {
-      setUrl(watchedUrl)
+  const fetchTranscript = useCallback(async () => {
+    const currentUrl = methods.getValues(FORM_FIELD_NAMES.URL)
+    if (!currentUrl || currentUrl.trim() === '') {
+      return
     }
-  }, [watchedUrl, url])
+
+    setUrl(currentUrl)
+
+    await refetchTranscript()
+  }, [methods, refetchTranscript])
+
+  const canFetchTranscript = Boolean(watchedUrl && watchedUrl.trim() !== '')
 
   const {
     mutate: processAI,
@@ -88,5 +104,7 @@ export function useTranscriptionFormController(
     aiError: (aiError as Error) ?? null,
     transcriptError: (transcriptError as Error) ?? null,
     onSubmit,
+    fetchTranscript,
+    canFetchTranscript,
   }
 }
