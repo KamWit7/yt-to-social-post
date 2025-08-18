@@ -7,16 +7,16 @@ import SectionHeader from '@/components/ui/SectionHeader'
 import { Sparkles } from 'lucide-react'
 import { useWatch } from 'react-hook-form'
 import { DASHBOARD_TABS, type DashboardTab } from '../../../Dashboard.helpers'
-import { FORM_FIELD_NAMES } from '../../constants/formConstants'
-import { ConditionalOptions } from '../ConditionalOptions'
-import { ErrorDisplay } from '../ErrorDisplay'
+import { ConditionalOptions } from '../../components/ConditionalOptions'
+import { ErrorDisplay } from '../../components/ErrorDisplay'
 import {
   ANIMATION_DELAYS,
   BaseSectionProps,
   BUTTON_STYLES,
   getSectionVisibility,
   LoadingSpinner,
-} from './Section.helpers'
+} from '../../components/Section.helpers'
+import { FORM_FIELD_NAMES } from '../../constants/formConstants'
 
 type PurposeSectionProps = BaseSectionProps & {
   isPurposeLoading?: boolean
@@ -82,7 +82,7 @@ export function PurposeSection({
       </div>
 
       {stepKey === DASHBOARD_TABS.PURPOSE && (
-        <div className='flex justify-end'>
+        <div>
           <Button
             type='button'
             onClick={() => {
@@ -91,7 +91,7 @@ export function PurposeSection({
               onSubmit?.()
             }}
             disabled={isLoading}
-            className={BUTTON_STYLES.primary}>
+            className={BUTTON_STYLES.purposeFullWidth}>
             {isLoading ? (
               <>
                 <LoadingSpinner className='w-4 h-4 mr-2' />

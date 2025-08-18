@@ -1,7 +1,7 @@
+export { PurposeSection } from '../forms/PurposeForm/PurposeSection'
 export { ConditionalOptions } from './ConditionalOptions'
 export { ErrorDisplay } from './ErrorDisplay'
 export { ErrorMessage } from './ErrorMessage'
 export { FormFields } from './FormFields'
-export { PurposeSection } from './sections/PurposeSection'
 export { TranscriptSection } from './sections/TranscriptSection'
 export { YouTubeSection } from './sections/YouTubeSection'

@@ -2,11 +2,9 @@
 
 import { useAIProcessing } from '@/api/hooks/useAIProcessing'
 import { useTranscript } from '@/api/hooks/useTranscript'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback, useEffect, useState } from 'react'
 import { useForm, UseFormReturn } from 'react-hook-form'
 import { DEFAULT_VALUES, FORM_FIELD_NAMES } from '../constants/formConstants'
-import { transcriptionSchema } from '../schemas/transcriptionSchema'
 import { TranscriptionFormData } from '../types/formTypes'
 
 export interface UseTranscriptionFormControllerParams {
@@ -34,7 +32,6 @@ export function useTranscriptionFormController(
   const [url, setUrl] = useState('')
 
   const methods = useForm<TranscriptionFormData>({
-    resolver: zodResolver(transcriptionSchema),
     mode: 'onChange',
     defaultValues: DEFAULT_VALUES,
   })

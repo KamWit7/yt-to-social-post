@@ -5,17 +5,17 @@ import { ControlledInput } from '@/components/common/form'
 import { Button } from '@/components/ui/button'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { Wand2, Youtube } from 'lucide-react'
-import {
-  FORM_FIELD_NAMES,
-  LOADING_MESSAGES,
-} from '../../constants/formConstants'
-import { ErrorDisplay } from '../ErrorDisplay'
+import { ErrorDisplay } from '../../components/ErrorDisplay'
 import {
   ANIMATION_DELAYS,
   BaseSectionProps,
   BUTTON_STYLES,
   LoadingSpinner,
-} from './Section.helpers'
+} from '../../components/Section.helpers'
+import {
+  FORM_FIELD_NAMES,
+  LOADING_MESSAGES,
+} from '../../constants/formConstants'
 
 type YouTubeSectionProps = BaseSectionProps & {
   onFetchTranscript?: () => void
@@ -57,7 +57,7 @@ export function YouTubeSection({
               type='button'
               onClick={onFetchTranscript}
               disabled={!canFetchTranscript || isTranscriptLoading || isLoading}
-              className={BUTTON_STYLES.fullWidth}>
+              className={BUTTON_STYLES.youtubeFullWidth}>
               {isTranscriptLoading ? (
                 <>
                   <LoadingSpinner className='w-5 h-5 mr-3' />

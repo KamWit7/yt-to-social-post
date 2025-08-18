@@ -8,12 +8,12 @@ import { AIProcessingResponse, ApiResponse } from '@/types'
 import { AnimatePresence } from 'framer-motion'
 import { Brain, FileText, Sparkles, Youtube } from 'lucide-react'
 import { Fragment, useEffect, useState } from 'react'
+import { TranscriptionForm } from '.'
 import {
   DASHBOARD_TABS,
   type DashboardTab,
   type StepCompleted,
 } from './Dashboard.helpers'
-import TranscriptionForm from './TranscriptionForm/TranscriptionForm'
 import TranscriptionResults from './TranscriptionResults/TranscriptionResults'
 import { AnimatedTabContent, DashboardTabTrigger } from './components'
 

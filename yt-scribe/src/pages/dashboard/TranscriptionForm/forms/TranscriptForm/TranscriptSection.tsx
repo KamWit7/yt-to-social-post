@@ -7,15 +7,15 @@ import SectionHeader from '@/components/ui/SectionHeader'
 import { FileText } from 'lucide-react'
 import { useWatch } from 'react-hook-form'
 import { DASHBOARD_TABS, type DashboardTab } from '../../../Dashboard.helpers'
-import { FORM_FIELD_NAMES } from '../../constants/formConstants'
-import { ErrorDisplay } from '../ErrorDisplay'
+import { ErrorDisplay } from '../../components/ErrorDisplay'
 import {
   ANIMATION_DELAYS,
   BaseSectionProps,
   BUTTON_STYLES,
   getSectionVisibility,
   LoadingSpinner,
-} from './Section.helpers'
+} from '../../components/Section.helpers'
+import { FORM_FIELD_NAMES } from '../../constants/formConstants'
 
 type TranscriptSectionProps = BaseSectionProps & {
   stepKey?: DashboardTab
@@ -80,7 +80,7 @@ export function TranscriptSection({
       </div>
 
       {stepKey === DASHBOARD_TABS.TRANSCRIPT && (
-        <div className='flex justify-end'>
+        <div>
           <Button
             type='button'
             onClick={() => {
@@ -88,7 +88,7 @@ export function TranscriptSection({
               onTabChange?.(DASHBOARD_TABS.PURPOSE)
             }}
             disabled={!hasTranscript}
-            className={BUTTON_STYLES.secondary}>
+            className={BUTTON_STYLES.transcriptFullWidth}>
             Następny krok
           </Button>
         </div>
