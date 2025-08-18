@@ -1,5 +1,6 @@
 'use client'
 import { getAIProcessingQueryKey } from '@/api/hooks/useAIProcessing'
+import { AILoadingAnimation } from '@/components/animation'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsList } from '@/components/ui/tabs'
 import { useCachedMutation } from '@/hooks/useCachedMutation'
@@ -142,15 +143,7 @@ export default function Dashboard({
 
             <AnimatedTabContent value={DASHBOARD_TABS.RESULTS}>
               {isAIProcessingLoading ? (
-                <div className='flex flex-col items-center justify-center py-12 space-y-4'>
-                  <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600'></div>
-                  <p className='text-lg font-medium text-gray-600 dark:text-gray-400'>
-                    Przetwarzam transkrypcję z AI...
-                  </p>
-                  <p className='text-sm text-gray-500 dark:text-gray-500'>
-                    To może potrwać kilka minut
-                  </p>
-                </div>
+                <AILoadingAnimation />
               ) : (
                 <TranscriptionResults
                   transcript={currentTranscript}
