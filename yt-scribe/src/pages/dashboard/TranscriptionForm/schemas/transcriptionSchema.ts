@@ -24,6 +24,9 @@ export const transcriptionSchema = z
         generateMindMap: z.boolean().optional(),
         generateSocialPost: z.boolean().optional(),
         customPrompt: z.string().optional(),
+        generateSummary: z.boolean().optional(),
+        generateKeyPoints: z.boolean().optional(),
+        generateQuestions: z.boolean().optional(),
       })
       .optional(),
   })

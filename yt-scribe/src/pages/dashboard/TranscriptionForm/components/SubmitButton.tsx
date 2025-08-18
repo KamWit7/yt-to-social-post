@@ -19,15 +19,15 @@ export function SubmitButton({
     <Button
       type='submit'
       disabled={isLoading || isTranscriptLoading || !isValid}
-      className='w-full flex-shrink-0 flex items-center justify-center px-6 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-500 mt-4'>
+      className='w-full flex-shrink-0 flex items-center justify-center px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:from-gray-500 disabled:to-gray-600 text-lg'>
       {isLoading ? (
         <>
-          <Loader2 className='animate-spin mr-2' />
+          <Loader2 className='animate-spin mr-3 w-6 h-6' />
           <span>{LOADING_MESSAGES.ANALYZING}</span>
         </>
       ) : (
         <>
-          <Sparkles className='mr-2 h-5 w-5' />
+          <Sparkles className='mr-3 h-6 w-6' />
           <span>Przetwórz z AI</span>
         </>
       )}

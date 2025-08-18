@@ -11,6 +11,8 @@ import { TranscriptionFormData } from '../types/formTypes'
 
 export interface UseTranscriptionFormControllerParams {
   onTranscriptChange?: (transcript: string) => void
+  onTranscriptSuccess?: () => void
+  externalTranscript?: string
 }
 
 export interface UseTranscriptionFormControllerReturn {
@@ -27,7 +29,7 @@ export interface UseTranscriptionFormControllerReturn {
 export function useTranscriptionFormController(
   params: UseTranscriptionFormControllerParams = {}
 ): UseTranscriptionFormControllerReturn {
-  const { onTranscriptChange } = params
+  const { onTranscriptChange, onTranscriptSuccess, externalTranscript } = params
 
   const [url, setUrl] = useState('')
 
@@ -40,6 +42,13 @@ export function useTranscriptionFormController(
   const { watch, setValue } = methods
 
   const watchedUrl = watch(FORM_FIELD_NAMES.URL)
+
+  // Auto-load external transcript into form
+  useEffect(() => {
+    if (externalTranscript && externalTranscript.trim().length > 0) {
+      setValue(FORM_FIELD_NAMES.TRANSCRIPT, externalTranscript)
+    }
+  }, [externalTranscript, setValue])
 
   const {
     data: transcriptResponse,
@@ -63,8 +72,18 @@ export function useTranscriptionFormController(
       if (onTranscriptChange) {
         onTranscriptChange(transcript)
       }
+      // Call success callback to trigger tab change
+      if (onTranscriptSuccess) {
+        onTranscriptSuccess()
+      }
     }
-  }, [isTranscriptSuccess, transcriptResponse, setValue, onTranscriptChange])
+  }, [
+    isTranscriptSuccess,
+    transcriptResponse,
+    setValue,
+    onTranscriptChange,
+    onTranscriptSuccess,
+  ])
 
   const fetchTranscript = useCallback(async () => {
     const currentUrl = methods.getValues(FORM_FIELD_NAMES.URL)
