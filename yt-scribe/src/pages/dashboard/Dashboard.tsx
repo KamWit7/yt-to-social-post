@@ -1,21 +1,33 @@
 'use client'
 import { getAIProcessingQueryKey } from '@/api/hooks/useAIProcessing'
 import { Card } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsList } from '@/components/ui/tabs'
 import { useCachedMutation } from '@/hooks/useCachedMutation'
 import { AIProcessingResponse, ApiResponse } from '@/types'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { Brain, FileText, Sparkles, Youtube } from 'lucide-react'
 import { Fragment, useEffect, useState } from 'react'
+import {
+  DASHBOARD_TABS,
+  type DashboardTab,
+  type StepCompleted,
+} from './Dashboard.helpers'
 import TranscriptionForm from './TranscriptionForm/TranscriptionForm'
 import TranscriptionResults from './TranscriptionResults/TranscriptionResults'
+import { AnimatedTabContent, DashboardTabTrigger } from './components'
 
-export default function Dashboard() {
+export default function Dashboard({
+  setIsLoading,
+}: {
+  setIsLoading: (isLoading: boolean) => void
+}) {
   const [currentTranscript, setCurrentTranscript] = useState('')
-  const [activeTab, setActiveTab] = useState('youtube')
+  const [activeTab, setActiveTab] = useState<DashboardTab>(
+    DASHBOARD_TABS.YOUTUBE
+  )
 
   // Track completion of each step
-  const [stepCompleted, setStepCompleted] = useState({
+  const [stepCompleted, setStepCompleted] = useState<StepCompleted>({
     youtube: false, // Step 1: URL entered and transcript fetched
     transcript: false, // Step 2: Transcript edited and "Next step" clicked
     purpose: false, // Step 3: Purpose selected and "Process with AI" clicked
@@ -33,6 +45,10 @@ export default function Dashboard() {
     }
   }, [aiData])
 
+  useEffect(() => {
+    setIsLoading(isAIProcessingLoading)
+  }, [isAIProcessingLoading, setIsLoading])
+
   const handleTranscriptChange = (transcript: string) => {
     setCurrentTranscript(transcript)
     // Mark YouTube step as completed when transcript is available
@@ -44,137 +60,104 @@ export default function Dashboard() {
   }
 
   const handleAIProcessingStart = () => {
-    setActiveTab('results')
+    setActiveTab(DASHBOARD_TABS.RESULTS)
     // Mark purpose step as completed
     setStepCompleted((prev) => ({ ...prev, purpose: true }))
   }
 
-  const handleStepComplete = (step: keyof typeof stepCompleted) => {
+  const handleStepComplete = (step: keyof StepCompleted) => {
     setStepCompleted((prev) => ({ ...prev, [step]: true }))
   }
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value as DashboardTab)
+  }
+
+  const tabConfigs = [
+    {
+      value: DASHBOARD_TABS.YOUTUBE,
+      icon: Youtube,
+      label: 'YouTube Link',
+      disabled: isAIProcessingLoading,
+      stepKey: DASHBOARD_TABS.YOUTUBE,
+    },
+    {
+      value: DASHBOARD_TABS.TRANSCRIPT,
+      icon: FileText,
+      label: 'Transkrypcja',
+      disabled: !stepCompleted.youtube || isAIProcessingLoading,
+      stepKey: DASHBOARD_TABS.TRANSCRIPT,
+    },
+    {
+      value: DASHBOARD_TABS.PURPOSE,
+      icon: Sparkles,
+      label: 'Cel',
+      disabled: !stepCompleted.transcript || isAIProcessingLoading,
+      stepKey: DASHBOARD_TABS.PURPOSE,
+    },
+    {
+      value: DASHBOARD_TABS.RESULTS,
+      icon: Brain,
+      label: 'Wyniki',
+      disabled: !stepCompleted.purpose,
+      stepKey: DASHBOARD_TABS.RESULTS,
+    },
+  ]
 
   return (
     <Fragment>
       <Card className='bg-white/60 dark:bg-gray-900/50 backdrop-blur-md rounded-2xl p-6 shadow-md border border-gray-200/60 dark:border-gray-800/60 mb-8'>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
+        <Tabs
+          value={activeTab}
+          onValueChange={handleTabChange}
+          className='w-full'>
           <TabsList className='grid w-full grid-cols-4 mb-8'>
-            <TabsTrigger
-              value='youtube'
-              className='flex items-center gap-2'
-              disabled={isAIProcessingLoading}>
-              <Youtube className='w-4 h-4' />
-              <span className='hidden sm:inline'>YouTube Link</span>
-              {stepCompleted.youtube && (
-                <div className='w-2 h-2 bg-green-500 rounded-full'></div>
-              )}
-            </TabsTrigger>
-            <TabsTrigger
-              value='transcript'
-              className='flex items-center gap-2'
-              disabled={!stepCompleted.youtube || isAIProcessingLoading}>
-              <FileText className='w-4 h-4' />
-              <span className='hidden sm:inline'>Transkrypcja</span>
-              {stepCompleted.transcript && (
-                <div className='w-2 h-2 bg-green-500 rounded-full'></div>
-              )}
-            </TabsTrigger>
-            <TabsTrigger
-              value='purpose'
-              className='flex items-center gap-2'
-              disabled={!stepCompleted.transcript || isAIProcessingLoading}>
-              <Sparkles className='w-4 h-4' />
-              <span className='hidden sm:inline'>Cel</span>
-              {stepCompleted.purpose && (
-                <div className='w-2 h-2 bg-green-500 rounded-full'></div>
-              )}
-            </TabsTrigger>
-            <TabsTrigger
-              value='results'
-              className='flex items-center gap-2'
-              disabled={!stepCompleted.purpose}>
-              <Brain className='w-4 h-4' />
-              <span className='hidden sm:inline'>Wyniki</span>
-              {stepCompleted.results && (
-                <div className='w-2 h-2 bg-green-500 rounded-full'></div>
-              )}
-            </TabsTrigger>
+            {tabConfigs.map((config) => (
+              <DashboardTabTrigger
+                key={config.value}
+                config={config}
+                stepCompleted={stepCompleted[config.stepKey]}
+              />
+            ))}
           </TabsList>
 
           <AnimatePresence mode='wait'>
-            <TabsContent key='youtube' value='youtube' className='mt-0'>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}>
+            {[
+              DASHBOARD_TABS.YOUTUBE,
+              DASHBOARD_TABS.TRANSCRIPT,
+              DASHBOARD_TABS.PURPOSE,
+              DASHBOARD_TABS.RESULTS,
+            ].map((tab) => (
+              <AnimatedTabContent key={tab} value={tab}>
                 <TranscriptionForm
                   onTranscriptChange={handleTranscriptChange}
-                  onTabChange={setActiveTab}
+                  onTabChange={handleTabChange}
                   onAIProcessingStart={handleAIProcessingStart}
                   onStepComplete={handleStepComplete}
                   externalTranscript={currentTranscript}
+                  stepKey={tab}
                 />
-              </motion.div>
-            </TabsContent>
+              </AnimatedTabContent>
+            ))}
 
-            <TabsContent key='transcript' value='transcript' className='mt-0'>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}>
-                <TranscriptionForm
+            <AnimatedTabContent value={DASHBOARD_TABS.RESULTS}>
+              {isAIProcessingLoading ? (
+                <div className='flex flex-col items-center justify-center py-12 space-y-4'>
+                  <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600'></div>
+                  <p className='text-lg font-medium text-gray-600 dark:text-gray-400'>
+                    Przetwarzam transkrypcję z AI...
+                  </p>
+                  <p className='text-sm text-gray-500 dark:text-gray-500'>
+                    To może potrwać kilka minut
+                  </p>
+                </div>
+              ) : (
+                <TranscriptionResults
+                  transcript={currentTranscript}
                   onTranscriptChange={handleTranscriptChange}
-                  onTabChange={setActiveTab}
-                  onAIProcessingStart={handleAIProcessingStart}
-                  showTranscriptTab={true}
-                  onStepComplete={handleStepComplete}
-                  externalTranscript={currentTranscript}
                 />
-              </motion.div>
-            </TabsContent>
-
-            <TabsContent key='purpose' value='purpose' className='mt-0'>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}>
-                <TranscriptionForm
-                  onTranscriptChange={handleTranscriptChange}
-                  onTabChange={setActiveTab}
-                  onAIProcessingStart={handleAIProcessingStart}
-                  showPurposeTab={true}
-                  onStepComplete={handleStepComplete}
-                  externalTranscript={currentTranscript}
-                />
-              </motion.div>
-            </TabsContent>
-
-            <TabsContent key='results' value='results' className='mt-0'>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}>
-                {isAIProcessingLoading ? (
-                  <div className='flex flex-col items-center justify-center py-12 space-y-4'>
-                    <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600'></div>
-                    <p className='text-lg font-medium text-gray-600 dark:text-gray-400'>
-                      Przetwarzam transkrypcję z AI...
-                    </p>
-                    <p className='text-sm text-gray-500 dark:text-gray-500'>
-                      To może potrwać kilka minut
-                    </p>
-                  </div>
-                ) : (
-                  <TranscriptionResults
-                    transcript={currentTranscript}
-                    onTranscriptChange={handleTranscriptChange}
-                  />
-                )}
-              </motion.div>
-            </TabsContent>
+              )}
+            </AnimatedTabContent>
           </AnimatePresence>
         </Tabs>
       </Card>
