@@ -5,7 +5,7 @@ import Dashboard from "@/pages/dashboard/Dashboard";
 import { useState } from "react";
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -21,7 +21,7 @@ export default function Home() {
         </p>
       </div>
 
-      <Dashboard setIsLoading={setIsLoading} />
+      <Dashboard isLoading={isLoading} setIsLoading={setIsLoading} />
     </div>
   );
 }
