@@ -15,6 +15,7 @@ interface TranscriptionFormProps {
     step: 'youtube' | 'transcript' | 'purpose' | 'results'
   ) => void
   onLoadingStateChange?: (isLoading: boolean) => void
+  onTranscriptUpdate?: (transcript: string) => void
 }
 
 export default function TranscriptionForm({
@@ -24,6 +25,7 @@ export default function TranscriptionForm({
   stepKey = DASHBOARD_TABS.YOUTUBE,
   onStepComplete,
   onLoadingStateChange,
+  onTranscriptUpdate,
 }: TranscriptionFormProps) {
   return (
     <>
@@ -46,6 +48,7 @@ export default function TranscriptionForm({
             onTabChange?.(DASHBOARD_TABS.PURPOSE)
           }}
           onLoadingStateChange={onLoadingStateChange}
+          onTranscriptUpdate={onTranscriptUpdate}
         />
       )}
 
