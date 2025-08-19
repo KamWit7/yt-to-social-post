@@ -42,6 +42,19 @@ export default function Dashboard({
     }
   }, [])
 
+  const handleTranscriptUpdate = useCallback((updatedTranscript: string) => {
+    setTranscript(updatedTranscript)
+    // Keep the youtube step completed status since transcript exists
+    if (updatedTranscript && updatedTranscript.trim().length > 0) {
+      setStepCompleted({
+        [DASHBOARD_TABS.YOUTUBE]: true,
+        [DASHBOARD_TABS.TRANSCRIPT]: false,
+        [DASHBOARD_TABS.PURPOSE]: false,
+        [DASHBOARD_TABS.RESULTS]: false,
+      })
+    }
+  }, [])
+
   const handleStepComplete = useCallback((step: keyof StepCompleted) => {
     setStepCompleted((prev) => ({ ...prev, [step]: true }))
   }, [])
@@ -113,6 +126,7 @@ export default function Dashboard({
                   onTabChange={handleTabChange}
                   onStepComplete={handleStepComplete}
                   onLoadingStateChange={handleLoadingStateChange}
+                  onTranscriptUpdate={handleTranscriptUpdate}
                   stepKey={tab.value}
                 />
               </AnimatedTabContent>
