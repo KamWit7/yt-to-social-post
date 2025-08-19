@@ -18,11 +18,18 @@ export function ControlledTextarea<T extends FieldValues>({
   maxLength,
   textareaClassName = '',
   icon,
+  onChange: onChangeCallback,
 }: TextareaProps<T>) {
   const {
     field,
     fieldState: { error },
   } = useController({ name })
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value
+    field.onChange(e) // React Hook Form onChange
+    onChangeCallback?.(newValue) // Custom onChange callback
+  }
 
   return (
     <FormField
@@ -34,6 +41,7 @@ export function ControlledTextarea<T extends FieldValues>({
       <div className='relative'>
         <Textarea
           {...field}
+          onChange={handleChange}
           id={name}
           rows={rows}
           maxLength={maxLength}
