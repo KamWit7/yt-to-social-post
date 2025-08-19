@@ -1,61 +1,93 @@
-import { Button } from '@/components/ui/button'
-import { copyToClipboard } from '@/utils/clipboard'
-import { Check, Copy } from 'lucide-react'
-import { useState } from 'react'
+import { Check, Copy } from "lucide-react";
+import { useState } from "react";
 
 interface CopyButtonProps {
-  text: string
-  disabled?: boolean
-  'aria-label'?: string
+  text: string;
+  disabled?: boolean;
+  className?: string;
+  "aria-label"?: string;
 }
 
 function CopyButton({
   text,
   disabled = false,
-  'aria-label': ariaLabel,
+  className = "",
+  "aria-label": ariaLabel,
 }: CopyButtonProps) {
-  const [isCopied, setIsCopied] = useState(false)
-  const defaultAriaLabel = isCopied
-    ? 'Skopiowano do schowka'
-    : 'Kopiuj do schowka'
+  const [isCopied, setIsCopied] = useState(false);
 
   const handleCopy = async () => {
-    setIsCopied(true)
     try {
-      const result = await copyToClipboard(text)
+      if (!text?.trim()) return;
 
-      if (result.success) {
-        setTimeout(() => setIsCopied(false), 1000)
-      } else {
-        console.error('Copy failed:', result.error)
-        setIsCopied(false)
-      }
+      await navigator.clipboard.writeText(text);
+      setIsCopied(true);
+
+      // Reset icon after 2 seconds for optimal user experience
+      setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
-      console.error('Copy failed:', error)
-      setIsCopied(false)
+      console.error("Failed to copy text:", error);
+      // Fallback for older browsers
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      } catch (fallbackError) {
+        console.error("Fallback copy failed:", fallbackError);
+      }
     }
-  }
+  };
 
   return (
-    <Button
+    <button
+      type="button"
       onClick={handleCopy}
-      variant='ghost'
-      size='sm'
       disabled={disabled}
-      aria-label={ariaLabel || defaultAriaLabel}
-      className={`flex items-center gap-1.5 px-2 py-1 text-xs transition-colors ${
-        isCopied
-          ? 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400'
-          : 'bg-gray-100 dark:bg-gray-700/80 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-      } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
-      {isCopied ? (
-        <Check className='w-3.5 h-3.5' aria-hidden='true' />
-      ) : (
-        <Copy className='w-3.5 h-3.5' aria-hidden='true' />
-      )}
-      <span>{isCopied ? 'Skopiowano' : 'Kopiuj'}</span>
-    </Button>
-  )
+      className={`
+        relative p-2 rounded-lg transition-all duration-200 ease-out
+        hover:bg-gray-100 dark:hover:bg-gray-800
+        hover:scale-110 active:scale-95
+        ${
+          isCopied
+            ? "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20"
+            : "text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+        }
+        ${disabled ? "opacity-50 cursor-not-allowed" : ""}
+        ${className}
+      `}
+      title={isCopied ? "Skopiowane!" : "Kopiuj do schowka"}
+      aria-label={ariaLabel || (isCopied ? "Skopiowane" : "Kopiuj do schowka")}
+    >
+      {/* Icon morphing with smooth transition */}
+      <div className="relative w-4 h-4">
+        <Copy
+          className={`
+            absolute inset-0 w-4 h-4 transition-all duration-300 ease-out transform
+            ${
+              isCopied
+                ? "opacity-0 rotate-90 scale-50"
+                : "opacity-100 rotate-0 scale-100"
+            }
+          `}
+        />
+        <Check
+          className={`
+            absolute inset-0 w-4 h-4 transition-all duration-300 ease-out transform
+            ${
+              isCopied
+                ? "opacity-100 rotate-0 scale-100"
+                : "opacity-0 -rotate-90 scale-50"
+            }
+          `}
+        />
+      </div>
+    </button>
+  );
 }
 
-export default CopyButton
+export default CopyButton;
