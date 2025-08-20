@@ -11,13 +11,13 @@ import { Sparkles } from 'lucide-react'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
-import { ConditionalOptions } from '../../components/ConditionalOptions'
 import {
   ANIMATION_DELAYS,
   BUTTON_STYLES,
 } from '../../components/Section.helpers'
 import { FORM_FIELD_NAMES } from '../../constants/formConstants'
 import type { PurposeOnlyFormData } from '../../types/formTypes'
+import { ConditionalOptions } from './ConditionalOptions'
 import { PurposeDefaultValue } from './PurposeForm.helpers'
 import { purposeSchema } from './purposeSchema'
 
@@ -95,7 +95,6 @@ export function PurposeForm({
               title='W jakim celu przetwarzasz transkrypcję?'
               subtitle='Wybierz cel przetwarzania i dostosuj opcje do swoich potrzeb'
               iconBgColor='bg-gradient-to-r from-purple-500 to-purple-600'
-              className=''
             />
 
             <div className='space-y-6'>
@@ -108,11 +107,7 @@ export function PurposeForm({
                 className='sm:w-1/2'
               />
 
-              <ConditionalOptions
-                purpose={purpose}
-                isLoading={false}
-                isTranscriptLoading={false}
-              />
+              <ConditionalOptions purpose={purpose} />
 
               <SubmitButton
                 disabled={!purpose}

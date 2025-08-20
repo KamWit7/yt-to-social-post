@@ -1,4 +1,5 @@
 'use client'
+
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsList } from '@/components/ui/tabs'
 import { AnimatePresence } from 'framer-motion'

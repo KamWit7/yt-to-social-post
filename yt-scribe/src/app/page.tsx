@@ -1,7 +1,7 @@
 'use client'
 
 import TextShimmer from '@/components/animation/TextShimmer'
-import Dashboard from '@/pages/dashboard/Dashboard'
+import Dashboard from '@/components/dashboard/Dashboard'
 import { useState } from 'react'
 
 export default function Home() {
