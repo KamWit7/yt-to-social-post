@@ -1,14 +1,14 @@
-import { FORM_FIELD_NAMES } from "../../constants/formConstants";
+import { FORM_FIELD_NAMES } from '../../constants/formConstants'
 
 export const PurposeDefaultValue = {
-  [FORM_FIELD_NAMES.PURPOSE]: "",
-  [FORM_FIELD_NAMES.CUSTOM_PURPOSE]: "",
+  [FORM_FIELD_NAMES.PURPOSE]: 'custom',
+  [FORM_FIELD_NAMES.CUSTOM_PURPOSE]: '',
   options: {
-    generateMindMap: false,
-    generateSocialPost: false,
-    customPrompt: "",
+    generateMindMap: true,
+    generateSocialPost: true,
+    customPrompt: '',
     generateSummary: false,
     generateKeyPoints: false,
     generateQuestions: false,
   },
-};
+}
