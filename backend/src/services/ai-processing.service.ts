@@ -1,4 +1,5 @@
 import { GenerativeModel, GoogleGenerativeAI } from '@google/generative-ai'
+import { AIModelName, DEFAULT_AI_MODEL } from '../constants/ai'
 import { Dictionary } from '../constants/dictionaries'
 import { AVAILABLE_PROMPTS, PromptLoader } from '../prompts'
 import { ProcessTranscriptRequest } from '../validations'
@@ -18,7 +19,6 @@ type AIProcessingResultKeys = PrittifyType<keyof AIProcessingResult>
 
 export class AIProcessingService {
   private genAI: GoogleGenerativeAI
-  private model: GenerativeModel
 
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY
@@ -28,40 +28,40 @@ export class AIProcessingService {
     }
 
     this.genAI = new GoogleGenerativeAI(apiKey)
+  }
 
-    this.model = this.genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash',
-    })
+  private getModel(modelName: AIModelName): GenerativeModel {
+    return this.genAI.getGenerativeModel({ model: modelName })
   }
 
   async processTranscript(
     request: ProcessTranscriptRequest
   ): Promise<AIProcessingResult> {
-    const { transcript, purpose, options } = request
+    const { transcript, purpose, customPrompt, model } = request
+
+    const generativeModel = this.getModel(model ?? DEFAULT_AI_MODEL)
 
     const tasks: Record<AIProcessingResultKeys, Promise<string | undefined>> = {
-      summary: this.generateSummary(transcript),
-      topics: this.generateTopics(transcript),
+      summary: this.generateSummary(transcript, generativeModel),
+      topics: this.generateTopics(transcript, generativeModel),
       mindMap: Promise.resolve(undefined),
       socialPost: Promise.resolve(undefined),
       customOutput: Promise.resolve(undefined),
     }
 
-    if (purpose === Dictionary.Purpose.Learning && options?.generateMindMap) {
-      tasks.mindMap = this.generateMindMap(transcript)
+    if (purpose === Dictionary.Purpose.Learning) {
+      tasks.mindMap = this.generateMindMap(transcript, generativeModel)
     }
 
-    if (
-      purpose === Dictionary.Purpose.SocialMedia &&
-      options?.generateSocialPost
-    ) {
-      tasks.socialPost = this.generateSocialPost(transcript)
+    if (purpose === Dictionary.Purpose.SocialMedia) {
+      tasks.socialPost = this.generateSocialPost(transcript, generativeModel)
     }
 
-    if (purpose === Dictionary.Purpose.Custom && options?.customPrompt) {
+    if (purpose === Dictionary.Purpose.Custom && customPrompt) {
       tasks.customOutput = this.generateCustomOutput(
         transcript,
-        options.customPrompt
+        customPrompt,
+        generativeModel
       )
     }
 
@@ -80,32 +80,41 @@ export class AIProcessingService {
     return response
   }
 
-  private async generateSummary(transcript: string): Promise<string> {
+  private async generateSummary(
+    transcript: string,
+    model: GenerativeModel
+  ): Promise<string> {
     const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.SUMMARY, {
       transcript,
     })
 
-    const result = await this.model.generateContent(prompt)
+    const result = await model.generateContent(prompt)
     const response = await result.response
     return response.text().trim()
   }
 
-  private async generateTopics(transcript: string): Promise<string> {
+  private async generateTopics(
+    transcript: string,
+    model: GenerativeModel
+  ): Promise<string> {
     const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.TOPICS, {
       transcript,
     })
 
-    const result = await this.model.generateContent(prompt)
+    const result = await model.generateContent(prompt)
     const response = await result.response
     return response.text().trim()
   }
 
-  private async generateMindMap(transcript: string): Promise<string> {
+  private async generateMindMap(
+    transcript: string,
+    model: GenerativeModel
+  ): Promise<string> {
     const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.MIND_MAP, {
       transcript,
     })
 
-    const result = await this.model.generateContent(prompt)
+    const result = await model.generateContent(prompt)
     const response = await result.response
     const jsonText = response.text().trim()
 
@@ -117,26 +126,30 @@ export class AIProcessingService {
     }
   }
 
-  private async generateSocialPost(transcript: string): Promise<string> {
+  private async generateSocialPost(
+    transcript: string,
+    model: GenerativeModel
+  ): Promise<string> {
     const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.SOCIAL_POST, {
       transcript,
     })
 
-    const result = await this.model.generateContent(prompt)
+    const result = await model.generateContent(prompt)
     const response = await result.response
     return response.text().trim()
   }
 
   private async generateCustomOutput(
     transcript: string,
-    customPrompt: string
+    customPrompt: string,
+    model: GenerativeModel
   ): Promise<string> {
     const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.CUSTOM_OUTPUT, {
       transcript,
       customPrompt,
     })
 
-    const result = await this.model.generateContent(prompt)
+    const result = await model.generateContent(prompt)
     const response = await result.response
     return response.text().trim()
   }

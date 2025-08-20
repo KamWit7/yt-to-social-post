@@ -1,50 +1,30 @@
+import { AIModels, DEFAULT_AI_MODEL } from '@/types'
 import { z } from 'zod'
-import { FORM_FIELD_NAMES } from '../../constants/formConstants'
+import {
+  DEFAULT_PURPOSE,
+  FORM_FIELD_NAMES,
+} from '../../constants/formConstants'
 
 export const purposeSchema = z
   .object({
     [FORM_FIELD_NAMES.PURPOSE]: z.string().min(1, 'Wybierz cel transkrypcji'),
-    [FORM_FIELD_NAMES.CUSTOM_PURPOSE]: z.string().optional(),
-    options: z
-      .object({
-        generateMindMap: z.boolean().optional(),
-        generateSocialPost: z.boolean().optional(),
-        customPrompt: z.string().optional(),
-        generateSummary: z.boolean().optional(),
-        generateKeyPoints: z.boolean().optional(),
-        generateQuestions: z.boolean().optional(),
-      })
-      .optional(),
+    [FORM_FIELD_NAMES.CUSTOM_PROMPT]: z.string().trim(),
+    [FORM_FIELD_NAMES.MODEL]: z
+      .enum([
+        AIModels.Gemini25Pro,
+        AIModels.Gemini25Flash,
+        AIModels.Gemini25FlashLite,
+      ])
+      .default(DEFAULT_AI_MODEL),
   })
-  .refine(
-    (data) => {
-      if (
-        data[FORM_FIELD_NAMES.PURPOSE] === 'Inny' &&
-        (!data[FORM_FIELD_NAMES.CUSTOM_PURPOSE] ||
-          data[FORM_FIELD_NAMES.CUSTOM_PURPOSE]?.trim().length === 0)
-      ) {
-        return false
-      }
-      return true
-    },
-    {
-      message: 'Wprowadź własny cel transkrypcji',
-      path: [FORM_FIELD_NAMES.CUSTOM_PURPOSE],
+  .superRefine((data, ctx) => {
+    const isCustomPurpose = data[FORM_FIELD_NAMES.PURPOSE] === DEFAULT_PURPOSE
+    const customPrompt = data[FORM_FIELD_NAMES.CUSTOM_PROMPT]?.trim() ?? ''
+    if (isCustomPurpose && customPrompt.length === 0) {
+      ctx.addIssue({
+        code: DEFAULT_PURPOSE,
+        path: [FORM_FIELD_NAMES.CUSTOM_PROMPT],
+        message: 'Wpisz własny prompt',
+      })
     }
-  )
-  .refine(
-    (data) => {
-      if (
-        data[FORM_FIELD_NAMES.PURPOSE] === 'custom' &&
-        (!data.options?.customPrompt ||
-          data.options.customPrompt.trim().length === 0)
-      ) {
-        return false
-      }
-      return true
-    },
-    {
-      message: 'Wprowadź własne polecenie',
-      path: ['options', 'customPrompt'],
-    }
-  )
+  })

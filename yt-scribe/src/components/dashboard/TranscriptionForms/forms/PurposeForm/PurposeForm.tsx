@@ -6,6 +6,7 @@ import { DictionaryCode } from '@/api/services/dictionaryService'
 import { AILoadingAnimation, AnimatedSection } from '@/components/animation'
 import { ControlledSelect, SubmitButton } from '@/components/common'
 import SectionHeader from '@/components/ui/SectionHeader'
+import { AIModels, DEFAULT_AI_MODEL, type AIProcessingRequest } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Sparkles } from 'lucide-react'
 import { useEffect } from 'react'
@@ -56,11 +57,13 @@ export function PurposeForm({
   const purpose = watch(FORM_FIELD_NAMES.PURPOSE)
 
   const onFormSubmit = async (data: PurposeOnlyFormData) => {
-    const completeData = {
-      [FORM_FIELD_NAMES.TRANSCRIPT]: transcript,
-      [FORM_FIELD_NAMES.PURPOSE]: data.purpose,
-      [FORM_FIELD_NAMES.CUSTOM_PURPOSE]: data.customPurpose || '',
-      options: data.options,
+    const rawPrompt = data.customPrompt ?? ''
+
+    const completeData: AIProcessingRequest = {
+      transcript,
+      purpose: data.purpose,
+      customPrompt: rawPrompt.trim(),
+      model: data.model || DEFAULT_AI_MODEL,
     }
 
     processAI(completeData)
@@ -98,14 +101,34 @@ export function PurposeForm({
             />
 
             <div className='space-y-6'>
-              <ControlledSelect
-                name={FORM_FIELD_NAMES.PURPOSE}
-                placeholder='Wybierz cel...'
-                disabled={isPurposeLoading}
-                required
-                options={purposeOptions}
-                className='sm:w-1/2'
-              />
+              <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 sm:w-2/3'>
+                <ControlledSelect
+                  name={FORM_FIELD_NAMES.PURPOSE}
+                  placeholder='Wybierz cel...'
+                  disabled={isPurposeLoading}
+                  required
+                  options={purposeOptions}
+                />
+                <ControlledSelect
+                  name={FORM_FIELD_NAMES.MODEL}
+                  placeholder='Wybierz model...'
+                  required
+                  options={[
+                    {
+                      label: AIModels.Gemini25Pro,
+                      value: AIModels.Gemini25Pro,
+                    },
+                    {
+                      label: AIModels.Gemini25Flash,
+                      value: AIModels.Gemini25Flash,
+                    },
+                    {
+                      label: AIModels.Gemini25FlashLite,
+                      value: AIModels.Gemini25FlashLite,
+                    },
+                  ]}
+                />
+              </div>
 
               <ConditionalOptions purpose={purpose} />
 

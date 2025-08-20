@@ -1,14 +1,12 @@
-import { FORM_FIELD_NAMES } from '../../constants/formConstants'
+import { DEFAULT_AI_MODEL } from '@/types'
+import {
+  DEFAULT_PURPOSE,
+  FORM_FIELD_NAMES,
+} from '../../constants/formConstants'
+import type { PurposeOnlyFormData } from '../../types/formTypes'
 
-export const PurposeDefaultValue = {
-  [FORM_FIELD_NAMES.PURPOSE]: 'custom',
-  [FORM_FIELD_NAMES.CUSTOM_PURPOSE]: '',
-  options: {
-    generateMindMap: true,
-    generateSocialPost: true,
-    customPrompt: '',
-    generateSummary: false,
-    generateKeyPoints: false,
-    generateQuestions: false,
-  },
+export const PurposeDefaultValue: PurposeOnlyFormData = {
+  [FORM_FIELD_NAMES.PURPOSE]: DEFAULT_PURPOSE,
+  [FORM_FIELD_NAMES.CUSTOM_PROMPT]: '',
+  [FORM_FIELD_NAMES.MODEL]: DEFAULT_AI_MODEL,
 }

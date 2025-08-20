@@ -7,11 +7,6 @@ import { TypedRequestBody } from '../types/ai.types'
 import { ApiResponse } from '../types/api.types'
 import { ProcessTranscriptRequest } from '../validations/ai.validations'
 
-type ProcessTranscriptResponse = AIProcessingResult & {
-  success: boolean
-  error?: string
-}
-
 type ProcessTranscriptRequestBody = TypedRequestBody<ProcessTranscriptRequest>
 
 export class AIController {
@@ -23,12 +18,13 @@ export class AIController {
     next: NextFunction
   ) {
     try {
-      const { transcript, purpose, options } = req.body
+      const { transcript, purpose, customPrompt, model } = req.body
 
       const result = await this.aiService.processTranscript({
         transcript,
         purpose,
-        options,
+        customPrompt,
+        model,
       })
 
       res.json({ success: true, data: result })

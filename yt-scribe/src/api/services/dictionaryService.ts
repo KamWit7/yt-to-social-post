@@ -2,6 +2,7 @@ import { ApiResponse } from '@/types'
 import { endpoints } from '../endpoints'
 import { apiFetch } from '../httpClient'
 
+
 export const DictionaryCode = {
   Purpose: 'purpose',
 } as const

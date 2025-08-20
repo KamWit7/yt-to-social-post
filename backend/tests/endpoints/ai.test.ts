@@ -28,23 +28,17 @@ describe('AI Endpoints', () => {
     jest
       .spyOn(AIProcessingService.prototype, 'processTranscript')
       .mockImplementation(async (request) => {
-        const { purpose, options } = request
+        const { purpose, customPrompt } = request
 
-        if (
-          purpose === Dictionary.Purpose.Learning &&
-          options?.generateMindMap
-        ) {
+        if (purpose === Dictionary.Purpose.Learning) {
           return createMockAIResponse({ mindMap: true })
         }
 
-        if (
-          purpose === Dictionary.Purpose.SocialMedia &&
-          options?.generateSocialPost
-        ) {
+        if (purpose === Dictionary.Purpose.SocialMedia) {
           return createMockAIResponse({ socialPost: true })
         }
 
-        if (purpose === Dictionary.Purpose.Custom && options?.customPrompt) {
+        if (purpose === Dictionary.Purpose.Custom && customPrompt) {
           return createMockAIResponse({ customOutput: true })
         }
 
@@ -59,9 +53,6 @@ describe('AI Endpoints', () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.Learning,
-          options: {
-            generateMindMap: true,
-          },
         }
 
         const response = await request(app)
@@ -87,9 +78,6 @@ describe('AI Endpoints', () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.SocialMedia,
-          options: {
-            generateSocialPost: true,
-          },
         }
 
         const response = await request(app)
@@ -108,9 +96,7 @@ describe('AI Endpoints', () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.Custom,
-          options: {
-            customPrompt: 'Analyze this transcript and provide insights',
-          },
+          customPrompt: 'Analyze this transcript and provide insights',
         }
 
         const response = await request(app)
@@ -129,11 +115,7 @@ describe('AI Endpoints', () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.Learning,
-          options: {
-            generateMindMap: true,
-            generateSocialPost: true,
-            customPrompt: 'Comprehensive analysis',
-          },
+          customPrompt: 'Comprehensive analysis',
         }
 
         const response = await request(app)
@@ -153,9 +135,7 @@ describe('AI Endpoints', () => {
         const requestBody = {
           transcript: longTranscript,
           purpose: Dictionary.Purpose.Custom,
-          options: {
-            customPrompt: 'Analyze this long transcript',
-          },
+          customPrompt: 'Analyze this long transcript',
         }
 
         const response = await request(app)
@@ -175,9 +155,6 @@ describe('AI Endpoints', () => {
         const requestBody = {
           transcript: specialTranscript,
           purpose: Dictionary.Purpose.Learning,
-          options: {
-            generateMindMap: true,
-          },
         }
 
         const response = await request(app)
@@ -196,9 +173,6 @@ describe('AI Endpoints', () => {
       test('should reject request without transcript', async () => {
         const requestBody = {
           purpose: Dictionary.Purpose.Learning,
-          options: {
-            generateMindMap: true,
-          },
         }
 
         const response = await request(app)
@@ -215,9 +189,6 @@ describe('AI Endpoints', () => {
         const requestBody = {
           transcript: '',
           purpose: Dictionary.Purpose.Learning,
-          options: {
-            generateMindMap: true,
-          },
         }
 
         const response = await request(app)
@@ -234,9 +205,6 @@ describe('AI Endpoints', () => {
         const requestBody = {
           transcript: '   ',
           purpose: Dictionary.Purpose.Learning,
-          options: {
-            generateMindMap: true,
-          },
         }
 
         const response = await request(app)
@@ -252,9 +220,6 @@ describe('AI Endpoints', () => {
       test('should reject request without purpose', async () => {
         const requestBody = {
           transcript: mockTranscript,
-          options: {
-            generateMindMap: true,
-          },
         }
 
         const response = await request(app)
@@ -270,9 +235,6 @@ describe('AI Endpoints', () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: 'invalid_purpose',
-          options: {
-            generateMindMap: true,
-          },
         }
 
         const response = await request(app)
@@ -284,7 +246,7 @@ describe('AI Endpoints', () => {
         expect(response.body.error).toBeDefined()
       })
 
-      test('should reject request without options', async () => {
+      test('should accept request without legacy options field (ignored if present)', async () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.Learning,
@@ -293,46 +255,45 @@ describe('AI Endpoints', () => {
         const response = await request(app)
           .post('/api/ai/process-transcript')
           .send(requestBody)
-          .expect(400)
+          .expect(200)
 
-        expect(response.body.success).toBe(false)
-        expect(response.body.error).toBeDefined()
+        expect(response.body.success).toBe(true)
+        expect(response.body).toHaveProperty('data')
       })
 
-      test('should reject request with empty options', async () => {
+      test('should ignore unknown legacy options object and still process', async () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.Learning,
           options: {},
-        }
+        } as any
 
         const response = await request(app)
           .post('/api/ai/process-transcript')
           .send(requestBody)
-          .expect(400)
+          .expect(200)
 
-        expect(response.body.success).toBe(false)
-        expect(response.body.error).toContain('Błąd walidacji')
-        expect(response.body.details).toBeDefined()
+        expect(response.body.success).toBe(true)
+        expect(response.body).toHaveProperty('data')
       })
 
-      test('should reject request with invalid options structure', async () => {
+      test('should ignore unknown legacy options structure and still process', async () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.Learning,
           options: {
-            generateMindMap: 'true', // should be boolean
-            generateSocialPost: 123, // should be boolean
+            generateMindMap: 'true',
+            generateSocialPost: 123,
           },
-        }
+        } as any
 
         const response = await request(app)
           .post('/api/ai/process-transcript')
           .send(requestBody)
-          .expect(400)
+          .expect(200)
 
-        expect(response.body.success).toBe(false)
-        expect(response.body.error).toBeDefined()
+        expect(response.body.success).toBe(true)
+        expect(response.body).toHaveProperty('data')
       })
 
       test('should reject request with multiple validation errors', async () => {
@@ -357,9 +318,6 @@ describe('AI Endpoints', () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.Learning,
-          options: {
-            generateMindMap: true,
-          },
         }
 
         const response = await request(app)
@@ -410,9 +368,7 @@ describe('AI Endpoints', () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.Custom,
-          options: {
-            customPrompt: longPrompt,
-          },
+          customPrompt: longPrompt,
         }
 
         const response = await request(app)
@@ -431,9 +387,7 @@ describe('AI Endpoints', () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.Custom,
-          options: {
-            customPrompt: specialPrompt,
-          },
+          customPrompt: specialPrompt,
         }
 
         const response = await request(app)
@@ -446,13 +400,10 @@ describe('AI Endpoints', () => {
         expect(response.body.data).toHaveProperty('customOutput')
       })
 
-      test('should handle request with Learning purpose but no mind map option', async () => {
+      test('should handle request with Learning purpose regardless of legacy options', async () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.Learning,
-          options: {
-            generateSocialPost: true, // Use a different option to satisfy validation
-          },
         }
 
         const response = await request(app)
@@ -462,16 +413,13 @@ describe('AI Endpoints', () => {
 
         expect(response.body.success).toBe(true)
         expect(response.body).toHaveProperty('data')
-        expect(response.body.data.mindMap).toBeUndefined()
+        expect(response.body.data).toHaveProperty('mindMap')
       })
 
-      test('should handle request with SocialMedia purpose but no social post option', async () => {
+      test('should handle request with SocialMedia purpose regardless of legacy options', async () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.SocialMedia,
-          options: {
-            generateMindMap: true, // Use a different option to satisfy validation
-          },
         }
 
         const response = await request(app)
@@ -481,16 +429,13 @@ describe('AI Endpoints', () => {
 
         expect(response.body.success).toBe(true)
         expect(response.body).toHaveProperty('data')
-        expect(response.body.data.socialPost).toBeUndefined()
+        expect(response.body.data).toHaveProperty('socialPost')
       })
 
       test('should handle request with Custom purpose but empty custom prompt', async () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.Custom,
-          options: {
-            generateMindMap: true, // Use a different option to satisfy validation
-          },
         }
 
         const response = await request(app)
@@ -509,9 +454,6 @@ describe('AI Endpoints', () => {
         const requestBody = {
           transcript: mockTranscript,
           purpose: Dictionary.Purpose.Learning,
-          options: {
-            generateMindMap: true,
-          },
         }
 
         const response = await request(app)

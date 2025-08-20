@@ -1,31 +1,21 @@
+import { DEFAULT_AI_MODEL } from '@/types'
+
 export const DEFAULT_PURPOSE = 'custom'
 
 export const FORM_FIELD_NAMES = {
   URL: 'url',
   TRANSCRIPT: 'transcript',
   PURPOSE: 'purpose',
-  CUSTOM_PURPOSE: 'customPurpose',
-  GENERATE_MIND_MAP: 'options.generateMindMap',
-  GENERATE_SOCIAL_POST: 'options.generateSocialPost',
-  CUSTOM_PROMPT: 'options.customPrompt',
-  GENERATE_SUMMARY: 'options.generateSummary',
-  GENERATE_KEY_POINTS: 'options.generateKeyPoints',
-  GENERATE_QUESTIONS: 'options.generateQuestions',
+  CUSTOM_PROMPT: 'customPrompt',
+  MODEL: 'model',
 } as const
 
 export const DEFAULT_VALUES = {
   url: '',
   transcript: '',
   purpose: DEFAULT_PURPOSE,
-  customPurpose: '',
-  options: {
-    generateMindMap: false,
-    generateSocialPost: false,
-    customPrompt: '',
-    generateSummary: false,
-    generateKeyPoints: false,
-    generateQuestions: false,
-  },
+  customPrompt: '',
+  model: DEFAULT_AI_MODEL,
 } as const
 
 export const LOADING_MESSAGES = {
