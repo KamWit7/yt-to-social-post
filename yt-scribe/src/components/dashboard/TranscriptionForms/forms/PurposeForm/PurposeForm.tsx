@@ -44,7 +44,7 @@ export function PurposeForm({
     mutate: processAI,
     isPending: isAIProcessing,
     isSuccess,
-  } = useAIProcessing()
+  } = useAIProcessing(transcript)
 
   const localMethods = useForm<PurposeOnlyFormData>({
     resolver: zodResolver(purposeSchema),

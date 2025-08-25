@@ -30,6 +30,39 @@ export class AIProcessingService {
     this.genAI = new GoogleGenerativeAI(apiKey)
   }
 
+  private async generateWithRetry(
+    model: GenerativeModel,
+    prompt: string,
+    maxRetries: number = 3,
+    baseDelay: number = 1000
+  ): Promise<string> {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const result = await model.generateContent(prompt)
+        const response = await result.response
+        return response.text().trim()
+      } catch (error: any) {
+        const isLastAttempt = attempt === maxRetries
+        const isRetriableError = error.status === 500 || error.status === 503
+
+        if (!isRetriableError || isLastAttempt) {
+          throw error
+        }
+
+        // Exponential backoff delay
+        const delay = baseDelay * Math.pow(2, attempt - 1)
+        console.warn(
+          `AI generation attempt ${attempt} failed, retrying in ${delay}ms:`,
+          error.message
+        )
+
+        await new Promise((resolve) => setTimeout(resolve, delay))
+      }
+    }
+
+    throw new Error('Max retries exceeded')
+  }
+
   private getModel(modelName: AIModelName): GenerativeModel {
     return this.genAI.getGenerativeModel({ model: modelName })
   }
@@ -88,9 +121,7 @@ export class AIProcessingService {
       transcript,
     })
 
-    const result = await model.generateContent(prompt)
-    const response = await result.response
-    return response.text().trim()
+    return this.generateWithRetry(model, prompt)
   }
 
   private async generateTopics(
@@ -101,9 +132,7 @@ export class AIProcessingService {
       transcript,
     })
 
-    const result = await model.generateContent(prompt)
-    const response = await result.response
-    return response.text().trim()
+    return this.generateWithRetry(model, prompt)
   }
 
   private async generateMindMap(
@@ -114,12 +143,20 @@ export class AIProcessingService {
       transcript,
     })
 
-    const result = await model.generateContent(prompt)
-    const response = await result.response
-    const jsonText = response.text().trim()
+    const jsonText = await this.generateWithRetry(model, prompt)
+
+    let jsonTextWithoutTags = jsonText
+
+    if (jsonText.startsWith('```json\n')) {
+      jsonTextWithoutTags = jsonText
+        .replace(/```json\n/, '')
+        .replace(/\n```/, '')
+    }
+
+    console.log('___jsonTextWithoutTags', jsonTextWithoutTags)
 
     try {
-      return JSON.parse(jsonText)
+      return JSON.parse(jsonTextWithoutTags)
     } catch (error) {
       console.error('Error parsing mind map JSON:', error)
       return '{}'
@@ -134,9 +171,7 @@ export class AIProcessingService {
       transcript,
     })
 
-    const result = await model.generateContent(prompt)
-    const response = await result.response
-    return response.text().trim()
+    return this.generateWithRetry(model, prompt)
   }
 
   private async generateCustomOutput(
@@ -149,8 +184,6 @@ export class AIProcessingService {
       customPrompt,
     })
 
-    const result = await model.generateContent(prompt)
-    const response = await result.response
-    return response.text().trim()
+    return this.generateWithRetry(model, prompt)
   }
 }

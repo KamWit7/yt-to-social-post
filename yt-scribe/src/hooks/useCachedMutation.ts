@@ -59,7 +59,7 @@ export function useCachedMutation<
               >)
             : null
         )
-        .filter((m) => m)
+        .filter((m) => m && (m.data || m.status === 'success'))
 
       if (mutations.length > 1) {
         return mutations.sort((m1, m2) => {

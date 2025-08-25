@@ -6,4 +6,4 @@ export const AIModels = {
 
 export type AIModelName = (typeof AIModels)[keyof typeof AIModels]
 
-export const DEFAULT_AI_MODEL: AIModelName = AIModels.Gemini25Pro
+export const DEFAULT_AI_MODEL: AIModelName = AIModels.Gemini25Flash

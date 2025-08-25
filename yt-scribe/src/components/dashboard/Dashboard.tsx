@@ -6,13 +6,13 @@ import { AnimatePresence } from 'framer-motion'
 import { Brain, FileText, Sparkles, Youtube } from 'lucide-react'
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { TranscriptionForm } from '.'
+import { AnimatedTabContent, DashboardTabTrigger } from './components'
 import {
   DASHBOARD_TABS,
   type DashboardTab,
   type StepCompleted,
 } from './Dashboard.helpers'
 import TranscriptionResults from './TranscriptionResults/TranscriptionResults'
-import { AnimatedTabContent, DashboardTabTrigger } from './components'
 
 export default function Dashboard({
   isLoading,

@@ -1,3 +1,14 @@
+import { Edge, Node } from 'reactflow'
+
+export interface MindMapNodeData {
+  label: string
+  type: 'root' | 'branch' | 'leaf'
+  level: number
+  isCollapsed?: boolean
+  children?: string[]
+  originalValue?: unknown
+}
+
 export interface ApiResponse<T> {
   success: boolean
   data?: T
@@ -23,7 +34,7 @@ export const AIModels = {
 
 export type AIModelName = (typeof AIModels)[keyof typeof AIModels]
 
-export const DEFAULT_AI_MODEL: AIModelName = AIModels.Gemini25Pro
+export const DEFAULT_AI_MODEL: AIModelName = AIModels.Gemini25Flash
 
 export interface AIProcessingRequest {
   transcript: string
@@ -33,10 +44,15 @@ export interface AIProcessingRequest {
   model?: AIModelName
 }
 
+export type MindMapData = {
+  nodes: Node<MindMapNodeData>[]
+  edges: Edge[]
+}
+
 export interface AIProcessingResponse {
   summary?: string
   topics?: string
-  mindMap?: Record<string, unknown>
+  mindMap?: MindMapData
   socialPost?: string
   customOutput?: string
   error?: string

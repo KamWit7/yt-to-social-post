@@ -1,10 +1,13 @@
-Your task is to analyze the following transcript and create a concise summary. Here is the transcript:
+Your task is to analyze the following transcript and create a concise summary. 
+Here is the transcript:
+
 <transcript>
 {{transcript}}
 </transcript>
+
 Carefully read the above transcript and create a concise summary that:
 
-1.  Consists of 2-3 sentences
+1.  Consists of 100-200 words
 2.  Contains the main points and key information from the transcript
 3.  Is clear and concise, without unnecessary details
 
@@ -15,4 +18,4 @@ When creating the summary, focus on:
 * Key conclusions or outcomes (if present)
 
 Your final summary should be concise yet informative, capturing the essence of the original transcript.
-Your response should contain only this summary, without any additional comments or explanations. 
+Your response should contain only this summary, without any additional comments or explanations.

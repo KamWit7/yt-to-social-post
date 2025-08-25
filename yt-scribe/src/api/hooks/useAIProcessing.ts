@@ -6,9 +6,13 @@ import {
 } from '../../types'
 import { processWithAI } from '../services/aiProcessingService'
 
-export const getAIProcessingQueryKey = () => ['ai-processing']
+export const getAIProcessingQueryKey = (transcript?: string) => [
+  'ai-processing',
+  transcript ? transcript.slice(0, 100) : Date.now(),
+]
 
 export function useAIProcessing(
+  transcript?: string,
   options?: Partial<
     UseMutationOptions<
       ApiResponse<AIProcessingResponse>,
@@ -23,7 +27,7 @@ export function useAIProcessing(
     AIProcessingRequest
   >({
     ...options,
-    mutationKey: getAIProcessingQueryKey(),
+    mutationKey: getAIProcessingQueryKey(transcript),
     mutationFn: processWithAI,
   })
 }
