@@ -137,30 +137,49 @@ export class AIProcessingService {
 
   private async generateMindMap(
     transcript: string,
-    model: GenerativeModel
-  ): Promise<string> {
+    model: GenerativeModel,
+    maxRetries: number = 3
+  ): Promise<any> {
     const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.MIND_MAP, {
       transcript,
     })
 
-    const jsonText = await this.generateWithRetry(model, prompt)
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const jsonText = await this.generateWithRetry(model, prompt)
 
-    let jsonTextWithoutTags = jsonText
+        let jsonTextWithoutTags = jsonText
 
-    if (jsonText.startsWith('```json\n')) {
-      jsonTextWithoutTags = jsonText
-        .replace(/```json\n/, '')
-        .replace(/\n```/, '')
+        if (jsonText.startsWith('```json\n')) {
+          jsonTextWithoutTags = jsonText
+            .replace(/```json\n/, '')
+            .replace(/\n```/, '')
+        }
+
+        const parsedJson = JSON.parse(jsonTextWithoutTags)
+
+        return parsedJson
+      } catch (error) {
+        const isLastAttempt = attempt === maxRetries
+
+        if (isLastAttempt) {
+          console.error(
+            `Error generating mind map after ${maxRetries} attempts:`,
+            error
+          )
+          return {}
+        }
+
+        console.warn(
+          `Mind map generation attempt ${attempt} failed, retrying:`,
+          error instanceof Error ? error.message : String(error)
+        )
+
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+      }
     }
 
-    console.log('___jsonTextWithoutTags', jsonTextWithoutTags)
-
-    try {
-      return JSON.parse(jsonTextWithoutTags)
-    } catch (error) {
-      console.error('Error parsing mind map JSON:', error)
-      return '{}'
-    }
+    return {}
   }
 
   private async generateSocialPost(
