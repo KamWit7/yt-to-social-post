@@ -2,9 +2,9 @@ import { ApiResponse } from '@/types'
 import { endpoints } from '../endpoints'
 import { apiFetch } from '../httpClient'
 
-
 export const DictionaryCode = {
   Purpose: 'purpose',
+  Language: 'language',
 } as const
 
 export type DictionaryCode =

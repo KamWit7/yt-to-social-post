@@ -22,6 +22,7 @@ export class DictionaryController {
 
       const codeMap: Record<string, DictionaryCode> = {
         purpose: 'Purpose',
+        language: 'Language',
       }
 
       const mappedCode = codeMap[codeParam]

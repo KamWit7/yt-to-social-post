@@ -70,31 +70,40 @@ export class AIProcessingService {
   async processTranscript(
     request: ProcessTranscriptRequest
   ): Promise<AIProcessingResult> {
-    const { transcript, purpose, customPrompt, model } = request
+    const { transcript, purpose, language, customPrompt, model } = request
 
     const generativeModel = this.getModel(model ?? DEFAULT_AI_MODEL)
 
     const tasks: Record<AIProcessingResultKeys, Promise<string | undefined>> = {
-      summary: this.generateSummary(transcript, generativeModel),
-      topics: this.generateTopics(transcript, generativeModel),
+      summary: this.generateSummary(transcript, generativeModel, language),
+      topics: this.generateTopics(transcript, generativeModel, language),
       mindMap: Promise.resolve(undefined),
       socialPost: Promise.resolve(undefined),
       customOutput: Promise.resolve(undefined),
     }
 
     if (purpose === Dictionary.Purpose.Learning) {
-      tasks.mindMap = this.generateMindMap(transcript, generativeModel)
+      tasks.mindMap = this.generateMindMap(
+        transcript,
+        generativeModel,
+        language
+      )
     }
 
     if (purpose === Dictionary.Purpose.SocialMedia) {
-      tasks.socialPost = this.generateSocialPost(transcript, generativeModel)
+      tasks.socialPost = this.generateSocialPost(
+        transcript,
+        generativeModel,
+        language
+      )
     }
 
     if (purpose === Dictionary.Purpose.Custom && customPrompt) {
       tasks.customOutput = this.generateCustomOutput(
         transcript,
         customPrompt,
-        generativeModel
+        generativeModel,
+        language
       )
     }
 
@@ -115,10 +124,12 @@ export class AIProcessingService {
 
   private async generateSummary(
     transcript: string,
-    model: GenerativeModel
+    model: GenerativeModel,
+    language: string
   ): Promise<string> {
     const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.SUMMARY, {
       transcript,
+      language,
     })
 
     return this.generateWithRetry(model, prompt)
@@ -126,10 +137,12 @@ export class AIProcessingService {
 
   private async generateTopics(
     transcript: string,
-    model: GenerativeModel
+    model: GenerativeModel,
+    language: string
   ): Promise<string> {
     const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.TOPICS, {
       transcript,
+      language,
     })
 
     return this.generateWithRetry(model, prompt)
@@ -138,10 +151,12 @@ export class AIProcessingService {
   private async generateMindMap(
     transcript: string,
     model: GenerativeModel,
+    language: string,
     maxRetries: number = 3
   ): Promise<any> {
     const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.MIND_MAP, {
       transcript,
+      language,
     })
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -184,10 +199,12 @@ export class AIProcessingService {
 
   private async generateSocialPost(
     transcript: string,
-    model: GenerativeModel
+    model: GenerativeModel,
+    language: string
   ): Promise<string> {
     const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.SOCIAL_POST, {
       transcript,
+      language,
     })
 
     return this.generateWithRetry(model, prompt)
@@ -196,11 +213,13 @@ export class AIProcessingService {
   private async generateCustomOutput(
     transcript: string,
     customPrompt: string,
-    model: GenerativeModel
+    model: GenerativeModel,
+    language: string
   ): Promise<string> {
     const prompt = PromptLoader.loadPrompt(AVAILABLE_PROMPTS.CUSTOM_OUTPUT, {
       transcript,
       customPrompt,
+      language,
     })
 
     return this.generateWithRetry(model, prompt)

@@ -8,6 +8,7 @@ import {
 export const purposeSchema = z
   .object({
     [FORM_FIELD_NAMES.PURPOSE]: z.string().min(1, 'Wybierz cel transkrypcji'),
+    [FORM_FIELD_NAMES.LANGUAGE]: z.enum(['pl', 'en']).default('pl'),
     [FORM_FIELD_NAMES.CUSTOM_PROMPT]: z.string().trim(),
     [FORM_FIELD_NAMES.MODEL]: z
       .enum([

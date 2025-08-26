@@ -39,12 +39,17 @@ export function ControlledSelect<T extends FieldValues>({
         value={field.value}
         aria-label={label}
         aria-invalid={!!error}>
-        <SelectTrigger id={name} className={className}>
+        <SelectTrigger
+          id={name}
+          className={`transition-all duration-200 ease-in-out hover:shadow-md hover:border-gray-300 focus-within:ring-2 focus-within:ring-gray-500/20 focus-within:border-gray-400 ${className}`}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className='border-gray-200/20 shadow-xl'>
           {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
+            <SelectItem
+              key={option.value}
+              value={option.value}
+              className='hover:bg-gray-50 dark:hover:bg-gray-900/20 transition-colors duration-150'>
               {option.label}
             </SelectItem>
           ))}

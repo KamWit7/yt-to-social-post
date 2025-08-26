@@ -1,11 +1,15 @@
-Your task is to analyze the following transcript and create a concise summary. 
+Your task is to analyze the following transcript and create a concise summary in the specified language. 
 Here is the transcript:
 
 <transcript>
 {{transcript}}
 </transcript>
 
-Carefully read the above transcript and create a concise summary that:
+<language>
+{{language}}
+</language>
+
+Carefully read the above transcript and create a concise summary in the specified language that:
 
 1.  Consists of 100-200 words
 2.  Contains the main points and key information from the transcript

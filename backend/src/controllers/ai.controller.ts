@@ -18,11 +18,12 @@ export class AIController {
     next: NextFunction
   ) {
     try {
-      const { transcript, purpose, customPrompt, model } = req.body
+      const { transcript, purpose, language, customPrompt, model } = req.body
 
       const result = await this.aiService.processTranscript({
         transcript,
         purpose,
+        language,
         customPrompt,
         model,
       })

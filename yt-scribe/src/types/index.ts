@@ -36,9 +36,12 @@ export type AIModelName = (typeof AIModels)[keyof typeof AIModels]
 
 export const DEFAULT_AI_MODEL: AIModelName = AIModels.Gemini25Flash
 
+export const DEFAULT_LANGUAGE = 'pl' as const
+
 export interface AIProcessingRequest {
   transcript: string
   purpose: string
+  language: 'pl' | 'en'
   customPurpose?: string
   customPrompt?: string
   model?: AIModelName

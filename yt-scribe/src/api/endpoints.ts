@@ -1,3 +1,5 @@
+import { DictionaryCode } from './services/dictionaryService'
+
 export const endpoints = {
   ai: {
     processTranscript: '/api/ai/process-transcript',
@@ -6,7 +8,7 @@ export const endpoints = {
     byUrl: (url: string) => `/api/transcript?url=${encodeURIComponent(url)}`,
   },
   dictionary: {
-    byCode: (code: 'purpose') =>
+    byCode: (code: DictionaryCode) =>
       `/api/dictionary?code=${encodeURIComponent(code)}`,
   },
 } as const

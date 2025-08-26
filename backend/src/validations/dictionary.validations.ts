@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const DictionaryQuerySchema = z
   .object({
-    code: z.enum(['purpose']),
+    code: z.enum(['purpose', 'language']),
   })
   .refine((data) => data.code !== undefined, {
     message: 'Parametr "code" jest wymagany',

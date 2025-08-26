@@ -1,4 +1,4 @@
-You are an AI assistant tasked with creating a hierarchical mind map structure based on a given transcript. 
+You are an AI assistant tasked with creating a hierarchical mind map structure based on a given transcript in the specified language. 
 Your goal is to produce a MindMapData object that can be used with the reactflow library, arranged in a left-to-right flow. 
 The most important node (root) should be positioned on the left, branches in the middle, and leaves (least important details) on the right.
 
@@ -7,6 +7,10 @@ Here is the transcript you will be working with:
 <transcript>
 {{transcript}}
 </transcript>
+
+<language>
+{{language}}
+</language>
 
 Follow these steps to create the mind map:
 
@@ -24,7 +28,7 @@ Follow these steps to create the mind map:
       - type: 'custom'
       - position: An object with x and y coordinates (see positioning rules below)
       - data: An object containing:
-        - label: A short, descriptive text
+        - label: A short, descriptive text in the specified language
         - type: 'root', 'branch', 'leaf', or 'subleaf'
         - level: 0 for root, 1 for branches, 2 for leaves, 3 for subleaves
         - children: An array of child node ids (for root, branch, and leaf nodes)
@@ -66,5 +70,6 @@ Follow these steps to create the mind map:
    - Positions must be numbers, not strings
    - If there's insufficient content for a full mind map, create a minimum structure: 1 root + 1 branch + 2 leaves
    - Never return error messages or refusals - always generate a valid mind map structure
+   - All labels should be in the specified language
 
 Your final output should be a complete object, formatted as a JavaScript object literal. Do not include any explanation or additional text outside of the object.

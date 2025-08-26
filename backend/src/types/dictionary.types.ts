@@ -9,7 +9,7 @@ import { ApiResponse } from './api.types'
  * Supported dictionary codes for the public API layer (query param `code`)
  * Extend this union as new dictionaries are exposed.
  */
-export type DictionaryApiCode = 'purpose'
+export type DictionaryApiCode = 'purpose' | 'language'
 
 /**
  * Typed query params for GET /api/dictionary
