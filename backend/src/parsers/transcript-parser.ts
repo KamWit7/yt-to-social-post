@@ -13,15 +13,15 @@ interface TranscriptFormatOptions {
 
 export class TranscriptParser {
   static formatSegmentText(
-    text: string,
+    text?: string,
     options: TranscriptFormatOptions = {}
   ): string {
     const { preserveNewlines = true } = options
 
     if (preserveNewlines) {
-      return text.replace(/\\n/g, '\n')
+      return text?.replace(/\\n/g, '\n') ?? ''
     } else {
-      return text.replace(/\\n/g, ' ')
+      return text?.replace(/\\n/g, ' ') ?? ''
     }
   }
 
@@ -40,18 +40,19 @@ export class TranscriptParser {
 
     const { segmentSeparator = ' ' } = options
 
-    const textParts = segments.map((segment) => {
+    const textParts = segments?.map((segment) => {
       let segmentText = ''
 
-      if (segment.transcriptSegmentRenderer) {
-        const rawText = segment.transcriptSegmentRenderer.snippet.runs
-          .map((run) => run.text)
-          .join('')
+      if (segment?.transcriptSegmentRenderer) {
+        const rawText = segment?.transcriptSegmentRenderer?.snippet?.runs
+          ?.map((run) => run.text)
+          ?.join('')
+
         segmentText = TranscriptParser.formatSegmentText(rawText, options)
-      } else if (segment.transcriptSectionHeaderRenderer) {
+      } else if (segment?.transcriptSectionHeaderRenderer) {
         const rawText =
-          segment.transcriptSectionHeaderRenderer.sectionHeader
-            .sectionHeaderViewModel.headline.content
+          segment?.transcriptSectionHeaderRenderer?.sectionHeader
+            ?.sectionHeaderViewModel?.headline?.content
         segmentText = TranscriptParser.formatSegmentText(rawText, options)
       }
 
