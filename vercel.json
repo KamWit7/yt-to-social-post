@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd yt-scribe && npm run build",
+  "outputDirectory": "yt-scribe/.next",
+  "framework": "nextjs",
+  "installCommand": "cd yt-scribe && npm install",
+  "devCommand": "cd yt-scribe && npm run dev"
+}
