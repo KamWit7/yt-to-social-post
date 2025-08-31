@@ -2,7 +2,7 @@ import cors from 'cors'
 import { NextFunction, Request, Response } from 'express'
 
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(',') || [
-  process.env.FRONTEND_URL || 'http://localhost:3000',
+  process.env.ALLOWED_ORIGINS || 'http://localhost:3000',
 ]
 
 export const corsConfig = (req: Request, res: Response, next: NextFunction) => {
