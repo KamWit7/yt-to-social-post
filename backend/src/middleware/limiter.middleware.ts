@@ -7,4 +7,7 @@ export const limiter = rateLimit({
     success: false,
     error: 'Too many requests from this IP, please try again later.',
   },
+  keyGenerator: (req) => {
+    return req.clientIp || req.ip || 'unknown' // Fallback to req.ip or 'unknown'
+  },
 })

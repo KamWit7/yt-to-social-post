@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import express from 'express'
 import helmet from 'helmet'
+import requestIp from 'request-ip'
 import { corsConfig } from './cors/cors.config'
 import {
   errorHandler,
@@ -21,6 +22,8 @@ app.set('trust proxy', 1)
 
 app.set('case sensitive routing', true)
 app.set('strict routing', false)
+
+app.use(requestIp.mw())
 
 app.use(helmet())
 
