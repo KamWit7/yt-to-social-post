@@ -43,3 +43,11 @@ export const SUCCESS_MESSAGES = {
   COPIED: 'Skopiowano',
   COPY: 'Kopiuj',
 } as const
+
+// Route paths
+export const ROUTES = {
+  LOGIN: '/login',
+  REGISTER: '/register',
+  DASHBOARD: '/',
+  PROFILE: '/profile',
+} as const

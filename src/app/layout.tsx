@@ -1,6 +1,7 @@
 import Footer from '@/components/common/Footer'
 import Header from '@/components/common/Header'
 import { QueryProvider } from '@/components/provider/QueryProvider'
+import { SessionProvider } from '@/components/provider/SessionProvider'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
@@ -30,15 +31,17 @@ export default function RootLayout({
     <html lang='pl'>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <QueryProvider>
-          <div
-            className='bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 font-sans
-            flex flex-col min-h-screen min-h-dvh'>
-            <Header />
-            <main className='p-4 md:p-8 flex-1'>{children}</main>
-            <Footer />
-          </div>
-        </QueryProvider>
+        <SessionProvider>
+          <QueryProvider>
+            <div
+              className='bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 font-sans
+              flex flex-col min-h-screen min-h-dvh'>
+              <Header />
+              <main className='p-4 md:p-8 flex-1'>{children}</main>
+              <Footer />
+            </div>
+          </QueryProvider>
+        </SessionProvider>
       </body>
     </html>
   )
