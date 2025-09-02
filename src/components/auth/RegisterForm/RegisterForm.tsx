@@ -1,6 +1,7 @@
 'use client'
 
 import { ControlledInput, SubmitButton } from '@/components/common'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -8,25 +9,20 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Lock, Mail, User, UserPlus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
+import { registerUser } from '@/lib/actions/register'
 import { ROUTES } from '@/utils/constants'
 import { FORM_FIELD_NAMES, RegisterDefaultValues } from './RegisterForm.helpers'
 import { registerSchema, type RegisterFormData } from './registerSchema'
 
-type RegisterFormProps = {
-  onSuccess?: () => void
-  onError?: (error: string) => void
-}
-
-export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
+export function RegisterForm() {
+  const [countdown, setCountdown] = useState<number | null>(null)
   const router = useRouter()
 
   const methods = useForm<RegisterFormData>({
@@ -35,48 +31,109 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
     defaultValues: RegisterDefaultValues,
   })
 
-  const { handleSubmit } = methods
+  const {
+    handleSubmit,
+    formState: { isSubmitting, isSubmitSuccessful },
+    setError: setFormError,
+    formState: { errors },
+  } = methods
 
-  const onFormSubmit = async () => {
-    setIsLoading(true)
-    setError(null)
+  // Timer effect for countdown
+  useEffect(() => {
+    if (countdown === null) return
 
+    if (countdown === 0) {
+      router.push(ROUTES.LOGIN)
+      return
+    }
+
+    const timer = setTimeout(() => {
+      setCountdown(countdown - 1)
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [countdown, router])
+
+  const onFormSubmit = async (data: RegisterFormData) => {
     try {
-      // In a real app, you would call your registration API here
-      // For now, we'll simulate a successful registration
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const result = await registerUser(data)
 
-      setSuccess(true)
-      onSuccess?.()
-      setTimeout(() => {
-        router.push(ROUTES.LOGIN)
-      }, 2000)
-    } catch {
-      const errorMessage =
-        'An error occurred during registration. Please try again.'
-      setError(errorMessage)
-      onError?.(errorMessage)
-    } finally {
-      setIsLoading(false)
+      if (result.success) {
+        setCountdown(5)
+      } else {
+        setFormError(FORM_FIELD_NAMES.EMAIL, {
+          message: result.message,
+        })
+      }
+    } catch (error) {
+      setFormError(FORM_FIELD_NAMES.EMAIL, {
+        message:
+          error instanceof Error
+            ? error?.message
+            : 'An error occurred during registration',
+      })
     }
   }
 
-  if (success) {
+  if (isSubmitSuccessful) {
+    const progressPercentage =
+      countdown !== null ? ((5 - countdown) / 5) * 100 : 0
+
     return (
       <Card className='w-full max-w-md mx-auto'>
         <CardContent className='pt-6'>
-          <div className='text-center space-y-4'>
-            <div className='w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto'>
-              <UserPlus className='w-6 h-6 text-green-600' />
+          <div className='text-center space-y-6'>
+            {/* Success Icon with Pulse Animation */}
+            <div className='relative'>
+              <div className='w-16 h-16 bg-gradient-to-br from-green-100 to-green-50 rounded-full flex items-center justify-center mx-auto shadow-lg'>
+                <UserPlus className='w-8 h-8 text-green-600' />
+              </div>
+              <div className='absolute inset-0 w-16 h-16 bg-green-200 rounded-full mx-auto animate-ping opacity-20'></div>
             </div>
-            <div>
-              <h3 className='text-lg font-semibold'>
+
+            {/* Success Message */}
+            <div className='space-y-2'>
+              <h3 className='text-xl font-bold text-green-800'>
                 Registration Successful!
               </h3>
-              <p className='text-sm text-muted-foreground mt-2'>
-                Your account has been created. Redirecting to login...
+              <p className='text-sm text-muted-foreground'>
+                Your account has been created successfully
               </p>
             </div>
+
+            {/* Countdown Timer with Progress */}
+            {countdown !== null && (
+              <div className='space-y-4'>
+                <div className='flex items-center justify-center space-x-2'>
+                  <span className='text-sm text-muted-foreground'>
+                    Redirecting to login in
+                  </span>
+                  <div className='flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full'>
+                    <span className='text-sm font-bold text-primary'>
+                      {countdown}
+                    </span>
+                  </div>
+                  <span className='text-sm text-muted-foreground'>
+                    {countdown === 1 ? 'second' : 'seconds'}
+                  </span>
+                </div>
+
+                {/* Progress Bar */}
+                <Progress
+                  value={progressPercentage}
+                  className='w-full h-2 bg-gray-200'
+                />
+
+                {/* Skip Button */}
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  onClick={() => router.push(ROUTES.LOGIN)}
+                  className='text-sm'>
+                  Go to login now
+                </Button>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -101,7 +158,7 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
                 type='text'
                 placeholder='Enter your full name'
                 required
-                disabled={isLoading}
+                disabled={isSubmitting}
                 icon={<User className='w-4 h-4' />}
                 autoComplete='name'
               />
@@ -112,7 +169,7 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
                 type='email'
                 placeholder='Enter your email'
                 required
-                disabled={isLoading}
+                disabled={isSubmitting}
                 icon={<Mail className='w-4 h-4' />}
                 autoComplete='email'
               />
@@ -123,7 +180,7 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
                 type='password'
                 placeholder='Create a password'
                 required
-                disabled={isLoading}
+                disabled={isSubmitting}
                 icon={<Lock className='w-4 h-4' />}
                 autoComplete='new-password'
               />
@@ -134,20 +191,20 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
                 type='password'
                 placeholder='Confirm your password'
                 required
-                disabled={isLoading}
+                disabled={isSubmitting}
                 icon={<Lock className='w-4 h-4' />}
                 autoComplete='new-password'
               />
             </div>
 
-            {error && (
+            {errors[FORM_FIELD_NAMES.EMAIL]?.message && (
               <div className='text-sm text-destructive bg-destructive/10 p-3 rounded-md'>
-                {error}
+                {errors[FORM_FIELD_NAMES.EMAIL]?.message}
               </div>
             )}
 
             <SubmitButton
-              isLoading={isLoading}
+              isLoading={isSubmitting}
               loadingText='Creating account...'
               normalText='Create Account'
               icon={UserPlus}

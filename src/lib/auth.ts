@@ -1,9 +1,14 @@
+import { findUserByEmail } from '@/lib/db/users'
+import { prisma } from '@/lib/prisma'
 import { ROUTES } from '@/utils/constants'
+import { PrismaAdapter } from '@auth/prisma-adapter'
+import bcrypt from 'bcryptjs'
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -16,16 +21,20 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        // For now, we'll implement a simple check
-        // In a real app, you'd validate against a database
+        // Look up user in database
+        const user = await findUserByEmail(credentials.email)
+        console.log('user', user)
+
         if (
-          credentials.email === 'demo@example.com' &&
-          credentials.password === 'password'
+          credentials.email === user?.email &&
+          user?.password &&
+          (await bcrypt.compare(credentials.password, user.password))
         ) {
           return {
-            id: '1',
-            email: credentials.email,
-            name: 'Demo User',
+            id: user?.id,
+            email: user?.email,
+            name: user?.name,
+            image: user?.image,
           }
         }
 
@@ -35,19 +44,16 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
-      //   httpOptions: {
-      //     timeout: 10_000,
-      //   },
     }),
   ],
   session: {
-    strategy: 'jwt',
+    strategy: 'database',
   },
   pages: {
     signIn: ROUTES.LOGIN,
-    // error: ROUTES.LOGIN,
+    error: ROUTES.LOGIN,
   },
-  //   debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV === 'development',
   callbacks: {
     async jwt({ token, user }) {
       if (user) {

@@ -1,5 +1,3 @@
-'use client'
-
 import { AuthSection, Logo } from './header'
 
 export default function Header() {

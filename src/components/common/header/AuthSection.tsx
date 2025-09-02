@@ -9,6 +9,7 @@ import { UserMenu } from './UserMenu'
 
 export function AuthSection() {
   const { data: session, status } = useSession()
+  console.log('session', session)
 
   if (status === 'loading') {
     return (
