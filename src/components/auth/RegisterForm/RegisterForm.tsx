@@ -40,7 +40,9 @@ export function RegisterForm() {
 
   // Timer effect for countdown
   useEffect(() => {
-    if (countdown === null) return
+    if (countdown === null) {
+      return
+    }
 
     if (countdown === 0) {
       router.push(ROUTES.LOGIN)
@@ -118,13 +120,11 @@ export function RegisterForm() {
                   </span>
                 </div>
 
-                {/* Progress Bar */}
                 <Progress
                   value={progressPercentage}
                   className='w-full h-2 bg-gray-200'
                 />
 
-                {/* Skip Button */}
                 <Button
                   variant='ghost'
                   size='sm'
@@ -197,6 +197,7 @@ export function RegisterForm() {
               />
             </div>
 
+            {/* TODO: Refactor this to use FormError component and create new generic field in form for backend errors */}
             {errors[FORM_FIELD_NAMES.EMAIL]?.message && (
               <div className='text-sm text-destructive bg-destructive/10 p-3 rounded-md'>
                 {errors[FORM_FIELD_NAMES.EMAIL]?.message}

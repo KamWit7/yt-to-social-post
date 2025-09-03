@@ -6,7 +6,7 @@ import {
 } from '@/components/auth/RegisterForm'
 import { createUser, findUserByEmail } from '../db/users'
 
-type RegisetrUserActionReturn = {
+type RegisterUserActionReturn = {
   success: boolean
   message: string
   user?: {
@@ -18,7 +18,7 @@ type RegisetrUserActionReturn = {
 
 export async function registerUser(
   formData: RegisterFormData
-): Promise<RegisetrUserActionReturn> {
+): Promise<RegisterUserActionReturn> {
   try {
     const validatedData = registerSchema.parse(formData)
 
