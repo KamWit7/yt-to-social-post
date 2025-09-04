@@ -50,4 +50,5 @@ export const ROUTES = {
   REGISTER: '/register',
   DASHBOARD: '/',
   PROFILE: '/profile',
+  USAGE: '/usage',
 } as const

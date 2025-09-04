@@ -27,11 +27,17 @@ export function UserMenu({ user }: UserMenuProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-48'>
-        {USER_MENU_ITEMS.map((item) => (
-          <DropdownMenuItem key={item.href} asChild>
-            <Link href={item.href}>{item.label}</Link>
-          </DropdownMenuItem>
-        ))}
+        {USER_MENU_ITEMS.map((item) => {
+          const Icon = item.icon
+          return (
+            <DropdownMenuItem key={item.href} asChild>
+              <Link href={item.href} className='flex items-center gap-2'>
+                <Icon className='w-4 h-4' />
+                {item.label}
+              </Link>
+            </DropdownMenuItem>
+          )
+        })}
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <LogoutButton
