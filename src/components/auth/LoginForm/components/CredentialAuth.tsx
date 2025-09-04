@@ -18,9 +18,13 @@ import { loginSchema, type LoginFormData } from '../loginSchema'
 
 interface CredentialAuthProps {
   onLoadingChange?: (isLoading: boolean) => void
+  isDisabled?: boolean
 }
 
-export function CredentialAuth({ onLoadingChange }: CredentialAuthProps) {
+export function CredentialAuth({
+  onLoadingChange,
+  isDisabled = false,
+}: CredentialAuthProps) {
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
@@ -86,7 +90,7 @@ export function CredentialAuth({ onLoadingChange }: CredentialAuthProps) {
             type='email'
             placeholder='Enter your email'
             required
-            disabled={isSubmitting}
+            disabled={isSubmitting || isDisabled}
             icon={<Mail className='w-4 h-4' />}
             autoComplete='email'
           />
@@ -97,7 +101,7 @@ export function CredentialAuth({ onLoadingChange }: CredentialAuthProps) {
             type='password'
             placeholder='Enter your password'
             required
-            disabled={isSubmitting}
+            disabled={isSubmitting || isDisabled}
             icon={<Lock className='w-4 h-4' />}
             autoComplete='current-password'
           />
@@ -115,6 +119,7 @@ export function CredentialAuth({ onLoadingChange }: CredentialAuthProps) {
           normalText='Sign In'
           icon={LogIn}
           className='w-full'
+          disabled={isDisabled}
         />
       </form>
     </FormProvider>

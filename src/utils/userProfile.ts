@@ -1,6 +1,9 @@
 import { Session } from 'next-auth'
 
-import { AccountTier, UserProfileData } from '@/types/user'
+import {
+  AccountTier,
+  UserProfileData,
+} from '@/components/auth/UserProfile/UserProfile.helpers'
 
 export function transformSessionToUserProfile(
   session: Session

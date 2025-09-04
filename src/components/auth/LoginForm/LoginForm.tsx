@@ -7,15 +7,16 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { useState } from 'react'
 
 import { CredentialAuth } from './components/CredentialAuth'
 import { GoogleAuth } from './components/GoogleAuth'
 
 export function LoginForm() {
+  const [isAnyLoading, setIsAnyLoading] = useState(false)
+
   const handleLoadingChange = (loading: boolean) => {
-    // This function can be used to coordinate loading states between auth components
-    // Currently not used but provides extensibility for future loading coordination
-    console.log('Auth loading state:', loading)
+    setIsAnyLoading(loading)
   }
 
   return (
@@ -27,8 +28,14 @@ export function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <CredentialAuth onLoadingChange={handleLoadingChange} />
-        <GoogleAuth onLoadingChange={handleLoadingChange} />
+        <CredentialAuth
+          onLoadingChange={handleLoadingChange}
+          isDisabled={isAnyLoading}
+        />
+        <GoogleAuth
+          onLoadingChange={handleLoadingChange}
+          isDisabled={isAnyLoading}
+        />
       </CardContent>
     </Card>
   )

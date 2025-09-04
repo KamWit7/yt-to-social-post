@@ -1,10 +1,10 @@
-'use client'
-
-import { ACCOUNT_TIER_LABELS, AccountTier } from '@/types/user'
+import {
+  ACCOUNT_TIER_LABELS,
+  UserProfileData,
+} from '@/components/auth/UserProfile/UserProfile.helpers'
 
 interface AccountDetailsProps {
-  userId: string
-  accountTier: AccountTier
+  user: Pick<UserProfileData, 'id' | 'accountTier'>
   className?: string
 }
 
@@ -25,23 +25,19 @@ function DetailRow({ label, value, valueClassName = '' }: DetailRowProps) {
   )
 }
 
-export function AccountDetails({
-  userId,
-  accountTier,
-  className = '',
-}: AccountDetailsProps) {
+export function AccountDetails({ user, className = '' }: AccountDetailsProps) {
   return (
     <div className={`border-t pt-4 ${className}`}>
       <div className='space-y-3'>
         <DetailRow
           label='Account ID'
-          value={userId}
+          value={user.id}
           valueClassName='font-mono'
         />
 
         <DetailRow
           label='Account Type'
-          value={ACCOUNT_TIER_LABELS[accountTier]}
+          value={ACCOUNT_TIER_LABELS[user.accountTier]}
         />
       </div>
     </div>

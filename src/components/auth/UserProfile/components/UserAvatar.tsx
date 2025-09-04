@@ -1,11 +1,9 @@
-'use client'
-
+import { UserProfileData } from '@/components/auth/UserProfile/UserProfile.helpers'
 import { User } from 'lucide-react'
 import Image from 'next/image'
 
 interface UserAvatarProps {
-  src?: string | null
-  alt: string
+  user?: Pick<UserProfileData, 'image' | 'name'>
   size?: 'sm' | 'md' | 'lg'
   className?: string
 }
@@ -23,19 +21,19 @@ const iconSizeClasses = {
 } as const
 
 export function UserAvatar({
-  src,
-  alt,
+  user,
   size = 'md',
   className = '',
 }: UserAvatarProps) {
   const containerClass = `${sizeClasses[size]} bg-primary/10 rounded-full flex items-center justify-center ${className}`
+  const displayName = user?.name || 'User'
 
   return (
     <div className={containerClass}>
-      {src ? (
+      {user?.image ? (
         <Image
-          src={src}
-          alt={alt}
+          src={user.image}
+          alt={displayName}
           width={size === 'sm' ? 32 : size === 'md' ? 64 : 96}
           height={size === 'sm' ? 32 : size === 'md' ? 64 : 96}
           className={`${sizeClasses[size]} rounded-full object-cover`}
