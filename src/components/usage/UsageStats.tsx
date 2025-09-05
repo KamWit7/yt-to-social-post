@@ -37,14 +37,6 @@ export async function UsageStats() {
 
   return (
     <Card>
-      {/* Animated background gradient */}
-      <div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700' />
-
-      {/* Subtle border glow */}
-      <div className='absolute inset-0 rounded-lg bg-gradient-to-r from-primary/20 via-transparent to-primary/20 p-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-500'>
-        <div className='h-full w-full rounded-lg bg-background' />
-      </div>
-
       <CardHeader className='relative z-10 pb-4'>
         <div className='flex items-center justify-between'>
           <div className='space-y-1'>

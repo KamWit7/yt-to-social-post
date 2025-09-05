@@ -75,8 +75,6 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id
       }
 
-      console.log('jwt callback', user)
-
       return token
     },
     async session({ session, token }) {
@@ -84,7 +82,6 @@ export const authOptions: NextAuthOptions = {
       if (token?.id) {
         session.user.id = token.id as string
       }
-      console.log('session callback', session)
 
       return session
     },
