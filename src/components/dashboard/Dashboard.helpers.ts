@@ -1,3 +1,7 @@
+import z from 'zod'
+
+export const TRANSCRIPTION_FORMS_STORAGE_KEY = 'transcriptionForms'
+
 export const DASHBOARD_TABS = {
   YOUTUBE: 'youtube',
   TRANSCRIPT: 'transcript',
@@ -20,3 +24,9 @@ export interface StepCompleted {
   [DASHBOARD_TABS.PURPOSE]: boolean
   [DASHBOARD_TABS.RESULTS]: boolean
 }
+
+export const dashboardStateSchema = z.object({
+  transcript: z.string(),
+  activeTab: z.enum(Object.values(DASHBOARD_TABS)),
+  stepCompleted: z.record(z.enum(Object.values(DASHBOARD_TABS)), z.boolean()),
+})

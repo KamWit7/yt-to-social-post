@@ -13,28 +13,26 @@ import { ArrowRight, FileText, Save, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
+import { DASHBOARD_TABS } from '../../../Dashboard.helpers'
 import {
   ANIMATION_DELAYS,
   BUTTON_STYLES,
 } from '../../components/Section.helpers'
 import { FORM_FIELD_NAMES } from '../../constants/formConstants'
+import { useTranscriptionForms } from '../../context'
 import type { TranscriptOnlyFormData } from '../../types/formTypes'
 import { getTranscriptDefaultValues } from './TranscriptForm.helpers'
 import { transcriptSchema } from './transcriptSchema'
 
-type TranscriptFormProps = {
-  transcript?: string
-  onSubmit?: () => void
-  onLoadingStateChange?: (isLoading: boolean) => void
-  onTranscriptUpdate?: (newTranscript: string) => void
-}
+export function TranscriptForm() {
+  const {
+    transcript,
+    handleStepComplete,
+    handleTabChange,
+    handleLoadingStateChange,
+    handleTranscriptUpdate,
+  } = useTranscriptionForms()
 
-export function TranscriptForm({
-  transcript = '',
-  onSubmit,
-  onLoadingStateChange,
-  onTranscriptUpdate,
-}: TranscriptFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
@@ -62,8 +60,8 @@ export function TranscriptForm({
   }
 
   useEffect(() => {
-    onLoadingStateChange?.(isSubmitting)
-  }, [isSubmitting, onLoadingStateChange])
+    handleLoadingStateChange(isSubmitting)
+  }, [isSubmitting, handleLoadingStateChange])
 
   const currentTranscriptValue = watch(FORM_FIELD_NAMES.TRANSCRIPT) || ''
   const hasTranscript = Boolean(currentTranscriptValue.trim().length > 0)
@@ -73,7 +71,8 @@ export function TranscriptForm({
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      onSubmit?.()
+      handleStepComplete(DASHBOARD_TABS.TRANSCRIPT)
+      handleTabChange(DASHBOARD_TABS.PURPOSE)
     } finally {
       setIsSubmitting(false)
     }
@@ -81,7 +80,7 @@ export function TranscriptForm({
 
   const handleSaveChanges = () => {
     setHasUnsavedChanges(false)
-    onTranscriptUpdate?.(currentTranscriptValue)
+    handleTranscriptUpdate(currentTranscriptValue)
   }
 
   const handleCancelChanges = () => {

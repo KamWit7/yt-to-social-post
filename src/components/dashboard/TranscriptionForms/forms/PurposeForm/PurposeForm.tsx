@@ -17,27 +17,27 @@ import { Sparkles } from 'lucide-react'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
+import { trackUserUsage } from '@/lib/actions/updateUsage'
+import { DASHBOARD_TABS } from '../../../Dashboard.helpers'
 import {
   ANIMATION_DELAYS,
   BUTTON_STYLES,
 } from '../../components/Section.helpers'
 import { FORM_FIELD_NAMES } from '../../constants/formConstants'
+import { useTranscriptionForms } from '../../context'
 import type { PurposeOnlyFormData } from '../../types/formTypes'
 import { ConditionalOptions } from './ConditionalOptions'
 import { PurposeDefaultValue } from './PurposeForm.helpers'
 import { purposeSchema } from './purposeSchema'
 
-type PurposeFormProps = {
-  transcript?: string
-  onSubmit?: () => void
-  onLoadingStateChange?: (isLoading: boolean) => void
-}
+export function PurposeForm() {
+  const {
+    transcript,
+    handleStepComplete,
+    handleTabChange,
+    handleLoadingStateChange,
+  } = useTranscriptionForms()
 
-export function PurposeForm({
-  transcript = '',
-  onSubmit,
-  onLoadingStateChange,
-}: PurposeFormProps) {
   const { data: purposeDict, isLoading: isPurposeLoading } = useDictionary(
     DictionaryCode.Purpose
   )
@@ -88,12 +88,16 @@ export function PurposeForm({
       return
     }
 
-    onSubmit?.()
-  }, [isSuccess, onSubmit, isPurposeLoading])
+    handleStepComplete(DASHBOARD_TABS.PURPOSE)
+    handleStepComplete(DASHBOARD_TABS.RESULTS)
+    handleTabChange(DASHBOARD_TABS.RESULTS)
+
+    trackUserUsage()
+  }, [isSuccess, handleStepComplete, handleTabChange, isPurposeLoading])
 
   useEffect(() => {
-    onLoadingStateChange?.(isAIProcessing)
-  }, [isAIProcessing, onLoadingStateChange])
+    handleLoadingStateChange(isAIProcessing)
+  }, [isAIProcessing, handleLoadingStateChange])
 
   if (isAIProcessing) {
     return <AILoadingAnimation />

@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Wand2, Youtube } from 'lucide-react'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { DASHBOARD_TABS } from '../../../Dashboard.helpers'
 import { ErrorDisplay } from '../../components'
 import {
   ANIMATION_DELAYS,
@@ -17,19 +18,19 @@ import {
   FORM_FIELD_NAMES,
   LOADING_MESSAGES,
 } from '../../constants/formConstants'
+import { useTranscriptionForms } from '../../context'
 import type { YouTubeFormData } from '../../types/formTypes'
 import { YouTubeDefaultValue } from './YouTubeForm.helpers'
 import { youtubeSchema } from './youtubeSchema'
 
-type YouTubeFormProps = {
-  onSubmit?: (transcript: string) => void
-  onLoadingStateChange?: (isLoading: boolean) => void
-}
+export function YouTubeForm() {
+  const {
+    handleTranscriptChange,
+    handleStepComplete,
+    handleTabChange,
+    handleLoadingStateChange,
+  } = useTranscriptionForms()
 
-export function YouTubeForm({
-  onSubmit,
-  onLoadingStateChange,
-}: YouTubeFormProps) {
   const methods = useForm<YouTubeFormData>({
     resolver: zodResolver(youtubeSchema),
     mode: 'onChange',
@@ -58,13 +59,21 @@ export function YouTubeForm({
       transcriptData.data?.transcript &&
       isTranscriptSuccess
     ) {
-      onSubmit?.(transcriptData.data.transcript)
+      handleTranscriptChange(transcriptData.data.transcript)
+      handleStepComplete(DASHBOARD_TABS.YOUTUBE)
+      handleTabChange(DASHBOARD_TABS.TRANSCRIPT)
     }
-  }, [transcriptData, onSubmit, isTranscriptSuccess])
+  }, [
+    transcriptData,
+    handleTranscriptChange,
+    handleStepComplete,
+    handleTabChange,
+    isTranscriptSuccess,
+  ])
 
   useEffect(() => {
-    onLoadingStateChange?.(isTranscriptFetching)
-  }, [isTranscriptFetching, onLoadingStateChange])
+    handleLoadingStateChange(isTranscriptFetching)
+  }, [isTranscriptFetching, handleLoadingStateChange])
 
   const onSubmitForm = async () => {
     await refetchTranscript()
