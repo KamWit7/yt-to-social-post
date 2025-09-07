@@ -17,14 +17,6 @@ function isGoogleOAuthConfigured(): boolean {
 
 // Helper function to get Google OAuth credentials
 function getGoogleOAuthCredentials() {
-  // TODO: Uncomment this when Google OAuth is configured
-  console.log(
-    'isGoogleOAuthConfigured',
-    isGoogleOAuthConfigured(),
-    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET
-  )
-
   if (!isGoogleOAuthConfigured()) {
     throw new Error(
       'Google OAuth credentials are not configured. Please set NEXT_PUBLIC_GOOGLE_CLIENT_ID and NEXT_PUBLIC_GOOGLE_CLIENT_SECRET environment variables.'
