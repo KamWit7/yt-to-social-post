@@ -1,5 +1,5 @@
-import { FORM_FIELD_NAMES } from "../../constants/formConstants";
+import { FORM_FIELD_NAMES } from '../../constants/formConstants'
 
-export const YouTubeDefaultValue = {
-  [FORM_FIELD_NAMES.URL]: "",
-};
+export const getYouTubeDefaultValues = (url: string = '') => ({
+  [FORM_FIELD_NAMES.URL]: url,
+})

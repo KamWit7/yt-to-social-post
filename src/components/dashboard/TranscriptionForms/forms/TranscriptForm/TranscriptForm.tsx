@@ -26,12 +26,14 @@ import { transcriptSchema } from './transcriptSchema'
 
 export function TranscriptForm() {
   const {
-    transcript,
+    formStepsState,
     handleStepComplete,
     handleTabChange,
     handleLoadingStateChange,
     handleTranscriptUpdate,
   } = useTranscriptionForms()
+
+  const transcript = formStepsState[DASHBOARD_TABS.TRANSCRIPT] || ''
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)

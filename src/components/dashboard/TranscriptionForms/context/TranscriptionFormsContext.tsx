@@ -13,23 +13,29 @@ import {
   DASHBOARD_TABS,
   dashboardStateSchema,
   DashboardTab,
+  FormStepsState,
   StepCompleted,
   TRANSCRIPTION_FORMS_STORAGE_KEY,
 } from '../../Dashboard.helpers'
 
 export interface TranscriptionFormsContextType {
   // State
-  transcript: string
+  formStepsState: FormStepsState
   activeTab: DashboardTab
   stepCompleted: StepCompleted
   isLoading: boolean
 
   // Actions
   handleTranscriptChange: (transcript: string) => void
+  handleUrlChange: (url: string) => void
   handleTabChange: (tab: string) => void
   handleStepComplete: (step: keyof StepCompleted) => void
   handleLoadingStateChange: (isLoading: boolean) => void
   handleTranscriptUpdate: (transcript: string) => void
+  handleFormStepUpdate: <T extends keyof FormStepsState>(
+    step: T,
+    data: FormStepsState[T]
+  ) => void
 }
 
 const TranscriptionFormsContext = createContext<
@@ -47,10 +53,18 @@ export function TranscriptionFormsProvider({
   isLoading,
   setIsLoading,
 }: TranscriptionFormsProviderProps) {
-  const [transcript, setTranscript] = useState('')
+  // Removed separate states - now using formStepsState
+  const [formStepsState, setFormStepsState] = useState<FormStepsState>({
+    [DASHBOARD_TABS.YOUTUBE]: undefined,
+    [DASHBOARD_TABS.TRANSCRIPT]: undefined,
+    [DASHBOARD_TABS.PURPOSE]: undefined,
+    [DASHBOARD_TABS.RESULTS]: undefined,
+  })
+
   const [activeTab, setActiveTab] = useState<DashboardTab>(
     DASHBOARD_TABS.YOUTUBE
   )
+
   const [stepCompleted, setStepCompleted] = useState<StepCompleted>({
     [DASHBOARD_TABS.YOUTUBE]: false,
     [DASHBOARD_TABS.TRANSCRIPT]: false,
@@ -65,13 +79,13 @@ export function TranscriptionFormsProvider({
       )
       const parsedState = dashboardStateSchema.parse(savedState)
 
-      if (
-        parsedState &&
-        parsedState.transcript &&
-        parsedState.activeTab &&
-        parsedState.stepCompleted
-      ) {
-        setTranscript(parsedState.transcript)
+      if (parsedState) {
+        setFormStepsState({
+          [DASHBOARD_TABS.YOUTUBE]: parsedState.url,
+          [DASHBOARD_TABS.TRANSCRIPT]: parsedState.transcript,
+          [DASHBOARD_TABS.PURPOSE]: undefined,
+          [DASHBOARD_TABS.RESULTS]: undefined,
+        })
         setActiveTab(parsedState.activeTab)
         setStepCompleted(parsedState.stepCompleted)
       }
@@ -81,28 +95,51 @@ export function TranscriptionFormsProvider({
   }, [])
 
   // Handlers
-  const handleTranscriptChange = useCallback((newTranscript: string) => {
-    setTranscript(newTranscript)
+  const handleFormStepUpdate = useCallback(
+    <T extends keyof FormStepsState>(step: T, data: FormStepsState[T]) => {
+      setFormStepsState((prev) => ({
+        ...prev,
+        [step]: data,
+      }))
+    },
+    []
+  )
 
-    if (newTranscript && newTranscript.trim().length > 0) {
-      setStepCompleted((prev) => ({ ...prev, youtube: true }))
-    } else {
-      setStepCompleted((prev) => ({ ...prev, youtube: false }))
-    }
-  }, [])
+  const handleTranscriptChange = useCallback(
+    (newTranscript: string) => {
+      handleFormStepUpdate(DASHBOARD_TABS.TRANSCRIPT, newTranscript)
 
-  const handleTranscriptUpdate = useCallback((updatedTranscript: string) => {
-    setTranscript(updatedTranscript)
-    // Keep the youtube step completed status since transcript exists
-    if (updatedTranscript && updatedTranscript.trim().length > 0) {
-      setStepCompleted({
-        [DASHBOARD_TABS.YOUTUBE]: true,
-        [DASHBOARD_TABS.TRANSCRIPT]: false,
-        [DASHBOARD_TABS.PURPOSE]: false,
-        [DASHBOARD_TABS.RESULTS]: false,
-      })
-    }
-  }, [])
+      if (newTranscript && newTranscript.trim().length > 0) {
+        setStepCompleted((prev) => ({ ...prev, youtube: true }))
+      } else {
+        setStepCompleted((prev) => ({ ...prev, youtube: false }))
+      }
+    },
+    [handleFormStepUpdate]
+  )
+
+  const handleUrlChange = useCallback(
+    (newUrl: string) => {
+      handleFormStepUpdate(DASHBOARD_TABS.YOUTUBE, newUrl)
+    },
+    [handleFormStepUpdate]
+  )
+
+  const handleTranscriptUpdate = useCallback(
+    (updatedTranscript: string) => {
+      handleFormStepUpdate(DASHBOARD_TABS.TRANSCRIPT, updatedTranscript)
+      // Keep the youtube step completed status since transcript exists
+      if (updatedTranscript && updatedTranscript.trim().length > 0) {
+        setStepCompleted({
+          [DASHBOARD_TABS.YOUTUBE]: true,
+          [DASHBOARD_TABS.TRANSCRIPT]: false,
+          [DASHBOARD_TABS.PURPOSE]: false,
+          [DASHBOARD_TABS.RESULTS]: false,
+        })
+      }
+    },
+    [handleFormStepUpdate]
+  )
 
   const handleStepComplete = useCallback((step: keyof StepCompleted) => {
     setStepCompleted((prev) => ({ ...prev, [step]: true }))
@@ -120,18 +157,18 @@ export function TranscriptionFormsProvider({
   }, [])
 
   const contextValue: TranscriptionFormsContextType = {
-    transcript,
+    formStepsState,
     activeTab,
     stepCompleted,
     isLoading,
     handleTranscriptChange,
+    handleUrlChange,
     handleTabChange,
     handleStepComplete,
     handleLoadingStateChange,
     handleTranscriptUpdate,
+    handleFormStepUpdate,
   }
-
-  console.log('contextValue', contextValue)
 
   return (
     <TranscriptionFormsContext.Provider value={contextValue}>

@@ -17,7 +17,7 @@ import { Sparkles } from 'lucide-react'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
-import { trackUserUsage } from '@/lib/actions/updateUsage'
+import { trackUserUsage } from '@/lib/actions/usage'
 import { DASHBOARD_TABS } from '../../../Dashboard.helpers'
 import {
   ANIMATION_DELAYS,
@@ -27,16 +27,20 @@ import { FORM_FIELD_NAMES } from '../../constants/formConstants'
 import { useTranscriptionForms } from '../../context'
 import type { PurposeOnlyFormData } from '../../types/formTypes'
 import { ConditionalOptions } from './ConditionalOptions'
-import { PurposeDefaultValue } from './PurposeForm.helpers'
+import { getPurposeDefaultValues } from './PurposeForm.helpers'
 import { purposeSchema } from './purposeSchema'
 
 export function PurposeForm() {
   const {
-    transcript,
+    formStepsState,
     handleStepComplete,
     handleTabChange,
     handleLoadingStateChange,
+    handleFormStepUpdate,
   } = useTranscriptionForms()
+
+  const transcript = formStepsState[DASHBOARD_TABS.TRANSCRIPT] || ''
+  const existingPurposeData = formStepsState[DASHBOARD_TABS.PURPOSE]
 
   const { data: purposeDict, isLoading: isPurposeLoading } = useDictionary(
     DictionaryCode.Purpose
@@ -57,12 +61,13 @@ export function PurposeForm() {
     mutate: processAI,
     isPending: isAIProcessing,
     isSuccess,
+    data: aiResponse,
   } = useAIProcessing(transcript)
 
   const localMethods = useForm<PurposeOnlyFormData>({
     resolver: zodResolver(purposeSchema),
     mode: 'onChange',
-    defaultValues: PurposeDefaultValue,
+    defaultValues: getPurposeDefaultValues(existingPurposeData),
   })
 
   const { handleSubmit, watch } = localMethods
@@ -80,20 +85,33 @@ export function PurposeForm() {
       model: data.model || DEFAULT_AI_MODEL,
     }
 
+    // Save form data to state
+    handleFormStepUpdate(DASHBOARD_TABS.PURPOSE, data)
+
     processAI(completeData)
   }
 
   useEffect(() => {
-    if (!isSuccess || isPurposeLoading) {
+    if (!isSuccess || isPurposeLoading || !aiResponse) {
       return
     }
+
+    // Save AI response to state
+    handleFormStepUpdate(DASHBOARD_TABS.RESULTS, aiResponse)
 
     handleStepComplete(DASHBOARD_TABS.PURPOSE)
     handleStepComplete(DASHBOARD_TABS.RESULTS)
     handleTabChange(DASHBOARD_TABS.RESULTS)
 
     trackUserUsage()
-  }, [isSuccess, handleStepComplete, handleTabChange, isPurposeLoading])
+  }, [
+    isSuccess,
+    handleStepComplete,
+    handleTabChange,
+    isPurposeLoading,
+    aiResponse,
+    handleFormStepUpdate,
+  ])
 
   useEffect(() => {
     handleLoadingStateChange(isAIProcessing)

@@ -1,4 +1,6 @@
 import z from 'zod'
+import { PurposeOnlyFormData } from './TranscriptionForms/types/formTypes'
+import { ApiResponse, AIProcessingResponse } from '@/types'
 
 export const TRANSCRIPTION_FORMS_STORAGE_KEY = 'transcriptionForms'
 
@@ -18,6 +20,13 @@ export interface TabConfig {
   disabled: boolean
 }
 
+export interface FormStepsState {
+  [DASHBOARD_TABS.YOUTUBE]?: string
+  [DASHBOARD_TABS.TRANSCRIPT]?: string
+  [DASHBOARD_TABS.PURPOSE]?: PurposeOnlyFormData
+  [DASHBOARD_TABS.RESULTS]?: ApiResponse<AIProcessingResponse>
+}
+
 export interface StepCompleted {
   [DASHBOARD_TABS.YOUTUBE]: boolean
   [DASHBOARD_TABS.TRANSCRIPT]: boolean
@@ -27,6 +36,7 @@ export interface StepCompleted {
 
 export const dashboardStateSchema = z.object({
   transcript: z.string(),
+  url: z.string(),
   activeTab: z.enum(Object.values(DASHBOARD_TABS)),
   stepCompleted: z.record(z.enum(Object.values(DASHBOARD_TABS)), z.boolean()),
 })

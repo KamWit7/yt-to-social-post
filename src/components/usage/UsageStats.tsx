@@ -7,32 +7,38 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { authOptions } from '@/lib/auth'
-import { getUserUsageStats } from '@/lib/usage'
+import { getUserUsageStats } from '@/lib/actions/usage'
+import { getUsageWarningLevel } from '@/lib/usage'
 import { cn } from '@/lib/utils'
-import { ROUTES } from '@/utils/constants'
+import { ROUTES, UsageLevel } from '@/utils/constants'
 import { AlertTriangle, CheckCircle2, TrendingUp, Zap } from 'lucide-react'
-import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 
-function getUsageStatus(percentage: number) {
-  if (percentage >= 90)
-    return { level: 'danger', color: 'destructive', icon: AlertTriangle }
-  if (percentage >= 75)
-    return { level: 'warning', color: 'warning', icon: TrendingUp }
-  return { level: 'safe', color: 'success', icon: CheckCircle2 }
+function getUsageStatus(current: number) {
+  const status = getUsageWarningLevel(current)
+
+  switch (status) {
+    case UsageLevel.DANGER:
+      return {
+        level: UsageLevel.DANGER,
+        color: 'destructive',
+        icon: AlertTriangle,
+      }
+    case UsageLevel.WARNING:
+      return { level: UsageLevel.WARNING, color: 'warning', icon: TrendingUp }
+    default:
+      return { level: UsageLevel.SAFE, color: 'success', icon: CheckCircle2 }
+  }
 }
 
 export async function UsageStats() {
-  const session = await getServerSession(authOptions)
+  const stats = await getUserUsageStats()
 
-  if (!session?.user?.id) {
+  if (!stats.success) {
     redirect(ROUTES.LOGIN)
   }
 
-  const stats = await getUserUsageStats(session.user.id)
-
-  const status = getUsageStatus(stats.percentage)
+  const status = getUsageStatus(stats.usage.current)
   const StatusIcon = status.icon
 
   return (
@@ -65,38 +71,38 @@ export async function UsageStats() {
               <StatusIcon
                 className={cn(
                   'w-5 h-5',
-                  status.level === 'danger' && 'text-red-500',
-                  status.level === 'warning' && 'text-yellow-500',
-                  status.level === 'safe' && 'text-green-500'
+                  status.level === UsageLevel.DANGER && 'text-red-500',
+                  status.level === UsageLevel.WARNING && 'text-yellow-500',
+                  status.level === UsageLevel.SAFE && 'text-green-500'
                 )}
               />
               <span className='text-sm font-medium text-muted-foreground'>
-                {stats.current} of {stats.limit} used
+                {stats.usage.current} of {stats.usage.limit} used
               </span>
             </div>
 
             <Badge
               variant={
-                status.level === 'danger'
+                status.level === UsageLevel.DANGER
                   ? 'destructive'
-                  : status.level === 'warning'
+                  : status.level === UsageLevel.WARNING
                   ? 'secondary'
                   : 'default'
               }
               className={cn(
                 'font-semibold transition-all duration-300 hover:scale-105',
-                status.level === 'safe' &&
+                status.level === UsageLevel.SAFE &&
                   'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-100',
-                status.level === 'warning' &&
+                status.level === UsageLevel.WARNING &&
                   'bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-100'
               )}>
-              {Math.round(stats.percentage)}%
+              {Math.round(stats.usage.percentage)}%
             </Badge>
           </div>
 
           <div className='origin-left'>
             <Progress
-              value={stats.percentage}
+              value={stats.usage.percentage}
               className={cn(
                 'h-3 transition-all duration-500 hover:h-4',
                 'bg-gradient-to-r from-muted to-muted/50'
@@ -113,7 +119,7 @@ export async function UsageStats() {
                 Used This Month
               </p>
               <p className='text-3xl font-bold text-foreground hover:scale-110 transition-transform duration-300'>
-                {stats.current}
+                {stats.usage.current}
               </p>
             </div>
           </div>
@@ -124,7 +130,7 @@ export async function UsageStats() {
                 Monthly Limit
               </p>
               <p className='text-3xl font-bold text-primary hover:scale-110 transition-transform duration-300'>
-                {stats.limit}
+                {stats.usage.limit}
               </p>
             </div>
           </div>
@@ -135,7 +141,7 @@ export async function UsageStats() {
                 Remaining
               </p>
               <p className='text-3xl font-bold text-green-600 dark:text-green-400 hover:scale-110 transition-transform duration-300'>
-                {stats.remaining}
+                {stats.usage.remaining}
               </p>
             </div>
           </div>
@@ -145,36 +151,40 @@ export async function UsageStats() {
         <div
           className={cn(
             'p-4 rounded-xl border transition-all duration-300',
-            status.level === 'danger' &&
+            status.level === UsageLevel.DANGER &&
               'bg-red-50 dark:bg-red-950/50 border-red-200 dark:border-red-800',
-            status.level === 'warning' &&
+            status.level === UsageLevel.WARNING &&
               'bg-yellow-50 dark:bg-yellow-950/50 border-yellow-200 dark:border-yellow-800',
-            status.level === 'safe' &&
+            status.level === UsageLevel.SAFE &&
               'bg-green-50 dark:bg-green-950/50 border-green-200 dark:border-green-800'
           )}>
           <div className='flex items-center gap-3'>
             <StatusIcon
               className={cn(
                 'w-5 h-5 flex-shrink-0',
-                status.level === 'danger' && 'text-red-600 dark:text-red-400',
-                status.level === 'warning' &&
+                status.level === UsageLevel.DANGER &&
+                  'text-red-600 dark:text-red-400',
+                status.level === UsageLevel.WARNING &&
                   'text-yellow-600 dark:text-yellow-400',
-                status.level === 'safe' && 'text-green-600 dark:text-green-400'
+                status.level === UsageLevel.SAFE &&
+                  'text-green-600 dark:text-green-400'
               )}
             />
             <p
               className={cn(
                 'text-sm font-medium',
-                status.level === 'danger' && 'text-red-800 dark:text-red-200',
-                status.level === 'warning' &&
+                status.level === UsageLevel.DANGER &&
+                  'text-red-800 dark:text-red-200',
+                status.level === UsageLevel.WARNING &&
                   'text-yellow-800 dark:text-yellow-200',
-                status.level === 'safe' && 'text-green-800 dark:text-green-200'
+                status.level === UsageLevel.SAFE &&
+                  'text-green-800 dark:text-green-200'
               )}>
-              {status.level === 'danger' &&
+              {status.level === UsageLevel.DANGER &&
                 "You've reached your usage limit. Consider upgrading your plan."}
-              {status.level === 'warning' &&
+              {status.level === UsageLevel.WARNING &&
                 "You're approaching your usage limit. Monitor your remaining summaries."}
-              {status.level === 'safe' &&
+              {status.level === UsageLevel.SAFE &&
                 "You're well within your usage limits. Keep creating summaries!"}
             </p>
           </div>

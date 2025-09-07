@@ -1,23 +1,22 @@
-'use client'
-
 import { Button } from '@/components/ui/button'
+import { authOptions } from '@/lib/auth'
 import { ROUTES } from '@/utils/constants'
 import { LogIn } from 'lucide-react'
-import { useSession } from 'next-auth/react'
+import { getServerSession } from 'next-auth'
 import Link from 'next/link'
+import { UsageCounter } from './UsageCounter/UsageCounter'
 import { UserMenu } from './UserMenu'
 
-export function AuthSection() {
-  const { data: session, status } = useSession()
-
-  if (status === 'loading') {
-    return (
-      <div className='w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse' />
-    )
-  }
+export async function AuthSection() {
+  const session = await getServerSession(authOptions)
 
   if (session?.user) {
-    return <UserMenu user={session.user} />
+    return (
+      <div className='flex items-center gap-3'>
+        <UsageCounter />
+        <UserMenu user={session.user} />
+      </div>
+    )
   }
 
   return (

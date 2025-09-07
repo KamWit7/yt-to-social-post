@@ -6,3 +6,8 @@ export const USER_MENU_ITEMS = [
   { href: ROUTES.USAGE, label: 'Usage', icon: BarChart3 },
   { href: ROUTES.PROFILE, label: 'Profile', icon: User },
 ] as const
+
+export const USAGE_COUNTER_CONSTANTS = {
+  TOOLTIP_TITLE: 'Limit zapytań',
+  TOOLTIP_DESCRIPTION: 'Kliknij aby dowiedzieć się więcej o swoich limitach.',
+} as const

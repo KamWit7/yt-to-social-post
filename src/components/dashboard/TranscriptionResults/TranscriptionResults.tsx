@@ -1,23 +1,21 @@
 'use client'
 
-import { getAIProcessingQueryKey } from '@/api/hooks/useAIProcessing'
 import { CopyButton } from '@/components/common'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useCachedMutation } from '@/hooks/useCachedMutation'
 import { AIProcessingResponse, ApiResponse } from '@/types'
 import { FileText, Hash, MessageSquare } from 'lucide-react'
+import { DASHBOARD_TABS } from '../Dashboard.helpers'
+import { useTranscriptionForms } from '../TranscriptionForms/context'
 import { MindMapCard } from './components'
 
-interface TranscriptionResultsProps {
-  transcript?: string
-}
+export default function TranscriptionResults() {
+  const { formStepsState } = useTranscriptionForms()
+  const data = formStepsState[DASHBOARD_TABS.RESULTS] as
+    | ApiResponse<AIProcessingResponse>
+    | undefined
 
-export default function TranscriptionResults({
-  transcript,
-}: TranscriptionResultsProps) {
-  const { data, error } = useCachedMutation<ApiResponse<AIProcessingResponse>>(
-    getAIProcessingQueryKey(transcript)
-  )
+  const error =
+    data && !data.success ? new Error(data.error || 'Unknown error') : null
 
   if (error) {
     return (

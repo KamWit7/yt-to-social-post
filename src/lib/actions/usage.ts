@@ -2,17 +2,22 @@
 
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth'
-import { checkUsageLimit, incrementUsage } from '../db/usage'
+import { checkUsageLimit, getUserUsage, incrementUsage } from '../db/usage'
 import { DEFAULT_USAGE_LIMIT } from '../usage'
 
-export async function trackUserUsage(): Promise<{
+export type UsageBaseResponse = {
   success: boolean
+  error?: string
+}
+
+export type UsageResponse = UsageBaseResponse & {
   usage: {
     current: number
     limit: number
   } | null
-  error?: string
-}> {
+}
+
+export async function trackUserUsage(): Promise<UsageResponse> {
   try {
     const session = await getServerSession(authOptions)
 
@@ -60,5 +65,44 @@ export async function trackUserUsage(): Promise<{
       },
       error: 'Failed to track usage',
     }
+  }
+}
+
+type UsageStats = UsageBaseResponse & {
+  usage: {
+    current: number
+    limit: number
+    remaining: number
+    percentage: number
+  }
+}
+
+export async function getUserUsageStats(): Promise<UsageStats> {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user.id) {
+    return {
+      success: false,
+      usage: {
+        current: 0,
+        limit: DEFAULT_USAGE_LIMIT,
+        remaining: 0,
+        percentage: 0,
+      },
+
+      error: 'User not found',
+    }
+  }
+
+  const usage = await getUserUsage(session?.user.id)
+
+  const current = usage?.summaryCount || 0
+  const limit = DEFAULT_USAGE_LIMIT
+  const remaining = Math.max(0, limit - current)
+  const percentage = Math.min(100, (current / limit) * 100)
+
+  return {
+    success: true,
+    usage: { current, limit, remaining, percentage },
   }
 }

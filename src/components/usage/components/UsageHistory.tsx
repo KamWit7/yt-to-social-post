@@ -1,3 +1,5 @@
+'use client'
+
 import { Badge } from '@/components/ui/badge'
 import {
   Card,
@@ -7,7 +9,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { motion } from 'framer-motion'
-// Using native date formatting instead of date-fns
 import { Activity, Calendar, Clock, TrendingUp } from 'lucide-react'
 
 interface UsageHistoryItem {

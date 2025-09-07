@@ -14,11 +14,13 @@ function isGoogleOAuthConfigured(): boolean {
 
 // Helper function to get Google OAuth credentials
 function getGoogleOAuthCredentials() {
-  if (!isGoogleOAuthConfigured()) {
-    throw new Error(
-      'Google OAuth credentials are not configured. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables.'
-    )
-  }
+  // TODO: Uncomment this when Google OAuth is configured
+
+  // if (!isGoogleOAuthConfigured()) {
+  //   throw new Error(
+  //     'Google OAuth credentials are not configured. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables.'
+  //   )
+  // }
 
   return {
     clientId: process.env.GOOGLE_CLIENT_ID!,

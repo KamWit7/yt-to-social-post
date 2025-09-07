@@ -15,7 +15,7 @@ import {
 import TranscriptionResults from './TranscriptionResults/TranscriptionResults'
 
 function DashboardContent() {
-  const { transcript, activeTab, stepCompleted, isLoading, handleTabChange } =
+  const { activeTab, stepCompleted, isLoading, handleTabChange } =
     useTranscriptionForms()
 
   const tabConfigs = useMemo(
@@ -72,7 +72,7 @@ function DashboardContent() {
           ))}
 
           <AnimatedTabContent value={DASHBOARD_TABS.RESULTS}>
-            <TranscriptionResults transcript={transcript} />
+            <TranscriptionResults />
           </AnimatedTabContent>
         </AnimatePresence>
       </Tabs>

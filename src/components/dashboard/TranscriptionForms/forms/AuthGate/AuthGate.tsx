@@ -1,6 +1,9 @@
 'use client'
 
-import { TRANSCRIPTION_FORMS_STORAGE_KEY } from '@/components/dashboard/Dashboard.helpers'
+import {
+  DASHBOARD_TABS,
+  TRANSCRIPTION_FORMS_STORAGE_KEY,
+} from '@/components/dashboard/Dashboard.helpers'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/utils/constants'
 import { saveStateToSessionStorage } from '@/utils/sessionStorage'
@@ -16,11 +19,12 @@ interface AuthGateProps {
 
 export function AuthGate({ children }: AuthGateProps) {
   const { data: session, status } = useSession()
-  const { transcript, activeTab, stepCompleted } = useTranscriptionForms()
+  const { formStepsState, activeTab, stepCompleted } = useTranscriptionForms()
 
   function handleSaveState() {
     saveStateToSessionStorage(TRANSCRIPTION_FORMS_STORAGE_KEY, {
-      transcript,
+      transcript: formStepsState[DASHBOARD_TABS.TRANSCRIPT] || '',
+      url: formStepsState[DASHBOARD_TABS.YOUTUBE] || '',
       activeTab,
       stepCompleted,
     })

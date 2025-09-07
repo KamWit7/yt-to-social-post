@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { AuthSection, Logo } from './header'
 
 export default function Header() {
@@ -7,7 +8,12 @@ export default function Header() {
         <div className='flex items-center justify-between h-16'>
           <Logo />
           <div className='flex items-center space-x-4'>
-            <AuthSection />
+            <Suspense
+              fallback={
+                <div className='w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse' />
+              }>
+              <AuthSection />
+            </Suspense>
           </div>
         </div>
       </nav>

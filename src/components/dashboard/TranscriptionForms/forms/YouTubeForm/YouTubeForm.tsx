@@ -20,21 +20,26 @@ import {
 } from '../../constants/formConstants'
 import { useTranscriptionForms } from '../../context'
 import type { YouTubeFormData } from '../../types/formTypes'
-import { YouTubeDefaultValue } from './YouTubeForm.helpers'
+import { getYouTubeDefaultValues } from './YouTubeForm.helpers'
 import { youtubeSchema } from './youtubeSchema'
 
 export function YouTubeForm() {
   const {
+    formStepsState,
     handleTranscriptChange,
+    handleUrlChange,
     handleStepComplete,
     handleTabChange,
     handleLoadingStateChange,
   } = useTranscriptionForms()
 
+  const contextUrl = formStepsState[DASHBOARD_TABS.YOUTUBE] || ''
+  const contextTranscript = formStepsState[DASHBOARD_TABS.TRANSCRIPT] || ''
+
   const methods = useForm<YouTubeFormData>({
     resolver: zodResolver(youtubeSchema),
     mode: 'onChange',
-    defaultValues: YouTubeDefaultValue,
+    defaultValues: getYouTubeDefaultValues(contextUrl),
   })
 
   const { watch, handleSubmit } = methods
@@ -54,21 +59,30 @@ export function YouTubeForm() {
   })
 
   useEffect(() => {
+    // when use go back from transcrip it prevent to change active tab to transcript
+    const hasChanges = transcriptData?.data?.transcript !== contextTranscript
+
     if (
-      transcriptData?.success &&
-      transcriptData.data?.transcript &&
-      isTranscriptSuccess
+      !(
+        transcriptData?.success &&
+        transcriptData.data?.transcript &&
+        hasChanges &&
+        isTranscriptSuccess
+      )
     ) {
-      handleTranscriptChange(transcriptData.data.transcript)
-      handleStepComplete(DASHBOARD_TABS.YOUTUBE)
-      handleTabChange(DASHBOARD_TABS.TRANSCRIPT)
+      return
     }
+
+    handleTranscriptChange(transcriptData.data.transcript)
+    handleStepComplete(DASHBOARD_TABS.YOUTUBE)
+    handleTabChange(DASHBOARD_TABS.TRANSCRIPT)
   }, [
     transcriptData,
     handleTranscriptChange,
     handleStepComplete,
     handleTabChange,
     isTranscriptSuccess,
+    contextTranscript,
   ])
 
   useEffect(() => {
@@ -76,6 +90,8 @@ export function YouTubeForm() {
   }, [isTranscriptFetching, handleLoadingStateChange])
 
   const onSubmitForm = async () => {
+    handleUrlChange(url)
+
     await refetchTranscript()
   }
 

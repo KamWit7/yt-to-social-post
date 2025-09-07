@@ -44,6 +44,13 @@ export const SUCCESS_MESSAGES = {
   COPY: 'Kopiuj',
 } as const
 
+// Usage levels
+export const UsageLevel = {
+  SAFE: 'safe',
+  WARNING: 'warning',
+  DANGER: 'danger',
+} as const
+
 // Route paths
 export const ROUTES = {
   LOGIN: '/login',
