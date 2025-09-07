@@ -1,4 +1,5 @@
 import { findUserByEmail } from '@/lib/db/users'
+import { getGoogleOAuthCredentials, serverEnv } from '@/lib/env/server'
 import { prisma } from '@/lib/prisma'
 import { ROUTES } from '@/utils/constants'
 import { PrismaAdapter } from '@auth/prisma-adapter'
@@ -6,28 +7,6 @@ import bcrypt from 'bcryptjs'
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
-
-// Helper function to check if Google OAuth is configured
-function isGoogleOAuthConfigured(): boolean {
-  return !!(
-    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID &&
-    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET
-  )
-}
-
-// Helper function to get Google OAuth credentials
-function getGoogleOAuthCredentials() {
-  if (!isGoogleOAuthConfigured()) {
-    throw new Error(
-      'Google OAuth credentials are not configured. Please set NEXT_PUBLIC_GOOGLE_CLIENT_ID and NEXT_PUBLIC_GOOGLE_CLIENT_SECRET environment variables.'
-    )
-  }
-
-  return {
-    clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
-    clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET!,
-  }
-}
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -71,7 +50,7 @@ export const authOptions: NextAuthOptions = {
     signIn: ROUTES.LOGIN,
     error: ROUTES.LOGIN,
   },
-  debug: process.env.NODE_ENV === 'development',
+  debug: serverEnv.NODE_ENV === 'development',
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -89,5 +68,5 @@ export const authOptions: NextAuthOptions = {
       return session
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: serverEnv.NEXTAUTH_SECRET,
 }

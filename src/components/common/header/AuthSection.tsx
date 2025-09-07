@@ -1,3 +1,5 @@
+'use server'
+
 import { Button } from '@/components/ui/button'
 import { authOptions } from '@/lib/auth'
 import { ROUTES } from '@/utils/constants'
@@ -7,6 +9,7 @@ import Link from 'next/link'
 import { UsageCounter } from './UsageCounter/UsageCounter'
 import { UserMenu } from './UserMenu'
 
+// HERE PROBLEM WITH getServerSession
 export async function AuthSection() {
   const session = await getServerSession(authOptions)
 

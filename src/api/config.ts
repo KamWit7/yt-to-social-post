@@ -1,2 +1,3 @@
-export const API_BASE_URL: string =
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001'
+import { API_BASE_URL } from '@/lib/env/public'
+
+export { API_BASE_URL }
