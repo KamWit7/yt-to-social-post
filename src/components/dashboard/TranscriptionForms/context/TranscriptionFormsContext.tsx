@@ -77,6 +77,11 @@ export function TranscriptionFormsProvider({
       const savedState = getStateFromSessionStorage(
         TRANSCRIPTION_FORMS_STORAGE_KEY
       )
+
+      if (!savedState) {
+        return
+      }
+
       const parsedState = dashboardStateSchema.parse(savedState)
 
       if (parsedState) {

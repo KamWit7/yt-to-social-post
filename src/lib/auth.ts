@@ -9,22 +9,31 @@ import GoogleProvider from 'next-auth/providers/google'
 
 // Helper function to check if Google OAuth is configured
 function isGoogleOAuthConfigured(): boolean {
-  return !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET)
+  return !!(
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID &&
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET
+  )
 }
 
 // Helper function to get Google OAuth credentials
 function getGoogleOAuthCredentials() {
   // TODO: Uncomment this when Google OAuth is configured
+  console.log(
+    'isGoogleOAuthConfigured',
+    isGoogleOAuthConfigured(),
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET
+  )
 
-  // if (!isGoogleOAuthConfigured()) {
-  //   throw new Error(
-  //     'Google OAuth credentials are not configured. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables.'
-  //   )
-  // }
+  if (!isGoogleOAuthConfigured()) {
+    throw new Error(
+      'Google OAuth credentials are not configured. Please set NEXT_PUBLIC_GOOGLE_CLIENT_ID and NEXT_PUBLIC_GOOGLE_CLIENT_SECRET environment variables.'
+    )
+  }
 
   return {
-    clientId: process.env.GOOGLE_CLIENT_ID!,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+    clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET!,
   }
 }
 

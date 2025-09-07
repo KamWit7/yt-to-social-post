@@ -10,7 +10,7 @@ import { getUserUsageStats } from '@/lib/actions/usage'
 import { getUsageWarningLevel } from '@/lib/usage'
 import { cn } from '@/lib/utils'
 import { ROUTES, UsageLevel } from '@/utils/constants'
-import { ArrowRight, BarChart3, Loader2 } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -53,6 +53,7 @@ export function UsageCounter() {
       console.error('Error fetching usage stats:', error)
       setHasError(true)
     } finally {
+      await new Promise((resolve) => setTimeout(resolve, 500))
       setIsLoading(false)
     }
   }
@@ -96,22 +97,6 @@ export function UsageCounter() {
           onClick={handleGetUsageStats}
           disabled={isLoading}>
           <div className='relative flex items-center gap-2'>
-            {isLoading ? (
-              <Loader2 className='w-4 h-4 animate-spin text-muted-foreground' />
-            ) : (
-              <BarChart3
-                className={cn(
-                  'w-4 h-4 transition-colors duration-200',
-                  statusLevel === UsageLevel.SAFE &&
-                    'text-green-600 dark:text-green-400',
-                  statusLevel === UsageLevel.WARNING &&
-                    'text-yellow-600 dark:text-yellow-400',
-                  statusLevel === UsageLevel.DANGER &&
-                    'text-red-600 dark:text-red-400'
-                )}
-              />
-            )}
-
             <span
               className={cn(
                 'text-sm font-semibold transition-colors duration-200',
@@ -126,7 +111,13 @@ export function UsageCounter() {
                   statusLevel === UsageLevel.DANGER &&
                   'text-red-700 dark:text-red-300'
               )}>
-              {currentStats.current}/{currentStats.limit}
+              {isLoading
+                ? 'Sprawdzanie...'
+                : statusLevel === UsageLevel.SAFE
+                ? 'Dostępne'
+                : statusLevel === UsageLevel.WARNING
+                ? 'Ograniczone'
+                : 'Wyczerpane'}
             </span>
           </div>
         </Button>
