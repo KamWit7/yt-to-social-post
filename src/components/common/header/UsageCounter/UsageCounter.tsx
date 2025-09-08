@@ -112,7 +112,7 @@ export function UsageCounter() {
                   'text-red-700 dark:text-red-300'
               )}>
               {isLoading
-                ? 'Sprawdzanie...'
+                ? 'Sprawdzanie'
                 : statusLevel === UsageLevel.SAFE
                 ? 'Dostępne'
                 : statusLevel === UsageLevel.WARNING

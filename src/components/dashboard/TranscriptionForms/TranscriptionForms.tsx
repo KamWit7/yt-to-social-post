@@ -5,6 +5,7 @@ import { AuthGate } from './forms/AuthGate/AuthGate'
 
 import { PurposeForm } from './forms/PurposeForm/PurposeForm'
 import { TranscriptForm } from './forms/TranscriptForm/TranscriptForm'
+import { UsageGate } from './forms/UsageGate/UsageGate'
 import { YouTubeForm } from './forms/YouTubeForm/YouTubeForm'
 
 interface TranscriptionFormProps {
@@ -20,7 +21,9 @@ export default function TranscriptionForm({ stepKey }: TranscriptionFormProps) {
     case DASHBOARD_TABS.PURPOSE:
       return (
         <AuthGate>
-          <PurposeForm />
+          <UsageGate>
+            <PurposeForm />
+          </UsageGate>
         </AuthGate>
       )
     default:

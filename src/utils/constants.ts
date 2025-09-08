@@ -32,6 +32,24 @@ export const ERROR_MESSAGES = {
   UNEXPECTED_ERROR: 'Wystąpił nieoczekiwany błąd',
 } as const
 
+// Usage limit messages
+export const USAGE_LIMIT_MESSAGES = {
+  LIMIT_EXCEEDED: 'Limit darmowego planu wyczerpany',
+  USAGE_CHECK_ERROR: 'Nie udało się sprawdzić limitu użycia',
+  FREE_PLAN_INFO:
+    'Wykorzystałeś już wszystkie dostępne podsumowania w ramach darmowego planu',
+} as const
+
+// Usage gate text
+export const USAGE_GATE_TEXT = {
+  TITLE: 'Limit darmowego planu wyczerpany',
+  DESCRIPTION:
+    'Wykorzystałeś już wszystkie {limit} dostępnych podsumowań w ramach darmowego planu',
+  USAGE_LABEL: 'Wykorzystanie:',
+  USAGE_COMPLETE: '100% wykorzystane',
+  VIEW_DETAILS_BUTTON: 'Zobacz szczegóły użycia',
+} as const
+
 // Loading messages
 export const LOADING_MESSAGES = {
   ANALYZING: 'Analizuję...',
