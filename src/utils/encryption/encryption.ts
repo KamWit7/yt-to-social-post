@@ -4,15 +4,15 @@ const algorithm = 'aes-256-gcm'
 
 // hex -> buffor binarny
 
-export function encrypt(apiKey: string, apiKeySeccret: string): string {
-  const bufferapiKeySeccret = Buffer.from(apiKeySeccret, 'hex')
+export function encrypt(apiKey: string, encryptionKey: string): string {
+  const bufferEncryptionKey = Buffer.from(encryptionKey, 'hex')
   // iv -> wektro incujący aby ten sam tekst nie był taki sam
   // ma 16 bajtów dla GCM
   const iv = crypto.randomBytes(16)
 
   // tworzenie obiektu "szyfratora" z algorytmem kluczem api oraz IV
 
-  const cipher = crypto.createCipheriv(algorithm, bufferapiKeySeccret, iv)
+  const cipher = crypto.createCipheriv(algorithm, bufferEncryptionKey, iv)
 
   // szyfrowanie tekstu, łączać zaszyfrowany teskt w jeden buffor
   const encrypted = Buffer.concat([
@@ -30,9 +30,9 @@ export function encrypt(apiKey: string, apiKeySeccret: string): string {
   )}`
 }
 
-export function decrypt(encrypted: string, apiKeySeccret: string): string {
+export function decrypt(encrypted: string, encryptionKey: string): string {
   try {
-    const bufferapiKeySeccret = Buffer.from(apiKeySeccret, 'hex')
+    const bufferEncryptionKey = Buffer.from(encryptionKey, 'hex')
     const [viHex, authTagHex, encryptedTextHex] = encrypted.split(':')
 
     if (!viHex || !authTagHex || !encryptedTextHex) {
@@ -44,7 +44,7 @@ export function decrypt(encrypted: string, apiKeySeccret: string): string {
     const encryptedText = Buffer.from(encryptedTextHex, 'hex')
 
     // Tworzymy obiekt "deszyfratora" z tymi samymi parametrami.
-    const decipher = crypto.createDecipheriv(algorithm, bufferapiKeySeccret, iv)
+    const decipher = crypto.createDecipheriv(algorithm, bufferEncryptionKey, iv)
 
     // ustawiamy tag autentyczności, jeżli dane zostały zmienione to wywali błąd
     decipher.setAuthTag(authTag)

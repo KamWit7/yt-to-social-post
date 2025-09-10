@@ -3,9 +3,13 @@ import { DefaultSession } from 'next-auth'
 
 declare module 'next-auth' {
   interface Session {
-    user: {
-      id: string
+    user: User & DefaultSession['user']
+  }
+
+  interface User {
+    id: string
+    usage?: {
       accountTier: AccountTier
-    } & DefaultSession['user']
+    }
   }
 }

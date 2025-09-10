@@ -79,6 +79,8 @@ export function PurposeForm() {
 
     const { apiKey, success } = await getUserApiKey()
 
+    console.log('apiKey', apiKey, success)
+
     const completeData: AIProcessingRequest = {
       transcript,
       apiKey: success ? apiKey : null,

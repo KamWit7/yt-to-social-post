@@ -10,6 +10,7 @@ import { getUserUsageStats } from '@/lib/actions/usage'
 import { getUsageWarningLevel } from '@/lib/usage'
 import { cn } from '@/lib/utils'
 import { ROUTES, UsageLevel } from '@/utils/constants'
+import { AccountTier } from '@prisma/client'
 import { ArrowRight } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
@@ -72,6 +73,11 @@ export function UsageCounter() {
   }
 
   if (!session?.user.id) {
+    return null
+  }
+  console.log('session.user', session.user)
+
+  if (session.user.usage?.accountTier === AccountTier.BYOK) {
     return null
   }
 
