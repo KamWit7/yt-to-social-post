@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
   })
 }
 
-// Configure which paths the middleware should run on
-export const config = {
-  matcher: ['/profile', '/usage'],
-}
+// // Configure which paths the middleware should run on
+// export const config = {
+//   matcher: ['/profile', '/usage'],
+// }

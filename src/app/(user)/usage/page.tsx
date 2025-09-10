@@ -9,8 +9,6 @@ export const metadata: Metadata = {
 }
 
 export default async function UsagePage() {
-  
-
   return (
     <Suspense fallback={<UsageSkeleton />}>
       <UsageStats />

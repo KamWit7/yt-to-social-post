@@ -1,8 +1,16 @@
 'use server'
 
+import { apiKeySchema } from '@/components/settings/ApiKeyForm'
+import { API_KEY_FORM_FIELD_NAMES } from '@/components/settings/ApiKeyForm/ApiKeyForm.helpers'
+import { checkGeminiApiKey } from '@/utils/checkGeminiApiKey'
+import { encrypt } from '@/utils/encryption/encryption'
+import { AccountTier, UserUsage } from '@prisma/client'
+import console from 'console'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth'
 import { checkUsageLimit, getUserUsage, incrementUsage } from '../db/usage'
+import { serverEnv } from '../env/server'
+import { prisma } from '../prisma'
 import { DEFAULT_USAGE_LIMIT } from '../usage'
 
 export type UsageBaseResponse = {
@@ -104,5 +112,92 @@ export async function getUserUsageStats(): Promise<UsageStats> {
   return {
     success: true,
     usage: { current, limit, remaining, percentage },
+  }
+}
+
+export type SaveApiKeyAndUpgradeTierResponse = UsageBaseResponse & {
+  usage: UserUsage | null
+}
+
+export async function saveApiKeyAndUpgradeTier(
+  unsafeApiKey: string
+): Promise<SaveApiKeyAndUpgradeTierResponse> {
+  try {
+    const { apiKey } = apiKeySchema.parse({
+      [API_KEY_FORM_FIELD_NAMES.API_KEY]: unsafeApiKey,
+    })
+
+    const session = await getServerSession(authOptions)
+
+    if (!session?.user.id) {
+      return {
+        success: false,
+        usage: null,
+        error: 'User not found',
+      }
+    }
+
+    
+    const isApiKeyValid = await checkGeminiApiKey(apiKey)
+
+    if (isApiKeyValid instanceof Error) {
+      return {
+        success: false,
+        usage: null,
+        error: isApiKeyValid.message,
+      }
+    }
+
+    const encryptedApiKey = encrypt(apiKey, serverEnv.API_ENCRYPTION_KEY)
+
+    const updatedUsage = await prisma.userUsage.update({
+      where: { userId: session.user.id },
+      data: {
+        apiKey: encryptedApiKey,
+        accountTier: AccountTier.BYOK,
+      },
+    })
+
+    return {
+      success: true,
+      usage: updatedUsage,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      usage: null,
+      error: `Failed to save API key and upgrade tier: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`,
+    }
+  }
+}
+
+export type GetUserApiKeyResponse = UsageBaseResponse & {
+  apiKey: UserUsage['apiKey']
+}
+
+export async function getUserApiKey(): Promise<GetUserApiKeyResponse> {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user.id) {
+    return {
+      apiKey: null,
+      success: false,
+      error: 'User not found',
+    }
+  }
+  const userUsage = await prisma.userUsage.findUnique({
+    where: { userId: session.user.id },
+  })
+
+  const { apiKey, accountTier } = userUsage ?? {
+    apiKey: null,
+    accountTier: AccountTier.free,
+  }
+
+  return {
+    apiKey: accountTier === AccountTier.BYOK ? apiKey : null,
+    success: true,
   }
 }

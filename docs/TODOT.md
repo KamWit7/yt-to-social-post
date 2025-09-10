@@ -26,7 +26,7 @@ Jasne, oto lista zadań (to-do list) w formacie Markdown, podsumowująca nasze u
   - Sugerowane narzędzia: **NextAuth.js** lub **Clerk**.
 - [+] **Baza Danych:** Podłączyć aplikację do bazy danych (np. PostgreSQL, Supabase, MongoDB).
 - [+] **Model Użytkownika:** Stworzyć w bazie danych tabelę/kolekcję `User` powiązaną z systemem logowania.
-- [ ] **Limity Użycia:** Wprowadzić logikę do śledzenia i ograniczania liczby darmowych podsumowań dla każdego zalogowanego użytkownika (np. zapisywać liczbę użyć w bazie danych).
+- [+] **Limity Użycia:** Wprowadzić logikę do śledzenia i ograniczania liczby darmowych podsumowań dla każdego zalogowanego użytkownika (np. zapisywać liczbę użyć w bazie danych).
 
 #### Etap 3: Funkcje Zaawansowane - Model "Bring Your Own Key" (BYOK)
 

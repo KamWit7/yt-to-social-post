@@ -1,7 +1,7 @@
 import { GenericHeader } from '@/components/common/GenericHeader/GenericHeader'
 import { HEADERS_PATH_KEY } from '@/middleware'
 import { ROUTES } from '@/utils/constants'
-import { BarChart3, Sparkles, User } from 'lucide-react'
+import { BarChart3, Settings, Sparkles, User } from 'lucide-react'
 import { headers } from 'next/headers'
 import React from 'react'
 
@@ -22,8 +22,17 @@ function getPageConfig(pathname: string | null) {
   if (pathname === ROUTES.PROFILE) {
     return {
       title: 'Your Profile',
-      description: 'Manage your account settings and information',
+      description: 'Manage your account information',
       icon: User,
+      features: [],
+    }
+  }
+
+  if (pathname === ROUTES.SETTINGS) {
+    return {
+      title: 'Settings',
+      description: 'Manage your account settings',
+      icon: Settings,
       features: [],
     }
   }

@@ -63,6 +63,11 @@ model VerificationToken {
 }
 
 // Application-specific models
+enum AccountTier {
+  free
+  BYOK
+}
+
 model UserUsage {
   id           String   @id @default(cuid())
   userId       String   @unique
@@ -70,6 +75,9 @@ model UserUsage {
   lastUsed     DateTime @default(now())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  accountTier  AccountTier @default(free)
+  apiKey       String?
+
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

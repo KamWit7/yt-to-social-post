@@ -12,6 +12,7 @@ import {
   USAGE_LIMIT_MESSAGES,
 } from '@/utils/constants'
 import { saveStateToSessionStorage } from '@/utils/sessionStorage'
+import { AccountTier } from '@prisma/client'
 import { AlertTriangle, BarChart3 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
@@ -89,6 +90,11 @@ export function UsageGate({ children }: UsageGateProps) {
 
   // If no session, let AuthGate handle it
   if (!session?.user) {
+    return <>{children}</>
+  }
+
+  // If user has BYOK tier, allow access
+  if (session?.user.accountTier === AccountTier.BYOK) {
     return <>{children}</>
   }
 

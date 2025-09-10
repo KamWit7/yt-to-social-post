@@ -29,7 +29,7 @@ export async function incrementUsage(userId: string): Promise<UserUsage> {
         lastUsed: new Date(),
       },
     })
-  } catch (error) {
+  } catch {
     // If user usage doesn't exist, create it first
     await createUserUsage(userId)
     return await prisma.userUsage.update({

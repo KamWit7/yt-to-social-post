@@ -3,6 +3,7 @@ import { getGoogleOAuthCredentials, serverEnv } from '@/lib/env/server'
 import { prisma } from '@/lib/prisma'
 import { ROUTES } from '@/utils/constants'
 import { PrismaAdapter } from '@auth/prisma-adapter'
+import { AccountTier } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
@@ -27,6 +28,7 @@ export const authOptions: NextAuthOptions = {
         if (
           credentials.email === user?.email &&
           user?.password &&
+          // TODO: check if compare is even needed
           (await bcrypt.compare(credentials.password, user.password))
         ) {
           return {
@@ -34,6 +36,7 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             name: user.name,
             image: user.image,
+            accountTier: user.usage?.accountTier ?? AccountTier.free,
           }
         }
 

@@ -20,11 +20,11 @@ export default function TranscriptionForm({ stepKey }: TranscriptionFormProps) {
       return <TranscriptForm />
     case DASHBOARD_TABS.PURPOSE:
       return (
-        <AuthGate>
-          <UsageGate>
+        <UsageGate>
+          <AuthGate>
             <PurposeForm />
-          </UsageGate>
-        </AuthGate>
+          </AuthGate>
+        </UsageGate>
       )
     default:
       return null

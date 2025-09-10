@@ -1,4 +1,4 @@
-export type AccountTier = 'free' | 'premium' | 'enterprise'
+import { AccountTier } from '@prisma/client'
 
 export interface UserProfileData {
   id: string
@@ -10,6 +10,5 @@ export interface UserProfileData {
 
 export const ACCOUNT_TIER_LABELS: Record<AccountTier, string> = {
   free: 'Free Tier',
-  premium: 'Premium',
-  enterprise: 'Enterprise',
+  BYOK: 'Bring Your Own Key',
 } as const

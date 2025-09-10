@@ -17,7 +17,7 @@ import { Sparkles } from 'lucide-react'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
-import { trackUserUsage } from '@/lib/actions/usage'
+import { getUserApiKey, trackUserUsage } from '@/lib/actions/usage'
 import { DASHBOARD_TABS } from '../../../Dashboard.helpers'
 import {
   ANIMATION_DELAYS,
@@ -77,8 +77,11 @@ export function PurposeForm() {
   const onFormSubmit = async (data: PurposeOnlyFormData) => {
     const rawPrompt = data.customPrompt ?? ''
 
+    const { apiKey, success } = await getUserApiKey()
+
     const completeData: AIProcessingRequest = {
       transcript,
+      apiKey: success ? apiKey : null,
       purpose: data.purpose,
       language: data.language || DEFAULT_LANGUAGE,
       customPrompt: rawPrompt.trim(),

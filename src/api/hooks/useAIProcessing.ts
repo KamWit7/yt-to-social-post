@@ -13,6 +13,7 @@ export const getAIProcessingQueryKey = (transcript?: string) => [
 
 export function useAIProcessing(
   transcript?: string,
+  apiKey?: string,
   options?: Partial<
     UseMutationOptions<
       ApiResponse<AIProcessingResponse>,

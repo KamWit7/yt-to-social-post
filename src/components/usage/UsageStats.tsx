@@ -181,7 +181,7 @@ export async function UsageStats() {
                   'text-green-800 dark:text-green-200'
               )}>
               {status.level === UsageLevel.DANGER &&
-                "You've reached your usage limit. Consider upgrading your plan."}
+                "You've reached your usage limit. Consider your plan and get unlimited summaries with your own key."}
               {status.level === UsageLevel.WARNING &&
                 "You're approaching your usage limit. Monitor your remaining summaries."}
               {status.level === UsageLevel.SAFE &&

@@ -13,6 +13,14 @@ const serverEnvSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
 
+  // API Encryption Key
+  API_ENCRYPTION_KEY: z
+    .string()
+    .min(
+      64,
+      'API_ENCRYPTION_KEY is not set or is not a 64-character hex string.'
+    ),
+
   // Node Environment
   NODE_ENV: z
     .enum(['development', 'production', 'test'])

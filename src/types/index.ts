@@ -40,6 +40,7 @@ export const DEFAULT_LANGUAGE = 'pl' as const
 
 export interface AIProcessingRequest {
   transcript: string
+  apiKey?: string | null
   purpose: string
   language: 'pl' | 'en'
   customPurpose?: string
