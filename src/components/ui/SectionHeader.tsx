@@ -20,7 +20,7 @@ export default function SectionHeader({
   return (
     <div className={`flex items-center gap-4 pb-4 mb-4 ${className}`}>
       <div
-        className={`w-12 h-12 ${iconBgColor} rounded-full flex items-center justify-center shadow-lg`}>
+        className={`min-w-12 min-h-12 w-12 h-12 ${iconBgColor} rounded-full flex items-center justify-center shadow-lg`}>
         {icon}
       </div>
       <div className='space-y-1'>

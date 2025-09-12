@@ -4,8 +4,8 @@ import { Metadata } from 'next'
 import { Suspense } from 'react'
 
 export const metadata: Metadata = {
-  title: 'Profile | YT Scribe',
-  description: 'Manage your account settings and view your profile information',
+  title: 'Profil | YT Scribe',
+  description: 'Zarządzaj ustawieniami konta i wyświetl informacje o profilu',
 }
 
 export default async function ProfilePage() {

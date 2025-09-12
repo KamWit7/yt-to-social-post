@@ -88,7 +88,7 @@ export function CredentialAuth({
             name={FORM_FIELD_NAMES.EMAIL}
             label='Email'
             type='email'
-            placeholder='Enter your email'
+            placeholder='Wprowadź swój email'
             required
             disabled={isSubmitting || isDisabled}
             icon={<Mail className='w-4 h-4' />}
@@ -97,9 +97,9 @@ export function CredentialAuth({
 
           <ControlledInput
             name={FORM_FIELD_NAMES.PASSWORD}
-            label='Password'
+            label='Hasło'
             type='password'
-            placeholder='Enter your password'
+            placeholder='Wprowadź swoje hasło'
             required
             disabled={isSubmitting || isDisabled}
             icon={<Lock className='w-4 h-4' />}
@@ -115,8 +115,8 @@ export function CredentialAuth({
 
         <SubmitButton
           isLoading={isSubmitting}
-          loadingText='Signing in...'
-          normalText='Sign In'
+          loadingText='Logowanie...'
+          normalText='Zaloguj się'
           icon={LogIn}
           className='w-full'
           disabled={isDisabled}

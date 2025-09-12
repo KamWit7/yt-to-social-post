@@ -8,21 +8,21 @@ import React from 'react'
 function getPageConfig(pathname: string | null) {
   if (pathname === ROUTES.USAGE) {
     return {
-      title: 'Usage Dashboard',
+      title: 'Panel użycia',
       description:
-        'Monitor your summary generation usage and track your monthly limits',
+        'Monitoruj użycie generowania podsumowań i śledz swoje miesięczne limity',
       icon: BarChart3,
       features: [
-        { icon: Sparkles, text: 'Real-time tracking' },
-        { icon: BarChart3, text: 'Visual analytics' },
+        { icon: Sparkles, text: 'Śledzenie w czasie rzeczywistym' },
+        { icon: BarChart3, text: 'Analityka wizualna' },
       ],
     }
   }
 
   if (pathname === ROUTES.PROFILE) {
     return {
-      title: 'Your Profile',
-      description: 'Manage your account information',
+      title: 'Twój profil',
+      description: 'Zarządzaj informacjami o swoim koncie',
       icon: User,
       features: [],
     }
@@ -30,16 +30,16 @@ function getPageConfig(pathname: string | null) {
 
   if (pathname === ROUTES.SETTINGS) {
     return {
-      title: 'Settings',
-      description: 'Manage your account settings',
+      title: 'Ustawienia',
+      description: 'Zarządzaj ustawieniami konta',
       icon: Settings,
       features: [],
     }
   }
 
   return {
-    title: 'Dashboard',
-    description: 'Manage your account and usage',
+    title: 'Panel główny',
+    description: 'Zarządzaj swoim kontem i użyciem',
     icon: User,
     features: [],
   }
@@ -54,11 +54,17 @@ export default async function UserLayout({
   const pathname = headerList.get(HEADERS_PATH_KEY)
   const config = getPageConfig(pathname)
 
+  const isProfileOrUsage = (
+    [ROUTES.PROFILE, ROUTES.USAGE] as Array<string>
+  ).includes(pathname ?? '')
+
   return (
-    <div className='space-y-8'>
+    <div className='space-y-4'>
       <GenericHeader {...config} />
 
-      <div className='container mx-auto max-w-md'>{children}</div>
+      <div className={isProfileOrUsage ? 'container mx-auto max-w-md' : ''}>
+        {children}
+      </div>
     </div>
   )
 }

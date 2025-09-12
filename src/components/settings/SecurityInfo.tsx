@@ -11,9 +11,9 @@ import { AlertTriangle, Database, Eye, Key, Lock, Shield } from 'lucide-react'
  * Component explaining encryption and data security measures for API keys
  * Provides transparency about security practices and data handling
  */
-export function SecurityInfo() {
+export function SecurityInfo({ className }: { className?: string }) {
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
         <CardTitle className='flex items-center gap-2'>
           <Shield className='h-5 w-5 text-green-500' />

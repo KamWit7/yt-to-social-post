@@ -18,8 +18,8 @@ export const getApiKeyDefaultValues = (): ApiKeyFormData => ({
  * Loading messages for API key form
  */
 export const API_KEY_LOADING_MESSAGES = {
-  SAVING: 'Saving API key...',
-  UPDATING: 'Updating API key...',
+  SAVING: 'Zapisywanie klucza API...',
+  UPDATING: 'Aktualizowanie klucza API...',
 } as const
 
 /**
@@ -27,6 +27,6 @@ export const API_KEY_LOADING_MESSAGES = {
  */
 export const API_KEY_SUCCESS_MESSAGES = {
   SAVED:
-    'API key saved successfully! Your account has been upgraded to BYOK tier.',
-  UPDATED: 'API key updated successfully!',
+    'Klucz API zapisany pomyślnie! Twoje konto zostało zaktualizowane do poziomu BYOK.',
+  UPDATED: 'Klucz API zaktualizowany pomyślnie!',
 } as const

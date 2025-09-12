@@ -1,9 +1,7 @@
 import { Session } from 'next-auth'
 
-import {
-  AccountTier,
-  UserProfileData,
-} from '@/components/auth/UserProfile/UserProfile.helpers'
+import { UserProfileData } from '@/components/auth/UserProfile/UserProfile.helpers'
+import { AccountTier } from '@prisma/client'
 
 export function transformSessionToUserProfile(
   session: Session
@@ -13,7 +11,7 @@ export function transformSessionToUserProfile(
     name: session.user.name,
     email: session.user.email,
     image: session.user.image,
-    accountTier: 'free' as AccountTier, // Default tier, could be fetched from API
+    accountTier: session.user.usage?.accountTier ?? AccountTier.free,
   }
 }
 

@@ -4,9 +4,9 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Sign In | YT Scribe',
+  title: 'Logowanie | YT Scribe',
   description:
-    'Sign in to your account to access your transcriptions and summaries',
+    'Zaloguj się do swojego konta, aby uzyskać dostęp do transkrypcji i podsumowań',
 }
 
 export default function LoginPage() {
@@ -14,22 +14,21 @@ export default function LoginPage() {
     <div className='container mx-auto max-w-md py-8'>
       <div className='space-y-6'>
         <div className='text-center space-y-2'>
-          <h1 className='text-3xl font-bold'>Welcome Back</h1>
+          <h1 className='text-3xl font-bold'>Witaj ponownie</h1>
           <p className='text-muted-foreground'>
-            Sign in to access your account and continue transcribing
+            Zaloguj się, aby uzyskać dostęp do swojego konta i kontynuować
+            transkrypcję
           </p>
         </div>
 
         <LoginForm />
 
         <div className='text-center text-sm'>
-          <span className='text-muted-foreground'>
-            Don&apos;t have an account?{' '}
-          </span>
+          <span className='text-muted-foreground'>Nie masz konta? </span>
           <Link
             href={ROUTES.REGISTER}
             className='text-primary hover:underline font-medium'>
-            Create one here
+            Utwórz je tutaj
           </Link>
         </div>
       </div>

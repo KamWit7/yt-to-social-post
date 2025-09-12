@@ -96,10 +96,10 @@ export function RegisterForm() {
             {/* Success Message */}
             <div className='space-y-2'>
               <h3 className='text-xl font-bold text-green-800'>
-                Registration Successful!
+                Rejestracja zakończona pomyślnie!
               </h3>
               <p className='text-sm text-muted-foreground'>
-                Your account has been created successfully
+                Twoje konto zostało utworzone pomyślnie
               </p>
             </div>
 
@@ -108,7 +108,7 @@ export function RegisterForm() {
               <div className='space-y-4'>
                 <div className='flex items-center justify-center space-x-2'>
                   <span className='text-sm text-muted-foreground'>
-                    Redirecting to login in
+                    Przekierowanie do logowania za
                   </span>
                   <div className='flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full'>
                     <span className='text-sm font-bold text-primary'>
@@ -116,7 +116,11 @@ export function RegisterForm() {
                     </span>
                   </div>
                   <span className='text-sm text-muted-foreground'>
-                    {countdown === 1 ? 'second' : 'seconds'}
+                    {countdown === 1
+                      ? 'sekundę'
+                      : countdown < 5
+                      ? 'sekundy'
+                      : 'sekund'}
                   </span>
                 </div>
 
@@ -130,7 +134,7 @@ export function RegisterForm() {
                   size='sm'
                   onClick={() => router.push(ROUTES.LOGIN)}
                   className='text-sm'>
-                  Go to login now
+                  Przejdź do logowania teraz
                 </Button>
               </div>
             )}
@@ -143,9 +147,9 @@ export function RegisterForm() {
   return (
     <Card className='w-full max-w-md mx-auto'>
       <CardHeader>
-        <CardTitle>Create Account</CardTitle>
+        <CardTitle>Utwórz konto</CardTitle>
         <CardDescription>
-          Enter your information to create a new account
+          Wprowadź swoje dane, aby utworzyć nowe konto
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -154,9 +158,9 @@ export function RegisterForm() {
             <div className='space-y-4'>
               <ControlledInput
                 name={FORM_FIELD_NAMES.NAME}
-                label='Full Name'
+                label='Imię i nazwisko'
                 type='text'
-                placeholder='Enter your full name'
+                placeholder='Wprowadź swoje imię i nazwisko'
                 required
                 disabled={isSubmitting}
                 icon={<User className='w-4 h-4' />}
@@ -167,7 +171,7 @@ export function RegisterForm() {
                 name={FORM_FIELD_NAMES.EMAIL}
                 label='Email'
                 type='email'
-                placeholder='Enter your email'
+                placeholder='Wprowadź swój email'
                 required
                 disabled={isSubmitting}
                 icon={<Mail className='w-4 h-4' />}
@@ -176,9 +180,9 @@ export function RegisterForm() {
 
               <ControlledInput
                 name={FORM_FIELD_NAMES.PASSWORD}
-                label='Password'
+                label='Hasło'
                 type='password'
-                placeholder='Create a password'
+                placeholder='Utwórz hasło'
                 required
                 disabled={isSubmitting}
                 icon={<Lock className='w-4 h-4' />}
@@ -187,9 +191,9 @@ export function RegisterForm() {
 
               <ControlledInput
                 name={FORM_FIELD_NAMES.CONFIRM_PASSWORD}
-                label='Confirm Password'
+                label='Potwierdź hasło'
                 type='password'
-                placeholder='Confirm your password'
+                placeholder='Potwierdź swoje hasło'
                 required
                 disabled={isSubmitting}
                 icon={<Lock className='w-4 h-4' />}
@@ -206,8 +210,8 @@ export function RegisterForm() {
 
             <SubmitButton
               isLoading={isSubmitting}
-              loadingText='Creating account...'
-              normalText='Create Account'
+              loadingText='Tworzenie konta...'
+              normalText='Utwórz konto'
               icon={UserPlus}
               className='w-full'
             />

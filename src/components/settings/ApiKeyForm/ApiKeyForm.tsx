@@ -1,7 +1,6 @@
 'use client'
 
 import { ControlledInput, SubmitButton } from '@/components/common'
-import SectionHeader from '@/components/ui/SectionHeader'
 import { saveApiKeyAndUpgradeTier } from '@/lib/actions/usage'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AccountTier } from '@prisma/client'
@@ -71,31 +70,20 @@ export function ApiKeyForm({ currentTier, hasApiKey }: ApiKeyFormProps) {
 
   return (
     <FormProvider {...methods}>
-      <form className='space-y-4' onSubmit={handleSubmit(onSubmitForm)}>
-        <div className='space-y-12'>
-          <SectionHeader
-            icon={<Key className='w-6 h-6 text-white' />}
-            title='Google Gemini API Key'
-            subtitle={
-              currentTier === AccountTier.BYOK && hasApiKey
-                ? 'Update your API key to continue using unlimited processing'
-                : 'Enter your API key to upgrade to BYOK tier and get unlimited processing'
-            }
-            iconBgColor='bg-gradient-to-r from-green-500 to-green-600'
-          />
-
+      <form onSubmit={handleSubmit(onSubmitForm)}>
+        <div className='space-y-6'>
           {/* Current Status */}
           {currentTier === AccountTier.BYOK && hasApiKey && (
             <div className='p-4 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg'>
               <div className='flex items-center gap-2'>
                 <Key className='h-4 w-4 text-green-600 dark:text-green-400' />
                 <span className='text-sm font-medium text-green-800 dark:text-green-200'>
-                  API Key Active
+                  Klucz API aktywny
                 </span>
               </div>
               <p className='text-sm text-green-700 dark:text-green-300 mt-1'>
-                Your Google Gemini API key is configured and active. You have
-                unlimited processing.
+                Twój klucz API Google Gemini jest skonfigurowany i aktywny. Masz
+                nieograniczone przetwarzanie.
               </p>
             </div>
           )}
@@ -104,15 +92,15 @@ export function ApiKeyForm({ currentTier, hasApiKey }: ApiKeyFormProps) {
             <div className='relative'>
               <ControlledInput
                 name={API_KEY_FORM_FIELD_NAMES.API_KEY}
-                label={`Google Gemini API Key${
+                label={`Klucz API Google Gemini${
                   currentTier === AccountTier.BYOK && hasApiKey
-                    ? ' (Update)'
+                    ? ' (Aktualizuj)'
                     : ''
                 }`}
                 type={showApiKey ? 'text' : 'password'}
                 placeholder={
                   currentTier === AccountTier.BYOK && hasApiKey
-                    ? 'Enter new API key to update'
+                    ? 'Wprowadź nowy klucz API, aby zaktualizować'
                     : 'AIzaSyC...'
                 }
                 disabled={isSubmitting}
@@ -133,7 +121,8 @@ export function ApiKeyForm({ currentTier, hasApiKey }: ApiKeyFormProps) {
             </div>
 
             <p className='text-sm text-muted-foreground'>
-              Enter your Google Gemini API key to enable unlimited processing
+              Wprowadź swój klucz API Google Gemini, aby włączyć nieograniczone
+              przetwarzanie
             </p>
 
             {/* Error Message */}
@@ -166,8 +155,8 @@ export function ApiKeyForm({ currentTier, hasApiKey }: ApiKeyFormProps) {
               }
               normalText={
                 currentTier === AccountTier.BYOK && hasApiKey
-                  ? 'Update API Key'
-                  : 'Save API Key & Upgrade to BYOK'
+                  ? 'Aktualizuj klucz API'
+                  : 'Zapisz klucz API i przejdź na BYOK'
               }
               icon={Key}
               className='w-full'
@@ -177,13 +166,13 @@ export function ApiKeyForm({ currentTier, hasApiKey }: ApiKeyFormProps) {
             {currentTier === AccountTier.free && (
               <div className='p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg'>
                 <h4 className='text-sm font-medium text-blue-800 dark:text-blue-200 mb-2'>
-                  Benefits of BYOK Tier:
+                  Korzyści z poziomu BYOK:
                 </h4>
                 <ul className='text-sm text-blue-700 dark:text-blue-300 space-y-1'>
-                  <li>• Unlimited AI processing</li>
-                  <li>• No daily usage limits</li>
-                  <li>• Use your own Google Gemini API quota</li>
-                  <li>• Priority processing</li>
+                  <li>• Nieograniczone przetwarzanie AI</li>
+                  <li>• Brak dziennych limitów użycia</li>
+                  <li>• Użyj własnej kwoty Google Gemini API</li>
+                  <li>• Priorytetowe przetwarzanie</li>
                 </ul>
               </div>
             )}

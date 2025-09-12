@@ -15,7 +15,7 @@ import { useState } from 'react'
  * Component providing detailed instructions for obtaining a Google Gemini API key
  * Includes step-by-step guide and helpful links
  */
-export function ApiKeyInstructions() {
+export function ApiKeyInstructions({ className }: { className?: string }) {
   const [copiedStep, setCopiedStep] = useState<number | null>(null)
 
   /**
@@ -32,12 +32,12 @@ export function ApiKeyInstructions() {
   }
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
-        <CardTitle>How to Get Your Google Gemini API Key</CardTitle>
+        <CardTitle>Jak uzyskać klucz API Google Gemini</CardTitle>
         <CardDescription>
-          Follow these steps to obtain your Google Gemini API key for unlimited
-          processing
+          Wykonaj te kroki, aby uzyskać klucz API Google Gemini do
+          nieograniczonego przetwarzania
         </CardDescription>
       </CardHeader>
       <CardContent className='space-y-6'>
@@ -67,21 +67,21 @@ export function ApiKeyInstructions() {
 
         {/* Step-by-step Instructions */}
         <div className='space-y-4'>
-          <h4 className='font-medium'>Step-by-step guide:</h4>
+          <h4 className='font-medium'>Przewodnik krok po kroku:</h4>
 
           <div className='space-y-4'>
             {/* Step 1 */}
             <InstructionStep
               number={1}
-              title='Visit Google AI Studio'
-              description='Go to Google AI Studio to create your API key'
+              title='Odwiedź Google AI Studio'
+              description='Przejdź do Google AI Studio, aby utworzyć swój klucz API'
               action={
                 <Button variant='outline' size='sm' asChild>
                   <a
                     href='https://aistudio.google.com/app/apikey'
                     target='_blank'
                     rel='noopener noreferrer'>
-                    Open AI Studio
+                    Otwórz AI Studio
                   </a>
                 </Button>
               }
@@ -90,22 +90,22 @@ export function ApiKeyInstructions() {
             {/* Step 2 */}
             <InstructionStep
               number={2}
-              title='Sign in with Google Account'
-              description="Use your Google account to access AI Studio. If you don't have one, create a free Google account first."
+              title='Zaloguj się kontem Google'
+              description='Użyj swojego konta Google, aby uzyskać dostęp do AI Studio. Jeśli go nie masz, najpierw utwórz bezpłatne konto Google.'
             />
 
             {/* Step 3 */}
             <InstructionStep
               number={3}
-              title='Create API Key'
-              description="Click 'Create API Key' button and select your Google Cloud project (or create a new one if needed)."
+              title='Utwórz klucz API'
+              description='Kliknij przycisk "Utwórz klucz API" i wybierz swój projekt Google Cloud (lub utwórz nowy, jeśli potrzeba).'
             />
 
             {/* Step 4 */}
             <InstructionStep
               number={4}
-              title='Copy Your API Key'
-              description="Once created, copy the API key. It should start with 'AIza' and be 39 characters long."
+              title='Skopiuj swój klucz API'
+              description='Po utworzeniu skopiuj klucz API. Powinien zaczynać się od "AIza" i mieć 39 znaków.'
               copyText='AIzaSyC...'
               onCopy={() => copyToClipboard('AIzaSyC...', 4)}
               copied={copiedStep === 4}
@@ -114,73 +114,9 @@ export function ApiKeyInstructions() {
             {/* Step 5 */}
             <InstructionStep
               number={5}
-              title='Paste in Settings'
-              description='Return to this page and paste your API key in the form above to upgrade to BYOK tier.'
+              title='Wklej w ustawieniach'
+              description='Wróć na tę stronę i wklej swój klucz API w formularzu powyżej, aby przejść na poziom BYOK.'
             />
-          </div>
-        </div>
-
-        {/* Important Notes */}
-        <div className='p-4 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 rounded-lg'>
-          <h4 className='font-medium text-yellow-800 dark:text-yellow-200 mb-2'>
-            Important Notes:
-          </h4>
-          <ul className='text-sm text-yellow-700 dark:text-yellow-300 space-y-1'>
-            <li>• Keep your API key secure and never share it publicly</li>
-            <li>
-              • Google Gemini API has its own pricing - check Google's pricing
-              page
-            </li>
-            <li>• You can monitor your usage in Google Cloud Console</li>
-            <li>
-              • The API key will be encrypted and stored securely in our
-              database
-            </li>
-            <li>• You can update or remove your API key anytime in settings</li>
-          </ul>
-        </div>
-
-        {/* Troubleshooting */}
-        <div className='space-y-3'>
-          <h4 className='font-medium'>Troubleshooting:</h4>
-          <div className='space-y-2 text-sm'>
-            <TroubleshootingItem
-              issue="Can't find 'Create API Key' button?"
-              solution="Make sure you're signed in and have accepted Google's terms of service."
-            />
-            <TroubleshootingItem
-              issue='API key validation fails?'
-              solution="Ensure the key starts with 'AIza' and is exactly 39 characters long."
-            />
-            <TroubleshootingItem
-              issue='Getting quota exceeded errors?'
-              solution='Check your Google Cloud billing and API quotas in the Cloud Console.'
-            />
-          </div>
-        </div>
-
-        {/* Additional Resources */}
-        <div className='pt-4 border-t'>
-          <h4 className='font-medium mb-3'>Additional Resources:</h4>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
-            <Button variant='ghost' size='sm' asChild className='justify-start'>
-              <a
-                href='https://ai.google.dev/pricing'
-                target='_blank'
-                rel='noopener noreferrer'>
-                <ExternalLink className='h-3 w-3' />
-                Gemini API Pricing
-              </a>
-            </Button>
-            <Button variant='ghost' size='sm' asChild className='justify-start'>
-              <a
-                href='https://ai.google.dev/docs'
-                target='_blank'
-                rel='noopener noreferrer'>
-                <ExternalLink className='h-3 w-3' />
-                API Documentation
-              </a>
-            </Button>
           </div>
         </div>
       </CardContent>
@@ -231,28 +167,11 @@ function InstructionStep({
               ) : (
                 <Copy className='h-3 w-3' />
               )}
-              {copied ? 'Copied!' : 'Copy Example'}
+              {copied ? 'Skopiowano!' : 'Skopiuj przykład'}
             </Button>
           )}
         </div>
       </div>
-    </div>
-  )
-}
-
-interface TroubleshootingItemProps {
-  issue: string
-  solution: string
-}
-
-/**
- * Troubleshooting item component
- */
-function TroubleshootingItem({ issue, solution }: TroubleshootingItemProps) {
-  return (
-    <div className='p-3 bg-muted/50 rounded-lg'>
-      <p className='font-medium text-sm'>{issue}</p>
-      <p className='text-sm text-muted-foreground mt-1'>{solution}</p>
     </div>
   )
 }

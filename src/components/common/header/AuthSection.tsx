@@ -27,12 +27,12 @@ export async function AuthSection() {
       <Link href={ROUTES.LOGIN}>
         <Button variant='ghost' size='sm'>
           <LogIn className='w-4 h-4' />
-          <span>Sign In</span>
+          <span>Zaloguj się</span>
         </Button>
       </Link>
       <Link href={ROUTES.REGISTER}>
         <Button size='sm' className='text-sm font-semibold'>
-          Sign Up
+          Zarejestruj się
         </Button>
       </Link>
     </div>

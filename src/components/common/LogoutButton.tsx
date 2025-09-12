@@ -50,7 +50,7 @@ export function LogoutButton({
       ) : (
         <LogOut className='mr-2 h-4 w-4' />
       )}
-      {isLoading ? 'Signing out...' : 'Sign Out'}
+      {isLoading ? 'Wylogowywanie...' : 'Wyloguj się'}
     </Button>
   )
 }

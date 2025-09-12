@@ -1,6 +1,6 @@
+import { AdditionalInfo } from '@/components/settings/AdditionalInfo'
 import { ApiKeyForm } from '@/components/settings/ApiKeyForm'
 import { ApiKeyInstructions } from '@/components/settings/ApiKeyInstructions'
-import { SecurityInfo } from '@/components/settings/SecurityInfo'
 import {
   Card,
   CardContent,
@@ -29,38 +29,27 @@ export default async function SettingsPage() {
   const userUsage = await getUserUsage(session.user.id)
 
   return (
-    <div className='container mx-auto py-8 px-4 max-w-4xl'>
-      <div className='space-y-8'>
-        {/* Page Header */}
-        <div className='space-y-2'>
-          <h1 className='text-3xl font-bold tracking-tight'>Settings</h1>
-          <p className='text-muted-foreground'>
-            Manage your account settings and API configuration
-          </p>
-        </div>
+    <div className='flex gap-8 justify-center'>
+      {/* Instructions Section */}
+      <ApiKeyInstructions className='max-w-md' />
 
-        {/* BYOK Configuration Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Bring Your Own Key (BYOK)</CardTitle>
-            <CardDescription>
-              Use your own Google Gemini API key for unlimited processing
-            </CardDescription>
-          </CardHeader>
-          <CardContent className='space-y-6'>
-            <ApiKeyForm
-              currentTier={userUsage?.accountTier || AccountTier.free}
-              hasApiKey={!!userUsage?.apiKey}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Instructions Section */}
-        <ApiKeyInstructions />
-
-        {/* Security Information */}
-        <SecurityInfo />
-      </div>
+      {/* BYOK Configuration Section */}
+      <Card className='max-w-md'>
+        <CardHeader>
+          <CardTitle>Użyj Własnego Klucza (BYOK)</CardTitle>
+          <CardDescription>
+            Użyj własnego klucza API Google Gemini do nieograniczonego
+            przetwarzania
+          </CardDescription>
+        </CardHeader>
+        <CardContent className='space-y-6'>
+          <ApiKeyForm
+            currentTier={userUsage?.accountTier || AccountTier.free}
+            hasApiKey={!!userUsage?.apiKey}
+          />
+          <AdditionalInfo />
+        </CardContent>
+      </Card>
     </div>
   )
 }

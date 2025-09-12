@@ -22,9 +22,9 @@ export function LoginForm() {
   return (
     <Card className='w-full max-w-md mx-auto'>
       <CardHeader>
-        <CardTitle>Sign In</CardTitle>
+        <CardTitle>Zaloguj się</CardTitle>
         <CardDescription>
-          Enter your email and password to access your account
+          Wprowadź swój email i hasło, aby uzyskać dostęp do konta
         </CardDescription>
       </CardHeader>
       <CardContent>

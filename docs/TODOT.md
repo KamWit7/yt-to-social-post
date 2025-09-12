@@ -30,9 +30,9 @@ Jasne, oto lista zadań (to-do list) w formacie Markdown, podsumowująca nasze u
 
 #### Etap 3: Funkcje Zaawansowane - Model "Bring Your Own Key" (BYOK)
 
-- [ ] **Interfejs Użytkownika:** Dodać w panelu użytkownika formularz do wprowadzania i zapisywania własnego klucza API.
-- [ ] **Baza Danych:** Zaktualizować model `User`, dodając pole na zaszyfrowany klucz API (np. `encryptedApiKey`).
-- [ ] **Szyfrowanie:** Zaimplementować na backendzie logikę do szyfrowania kluczy API przed zapisaniem ich w bazie i deszyfrowania przed użyciem.
+- [+] **Interfejs Użytkownika:** Dodać w panelu użytkownika formularz do wprowadzania i zapisywania własnego klucza API.
+- [+] **Baza Danych:** Zaktualizować model `User`, dodając pole na zaszyfrowany klucz API (np. `encryptedApiKey`).
+- [+] **Szyfrowanie:** Zaimplementować na backendzie logikę do szyfrowania kluczy API przed zapisaniem ich w bazie i deszyfrowania przed użyciem.
 - [ ] **Aktualizacja API Route:** Zmodyfikować logikę `/api/summarize`, aby:
   - [ ] Sprawdzała, czy zalogowany użytkownik ma zapisany własny klucz.
   - [ ] Jeśli tak – używała klucza użytkownika.

@@ -94,7 +94,7 @@ export function UsageGate({ children }: UsageGateProps) {
   }
 
   // If user has BYOK tier, allow access
-  if (session?.user.accountTier === AccountTier.BYOK) {
+  if (session?.user.usage?.accountTier === AccountTier.BYOK) {
     return <>{children}</>
   }
 
