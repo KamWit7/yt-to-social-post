@@ -3,7 +3,10 @@ import Link from 'next/link'
 
 export function Logo() {
   return (
-    <Link href={ROUTES.DASHBOARD} className='flex items-center space-x-3'>
+    <Link
+      href={ROUTES.DASHBOARD}
+      className='group flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-gray-100/60 dark:hover:bg-gray-800/40 transition-all duration-200 ease-out'
+      aria-label='YT Scribe - Przejdź do pulpitu'>
       <svg
         xmlns='http://www.w3.org/2000/svg'
         width='24'
@@ -14,11 +17,12 @@ export function Logo() {
         strokeWidth='2'
         strokeLinecap='round'
         strokeLinejoin='round'
-        className='h-6 w-6 text-gray-700 dark:text-gray-300'>
-        <path d='M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z' />
-        <path d='M10 2c1 .5 2 2 2 5' />
+        className='h-6 w-6 text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-all duration-200 group-hover:scale-105'>
+        <path d='M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20' />
+        <path d='M8 7h8' />
+        <path d='M8 11h8' />
       </svg>
-      <span className='text-lg font-semibold tracking-tight text-gray-800 dark:text-white'>
+      <span className='text-lg font-semibold tracking-tight text-gray-800 dark:text-white group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-200'>
         YT Scribe
       </span>
     </Link>

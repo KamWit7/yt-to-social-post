@@ -1,70 +1,167 @@
-# Profile and Usage Page Merge Plan
+# Plan Połączenia Stron Profilu i Użycia
 
-## Description
+## Opis
 
-This feature merges the standalone usage page (`/usage`) into the profile page (`/profile`) to consolidate user account information and usage statistics in a single location. The user wants to combine these two pages so that usage information is displayed as part of the profile page rather than being a separate route.
+Ta funkcjonalność łączy samodzielną stronę użycia (`/usage`) ze stroną profilu (`/profile`), aby skonsolidować informacje o koncie użytkownika i statystyki użycia w jednym miejscu. Użytkownik chce połączyć te dwie strony tak, aby informacje o użyciu były wyświetlane jako część strony profilu, a nie jako osobna trasa.
 
-## Files and Functions to be Changed
+**Uwaga dotycząca lokalizacji**: Wszystkie zmiany muszą uwzględniać istniejące polskie tłumaczenia i zapewnić spójność językową w całej aplikacji zgodnie z planem lokalizacji `0011_POLISH_LOCALIZATION_PLAN.md`.
 
-### Pages and Routing
+## Pliki i Funkcje do Zmiany
 
-- **`src/app/(user)/profile/page.tsx`** - Update to include usage statistics alongside user profile information
-- **`src/app/(user)/usage/page.tsx`** - Remove this file as usage will be integrated into profile
-- **`src/app/(user)/layout.tsx`** - Update `getPageConfig()` function to remove usage-specific configuration and update `isProfileOrUsage` logic
+### Strony i Routing
 
-### Components to Modify
+- **`src/app/(user)/profile/page.tsx`** - Zaktualizować metadane, aby odzwierciedlały połączoną funkcjonalność profilu i użycia
+  - Aktualne metadane: `title: 'Profil | YT Scribe'`, `description: 'Zarządzaj ustawieniami konta i wyświetl informacje o profilu'`
+  - Nowe metadane: `description: 'Zarządzaj ustawieniami konta, wyświetl informacje o profilu i monitoruj statystyki użycia'`
+- **`src/app/(user)/usage/page.tsx`** - Usunąć ten plik, ponieważ użycie zostanie zintegrowane z profilem
+- **`src/app/(user)/layout.tsx`** - Zaktualizować funkcję `getPageConfig()`, aby usunąć konfigurację specyficzną dla użycia i zaktualizować logikę `isProfileOrUsage`
 
-- **`src/components/auth/UserProfile/UserProfile.tsx`** - Extend to include usage statistics display alongside existing user information
-- **`src/components/usage/UsageStats.tsx`** - Modify to be embeddable within profile page (remove standalone card wrapper if needed)
-- **`src/components/usage/index.ts`** - Update exports if needed for new integration
+### Komponenty do Modyfikacji
 
-### Navigation and Constants
+- **`src/components/auth/UserProfile/UserProfile.tsx`** - Rozszerzyć o wyświetlanie statystyk użycia obok istniejących informacji użytkownika
+  - Przetłumaczyć istniejące angielskie teksty: `"User Profile"` → `"Profil Użytkownika"`, `"Your account information and settings"` → `"Informacje o Twoim koncie i ustawienia"`
+- **`src/components/usage/UsageStats.tsx`** - Zmodyfikować, aby można było osadzić w stronie profilu i przetłumaczyć wszystkie angielskie teksty:
+  - `"Usage Overview"` → `"Przegląd Użycia"`
+  - `"Track your monthly summary generations"` → `"Śledź swoje miesięczne generowanie podsumowań"`
+  - `"Used This Month"` → `"Użyte w tym miesiącu"`
+  - `"Monthly Limit"` → `"Miesięczny limit"`
+  - `"Remaining"` → `"Pozostało"`
+  - Komunikaty statusu:
+    - `"You've reached your usage limit..."` → `"Osiągnąłeś swój limit użycia. Rozważ swój plan i uzyskaj nieograniczone podsumowania z własnym kluczem."`
+    - `"You're approaching your usage limit..."` → `"Zbliżasz się do swojego limitu użycia. Monitoruj pozostałe podsumowania."`
+    - `"You're well within your usage limits..."` → `"Jesteś w granicach swoich limitów użycia. Kontynuuj tworzenie podsumowań!"`
+- **`src/components/usage/index.ts`** - Zaktualizować eksporty jeśli potrzebne dla nowej integracji
 
-- **`src/utils/constants.ts`** - Remove `/usage` route from ROUTES constant or mark as deprecated
-- **`src/components/common/header/constants.ts`** - Update `USER_MENU_ITEMS` to remove usage menu item
-- **`src/components/common/header/UsageCounter/UsageCounter.tsx`** - Update pathname check logic since usage page will no longer exist
+### Nawigacja i Stałe
 
-### Metadata and SEO
+- **`src/utils/constants.ts`** - Usunąć trasę `/usage` ze stałej ROUTES lub oznaczyć jako przestarzałą
+- **`src/components/common/header/constants.ts`** - Zaktualizować `USER_MENU_ITEMS`, aby usunąć element menu użycia
+  - Obecny stan: `{ href: ROUTES.USAGE, label: 'Użycie', icon: BarChart3 }` - do usunięcia
+- **`src/components/common/header/UsageCounter/UsageCounter.tsx`** - Zaktualizować logikę sprawdzania pathname, ponieważ strona użycia nie będzie już istnieć
 
-- Update profile page metadata to reflect that it now includes usage information
+### Metadane i SEO
 
-## Implementation Algorithm
+- Zaktualizować metadane strony profilu, aby odzwierciedlały, że teraz zawiera informacje o użyciu
+- Zachować polskie tłumaczenia zgodnie z istniejącym planem lokalizacji
 
-### Step 1: Component Integration
+## Algorytm Implementacji
 
-1. Modify `UserProfile.tsx` to accept an optional `showUsage` prop (default true)
-2. Import and integrate `UsageStats` component within the profile card structure
-3. Adjust layout to accommodate both user info and usage stats in a cohesive design
-4. Ensure proper loading states and error handling for both user profile and usage data
+### Krok 1: Integracja Komponentów z Tłumaczeniami
 
-### Step 2: Usage Component Adaptation
+1. Zmodyfikować `UserProfile.tsx`, aby przyjmował opcjonalny prop `showUsage` (domyślnie true)
+2. Zaimportować i zintegrować komponent `UsageStats` w strukturze karty profilu
+3. Dostosować układ, aby pomieścić zarówno informacje o użytkowniku, jak i statystyki użycia w spójnym designie
+4. Zapewnić odpowiednie stany ładowania i obsługę błędów dla danych profilu użytkownika i użycia
+5. **Przetłumaczyć wszystkie angielskie teksty w `UserProfile.tsx`** zgodnie z planem lokalizacji
 
-1. Create a variant of `UsageStats` that works within the profile context
-2. Remove or modify the standalone card wrapper to fit within profile layout
-3. Maintain all existing functionality (progress bars, status indicators, etc.)
+### Krok 2: Adaptacja Komponentu Użycia z Lokalizacją
 
-### Step 3: Routing and Navigation Updates
+1. Utworzyć wariant `UsageStats`, który działa w kontekście profilu
+2. Usunąć lub zmodyfikować samodzielny wrapper karty, aby pasował do układu profilu
+3. Zachować całą istniejącą funkcjonalność (paski postępu, wskaźniki statusu, itp.)
+4. **Przetłumaczyć wszystkie angielskie teksty w `UsageStats.tsx`** na polski:
+   - Nagłówki, etykiety, komunikaty statusu
+   - Zachować spójność z istniejącymi polskimi tłumaczeniami
 
-1. Remove usage page file and route
-2. Update navigation menu to remove usage link
-3. Update layout logic to handle only profile page (remove usage-specific styling)
-4. Update any internal links that point to `/usage` to point to `/profile` instead
+### Krok 3: Aktualizacje Routingu i Nawigacji
 
-### Step 4: Counter Component Updates
+1. Usunąć plik strony użycia i trasę
+2. Zaktualizować menu nawigacji, aby usunąć link użycia z `USER_MENU_ITEMS`
+3. Zaktualizować logikę układu, aby obsługiwać tylko stronę profilu (usunąć stylowanie specyficzne dla użycia)
+4. Zaktualizować wszelkie wewnętrzne linki wskazujące na `/usage`, aby wskazywały na `/profile`
+5. **Zachować polskie etykiety** w menu nawigacji zgodnie z `constants.ts`
 
-1. Modify `UsageCounter.tsx` to remove the pathname check for `/usage` since that route will no longer exist
-2. Ensure the usage counter still functions properly on all other pages
+### Krok 4: Aktualizacje Komponentu Licznika
 
-### Step 5: Metadata and Configuration
+1. Zmodyfikować `UsageCounter.tsx`, aby usunąć sprawdzanie pathname dla `/usage`, ponieważ ta trasa nie będzie już istnieć
+2. Upewnić się, że licznik użycia nadal działa poprawnie na wszystkich innych stronach
+3. **Zachować polskie tłumaczenia** w `USAGE_COUNTER_CONSTANTS`
 
-1. Update profile page metadata to include usage-related keywords
-2. Update layout configuration to reflect the merged functionality
-3. Test that all existing usage functionality works within the profile context
+### Krok 5: Metadane i Konfiguracja z Lokalizacją
 
-## Technical Considerations
+1. Zaktualizować metadane strony profilu, aby zawierały słowa kluczowe związane z użyciem (po polsku)
+2. Zaktualizować konfigurację układu, aby odzwierciedlała połączoną funkcjonalność
+3. Przetestować, że cała istniejąca funkcjonalność użycia działa w kontekście profilu
+4. **Upewnić się, że wszystkie nowe teksty są po polsku** zgodnie z planem lokalizacji
 
-- Maintain backward compatibility for any existing bookmarks to `/usage` by potentially adding a redirect
-- Ensure that usage statistics loading doesn't block profile information display
-- Preserve all existing usage functionality including real-time updates and warning levels
-- Keep the same responsive design principles for the combined interface
-- Maintain proper TypeScript types for the integrated components
+### Krok 6: Dodatkowe Uwagi Lokalizacyjne
+
+1. Sprawdzić spójność terminologii między profilem a użyciem
+2. Upewnić się, że wszystkie komunikaty błędów są po polsku
+3. Zweryfikować, że metadane SEO są zaktualizowane po polsku
+4. Przetestować całą ścieżkę użytkownika w języku polskim
+
+## Uwagi Techniczne
+
+- Zachować kompatybilność wsteczną dla istniejących zakładek do `/usage` poprzez potencjalne dodanie przekierowania
+- Upewnić się, że ładowanie statystyk użycia nie blokuje wyświetlania informacji o profilu
+- Zachować całą istniejącą funkcjonalność użycia, w tym aktualizacje w czasie rzeczywistym i poziomy ostrzeżeń
+- Zachować te same zasady responsywnego designu dla połączonego interfejsu
+- Zachować odpowiednie typy TypeScript dla zintegrowanych komponentów
+
+### Specyficzne Uwagi Lokalizacyjne
+
+- **Spójność terminologii**: Upewnić się, że terminy używane w połączonych komponentach są spójne z istniejącymi polskimi tłumaczeniami
+- **Komunikaty błędów**: Wszystkie nowe komunikaty błędów muszą być po polsku
+- **Metadane SEO**: Zaktualizowane metadane muszą być zoptymalizowane dla polskich wyszukiwań
+- **Dostępność**: Zachować polskie etykiety dla czytników ekranu i innych technologii wspomagających
+- **Walidacja formularzy**: Upewnić się, że wszystkie komunikaty walidacji są po polsku
+- **Loading states**: Wszystkie stany ładowania muszą wyświetlać polskie komunikaty
+
+### Testowanie Lokalizacji
+
+- Przetestować wszystkie ścieżki użytkownika w języku polskim
+- Sprawdzić poprawność gramatyczną i stylistyczną wszystkich nowych tekstów
+- Zweryfikować spójność z istniejącymi tłumaczeniami w aplikacji
+- Upewnić się, że nie ma mieszania języków angielskiego i polskiego
+
+## Szczegółowe Tłumaczenia do Implementacji
+
+### UserProfile.tsx - Teksty do Przetłumaczenia
+
+```typescript
+// Przed:
+"User Profile" → "Profil Użytkownika"
+"Your account information and settings" → "Informacje o Twoim koncie i ustawienia"
+```
+
+### UsageStats.tsx - Kompletne Tłumaczenia
+
+```typescript
+// Nagłówki i opisy:
+"Usage Overview" → "Przegląd Użycia"
+"Track your monthly summary generations" → "Śledź swoje miesięczne generowanie podsumowań"
+
+// Etykiety statystyk:
+"Used This Month" → "Użyte w tym miesiącu"
+"Monthly Limit" → "Miesięczny limit"
+"Remaining" → "Pozostało"
+"of" → "z"  // w kontekście "X of Y used"
+"used" → "użyte"
+
+// Komunikaty statusu (zachować istniejącą logikę kolorów):
+"You've reached your usage limit. Consider your plan and get unlimited summaries with your own key."
+→ "Osiągnąłeś swój limit użycia. Rozważ swój plan i uzyskaj nieograniczone podsumowania z własnym kluczem."
+
+"You're approaching your usage limit. Monitor your remaining summaries."
+→ "Zbliżasz się do swojego limitu użycia. Monitoruj pozostałe podsumowania."
+
+"You're well within your usage limits. Keep creating summaries!"
+→ "Jesteś w granicach swoich limitów użycia. Kontynuuj tworzenie podsumowań!"
+```
+
+### Metadane Strony Profilu
+
+```typescript
+// Aktualizacja w profile/page.tsx:
+description: 'Zarządzaj ustawieniami konta, wyświetl informacje o profilu i monitoruj statystyki użycia'
+```
+
+### Layout.tsx - Aktualizacje Konfiguracji
+
+```typescript
+// Usunąć konfigurację dla ROUTES.USAGE
+// Zachować istniejące polskie tłumaczenia dla profilu:
+title: 'Twój profil'
+description: 'Zarządzaj informacjami o swoim koncie i monitoruj użycie' // zaktualizowany opis
+```

@@ -20,16 +20,16 @@ export function GenericHeader({
   features = [],
 }: GenericHeaderProps) {
   return (
-    <div className='space-y-6'>
+    <div className='max-w-7xl mx-auto px-4 pb-6 relative'>
       {/* Navigation */}
-      <div className='flex items-center gap-4'>
+      <div className='absolute top-0 left-0 px-4 sm:px-6 lg:px-8'>
         <Link href={ROUTES.DASHBOARD}>
           <Button
             variant='ghost'
             size='sm'
             className='gap-2 hover:bg-muted/50 transition-all duration-300 hover:-translate-x-1'>
             <ArrowLeft className='w-4 h-4' />
-            Back to Dashboard
+            Strona główna
           </Button>
         </Link>
       </div>

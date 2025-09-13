@@ -1,4 +1,4 @@
-export { LogoutButton } from '../common/LogoutButton'
+export { LogoutButton } from '../common/LogoutButton/LogoutButton'
 export { AccountDetails } from './UserProfile/components/AccountDetails'
 export { UserAvatar } from './UserProfile/components/UserAvatar'
 export { UserInfo } from './UserProfile/components/UserInfo'

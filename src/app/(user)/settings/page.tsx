@@ -29,11 +29,10 @@ export default async function SettingsPage() {
   const userUsage = await getUserUsage(session.user.id)
 
   return (
-    <div className='flex gap-8 justify-center'>
+    <>
       {/* Instructions Section */}
       <ApiKeyInstructions className='max-w-md' />
 
-      {/* BYOK Configuration Section */}
       <Card className='max-w-md'>
         <CardHeader>
           <CardTitle>Użyj Własnego Klucza (BYOK)</CardTitle>
@@ -50,6 +49,6 @@ export default async function SettingsPage() {
           <AdditionalInfo />
         </CardContent>
       </Card>
-    </div>
+    </>
   )
 }

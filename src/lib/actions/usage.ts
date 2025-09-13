@@ -82,6 +82,7 @@ type UsageStats = UsageBaseResponse & {
     limit: number
     remaining: number
     percentage: number
+    accountTier: AccountTier
   }
 }
 
@@ -96,6 +97,7 @@ export async function getUserUsageStats(): Promise<UsageStats> {
         limit: DEFAULT_USAGE_LIMIT,
         remaining: 0,
         percentage: 0,
+        accountTier: AccountTier.free,
       },
 
       error: 'User not found',
@@ -105,13 +107,19 @@ export async function getUserUsageStats(): Promise<UsageStats> {
   const usage = await getUserUsage(session?.user.id)
 
   const current = usage?.summaryCount || 0
-  const limit = DEFAULT_USAGE_LIMIT
-  const remaining = Math.max(0, limit - current)
-  const percentage = Math.min(100, (current / limit) * 100)
+  const accountTier = usage?.accountTier || AccountTier.free
+  const limit =
+    accountTier === AccountTier.BYOK ? Infinity : DEFAULT_USAGE_LIMIT
+  const remaining =
+    accountTier === AccountTier.BYOK ? Infinity : Math.max(0, limit - current)
+  const percentage =
+    accountTier === AccountTier.BYOK
+      ? 0
+      : Math.min(100, (current / limit) * 100)
 
   return {
     success: true,
-    usage: { current, limit, remaining, percentage },
+    usage: { current, limit, remaining, percentage, accountTier },
   }
 }
 
@@ -137,7 +145,6 @@ export async function saveApiKeyAndUpgradeTier(
       }
     }
 
-    
     const isApiKeyValid = await checkGeminiApiKey(apiKey)
 
     if (isApiKeyValid instanceof Error) {

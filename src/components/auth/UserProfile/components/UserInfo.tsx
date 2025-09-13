@@ -16,7 +16,7 @@ export function UserInfo({
   showEmail = true,
   className = '',
 }: UserInfoProps) {
-  const displayName = user.name || 'User'
+  const displayName = user.name || 'Użytkownik'
 
   return (
     <div className={`flex flex-col items-center space-y-4 ${className}`}>

@@ -6,6 +6,7 @@ import { DictionaryCode } from '@/api/services/dictionaryService'
 import { AILoadingAnimation, AnimatedSection } from '@/components/animation'
 import { ControlledSelect, SubmitButton } from '@/components/common'
 import SectionHeader from '@/components/ui/SectionHeader'
+import { useUsage } from '@/context'
 import {
   AIModels,
   DEFAULT_AI_MODEL,
@@ -38,6 +39,8 @@ export function PurposeForm() {
     handleLoadingStateChange,
     handleFormStepUpdate,
   } = useTranscriptionForms()
+
+  const { refreshUsage } = useUsage()
 
   const transcript = formStepsState[DASHBOARD_TABS.TRANSCRIPT] || ''
   const existingPurposeData = formStepsState[DASHBOARD_TABS.PURPOSE]
@@ -109,6 +112,7 @@ export function PurposeForm() {
     handleTabChange(DASHBOARD_TABS.RESULTS)
 
     trackUserUsage()
+    refreshUsage()
   }, [
     isSuccess,
     handleStepComplete,
@@ -116,6 +120,7 @@ export function PurposeForm() {
     isPurposeLoading,
     aiResponse,
     handleFormStepUpdate,
+    refreshUsage,
   ])
 
   useEffect(() => {

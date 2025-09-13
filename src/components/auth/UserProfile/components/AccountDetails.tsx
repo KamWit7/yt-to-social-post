@@ -30,13 +30,13 @@ export function AccountDetails({ user, className = '' }: AccountDetailsProps) {
     <div className={`border-t pt-4 ${className}`}>
       <div className='space-y-3'>
         <DetailRow
-          label='Account ID'
+          label='ID konta'
           value={user.id}
           valueClassName='font-mono'
         />
 
         <DetailRow
-          label='Account Type'
+          label='Typ konta'
           value={ACCOUNT_TIER_LABELS[user.accountTier]}
         />
       </div>

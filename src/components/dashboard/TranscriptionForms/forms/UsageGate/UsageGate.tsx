@@ -170,7 +170,7 @@ export function UsageGate({ children }: UsageGateProps) {
               <Button
                 asChild
                 className='w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white'>
-                <Link href={ROUTES.USAGE} onClick={handleSaveState}>
+                <Link href={ROUTES.PROFILE} onClick={handleSaveState}>
                   {USAGE_GATE_TEXT.VIEW_DETAILS_BUTTON}
                 </Link>
               </Button>

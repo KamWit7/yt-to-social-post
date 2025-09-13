@@ -11,12 +11,12 @@ import {
   validateUserSession,
 } from '@/utils/userProfile'
 import { getServerSession } from 'next-auth'
-import { LogoutButton } from '../../common/LogoutButton'
+import { LogoutButton } from '../../common/LogoutButton/LogoutButton'
 import { AccountDetails } from './components/AccountDetails'
 import { EmptySessionCard } from './components/EmptySessionCard'
 import { UserInfo } from './components/UserInfo'
 
-export async function UserProfile() {
+export async function UserProfile({ className }: { className?: string }) {
   const session = await getServerSession(authOptions)
 
   if (!validateUserSession(session)) {
@@ -26,19 +26,26 @@ export async function UserProfile() {
   const userProfile = transformSessionToUserProfile(session)
 
   return (
-    <Card className='w-full max-w-md mx-auto'>
+    <Card className={className}>
       <CardHeader>
-        <CardTitle>User Profile</CardTitle>
-        <CardDescription>Your account information and settings</CardDescription>
+        <CardTitle>Profil użytkownika</CardTitle>
+        <CardDescription>
+          Informacje o Twoim koncie i ustawienia
+        </CardDescription>
       </CardHeader>
 
-      <CardContent className='space-y-6'>
-        <UserInfo user={userProfile} />
+      <CardContent
+        className='space-y-6 flex-1 flex flex-col
+      justify-between
+      '>
+        <div className='space-y-6'>
+          <UserInfo user={userProfile} />
 
-        <AccountDetails user={userProfile} />
+          <AccountDetails user={userProfile} />
+        </div>
 
         <div className='pt-4'>
-          <LogoutButton />
+          <LogoutButton size='sm' variant='outline' />
         </div>
       </CardContent>
     </Card>

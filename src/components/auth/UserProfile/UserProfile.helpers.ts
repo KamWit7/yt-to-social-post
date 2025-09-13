@@ -9,6 +9,6 @@ export interface UserProfileData {
 }
 
 export const ACCOUNT_TIER_LABELS: Record<AccountTier, string> = {
-  free: 'Free Tier',
-  BYOK: 'Bring Your Own Key',
+  free: 'Darmowy',
+  BYOK: 'Własny klucz API',
 } as const

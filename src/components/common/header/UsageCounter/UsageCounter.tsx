@@ -6,16 +6,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { useUsage } from '@/context'
 import { getUserUsageStats } from '@/lib/actions/usage'
 import { getUsageWarningLevel } from '@/lib/usage'
 import { cn } from '@/lib/utils'
 import { ROUTES, UsageLevel } from '@/utils/constants'
 import { AccountTier } from '@prisma/client'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, ChartColumnIncreasing } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { USAGE_COUNTER_CONSTANTS } from '../constants'
 import { UsageCounterLoader } from './components/UsageCounterLoader'
 
@@ -30,12 +31,13 @@ export function UsageCounter() {
   const pathname = usePathname()
 
   const { data: session, status } = useSession()
+  const { registerRefreshHandler } = useUsage()
 
   const [usageStats, setUsageStats] = useState<UsageStats | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [hasError, setHasError] = useState(false)
 
-  const handleGetUsageStats = async () => {
+  const handleGetUsageStats = useCallback(async () => {
     if (isLoading || !session?.user.id) {
       return
     }
@@ -57,16 +59,16 @@ export function UsageCounter() {
       await new Promise((resolve) => setTimeout(resolve, 500))
       setIsLoading(false)
     }
-  }
+  }, [isLoading, session?.user.id])
 
   useEffect(() => {
     handleGetUsageStats()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.user.id])
 
-  if (pathname === ROUTES.USAGE) {
-    return null
-  }
+  useEffect(() => {
+    return registerRefreshHandler(handleGetUsageStats)
+  }, [registerRefreshHandler, handleGetUsageStats])
 
   if (status === 'loading') {
     return <UsageCounterLoader />
@@ -75,9 +77,11 @@ export function UsageCounter() {
   if (!session?.user.id) {
     return null
   }
-  console.log('session.user', session.user)
 
-  if (session.user.usage?.accountTier === AccountTier.BYOK) {
+  if (
+    session.user.usage?.accountTier === AccountTier.BYOK ||
+    pathname === ROUTES.PROFILE
+  ) {
     return null
   }
 
@@ -97,35 +101,15 @@ export function UsageCounter() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant='ghost'
-          size='sm'
-          onClick={handleGetUsageStats}
-          disabled={isLoading}>
-          <div className='relative flex items-center gap-2'>
-            <span
-              className={cn(
-                'text-sm font-semibold transition-colors duration-200',
-                isLoading && 'text-muted-foreground',
-                !isLoading &&
-                  statusLevel === UsageLevel.SAFE &&
-                  'text-green-700 dark:text-green-300',
-                !isLoading &&
-                  statusLevel === UsageLevel.WARNING &&
-                  'text-yellow-700 dark:text-yellow-300',
-                !isLoading &&
-                  statusLevel === UsageLevel.DANGER &&
-                  'text-red-700 dark:text-red-300'
-              )}>
-              {isLoading
-                ? 'Sprawdzanie'
-                : statusLevel === UsageLevel.SAFE
-                ? 'Dostępne'
-                : statusLevel === UsageLevel.WARNING
-                ? 'Ograniczone'
-                : 'Wyczerpane'}
-            </span>
-          </div>
+        <Button variant='ghost' size='sm' disabled={isLoading}>
+          <ChartColumnIncreasing
+            className={cn(
+              'w-6 h-6 transition-transform duration-200 hover:scale-105',
+              statusLevel === UsageLevel.SAFE && 'stroke-green-500',
+              statusLevel === UsageLevel.WARNING && 'stroke-yellow-500',
+              statusLevel === UsageLevel.DANGER && 'stroke-red-500'
+            )}
+          />
         </Button>
       </PopoverTrigger>
 
@@ -136,7 +120,7 @@ export function UsageCounter() {
           <p className='font-medium text-foreground'>
             {USAGE_COUNTER_CONSTANTS.TOOLTIP_TITLE}
           </p>
-          <Link href={ROUTES.USAGE}>
+          <Link href={ROUTES.PROFILE}>
             <p className='text-sm text-muted-foreground leading-relaxed flex items-center gap-2 group hover:text-primary'>
               {USAGE_COUNTER_CONSTANTS.TOOLTIP_DESCRIPTION}
               <ArrowRight className='w-6 h-6 transition-transform duration-200 group-hover:translate-x-1' />

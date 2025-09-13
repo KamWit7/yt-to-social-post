@@ -15,7 +15,7 @@ interface ProfileSkeletonProps {
 
 export function ProfileSkeleton({ className = '' }: ProfileSkeletonProps) {
   return (
-    <Card className={`w-full max-w-md mx-auto ${className}`}>
+    <Card className={className}>
       <CardHeader>
         <CardTitle>
           <Skeleton className='h-6 w-32' />

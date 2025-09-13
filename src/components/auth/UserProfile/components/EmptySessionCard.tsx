@@ -29,11 +29,11 @@ export function EmptySessionCard() {
 
           <div className='space-y-3'>
             <h3 className='text-xl font-semibold text-foreground/90 tracking-tight'>
-              Welcome Back
+              Witamy ponownie
             </h3>
             <p className='text-muted-foreground/80 text-sm leading-relaxed max-w-xs mx-auto'>
-              Sign in to access your personalized dashboard and continue where
-              you left off
+              Zaloguj się, aby uzyskać dostęp do spersonalizowanego pulpitu i
+              kontynuować tam, gdzie skończyłeś
             </p>
           </div>
 
@@ -41,9 +41,9 @@ export function EmptySessionCard() {
             <Link href={ROUTES.LOGIN} className='block'>
               <Button
                 className='w-full group/btn relative overflow-hidden bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] h-11'
-                aria-label='Sign in to your account'>
+                aria-label='Zaloguj się do swojego konta'>
                 <span className='relative z-10 flex items-center justify-center gap-2 font-medium'>
-                  Sign In
+                  Zaloguj się
                   <svg
                     className='w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1'
                     fill='none'
