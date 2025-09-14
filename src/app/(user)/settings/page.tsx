@@ -1,3 +1,4 @@
+import { AnimatedSection } from '@/components/animation'
 import { AdditionalInfo } from '@/components/settings/AdditionalInfo'
 import { ApiKeyForm } from '@/components/settings/ApiKeyForm'
 import { ApiKeyInstructions } from '@/components/settings/ApiKeyInstructions'
@@ -41,12 +42,17 @@ export default async function SettingsPage() {
             przetwarzania
           </CardDescription>
         </CardHeader>
-        <CardContent className='space-y-6'>
-          <ApiKeyForm
-            currentTier={userUsage?.accountTier || AccountTier.free}
-            hasApiKey={!!userUsage?.apiKey}
-          />
-          <AdditionalInfo />
+        <CardContent>
+          <AnimatedSection isVisible>
+            <div className='space-y-6'>
+              <ApiKeyForm
+                currentTier={userUsage?.accountTier || AccountTier.free}
+                hasApiKey={!!userUsage?.apiKey}
+              />
+
+              <AdditionalInfo />
+            </div>
+          </AnimatedSection>
         </CardContent>
       </Card>
     </>

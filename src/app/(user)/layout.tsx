@@ -1,8 +1,9 @@
+'use client'
+
 import { GenericHeader } from '@/components/common/GenericHeader/GenericHeader'
-import { HEADERS_PATH_KEY } from '@/middleware'
 import { ROUTES } from '@/utils/constants'
 import { Settings, User } from 'lucide-react'
-import { headers } from 'next/headers'
+import { usePathname } from 'next/navigation'
 import React from 'react'
 
 function getPageConfig(pathname: string | null) {
@@ -32,13 +33,12 @@ function getPageConfig(pathname: string | null) {
   }
 }
 
-export default async function UserLayout({
+export default function UserLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const headerList = await headers()
-  const pathname = headerList.get(HEADERS_PATH_KEY)
+  const pathname = usePathname()
   const config = getPageConfig(pathname)
 
   return (

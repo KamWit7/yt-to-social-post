@@ -1,12 +1,12 @@
 'use client'
 
 import { Card } from '@/components/ui/card'
-import { Tabs, TabsList } from '@/components/ui/tabs'
+import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs'
 import { AnimatePresence } from 'framer-motion'
 import { Brain, FileText, Sparkles, Youtube } from 'lucide-react'
 import { Fragment, useMemo } from 'react'
 import { TranscriptionForm } from '.'
-import { AnimatedTabContent, DashboardTabTrigger } from './components'
+import { DashboardTabTrigger } from './components'
 import { DASHBOARD_TABS } from './Dashboard.helpers'
 import {
   TranscriptionFormsProvider,
@@ -66,14 +66,14 @@ function DashboardContent() {
 
         <AnimatePresence mode='wait'>
           {tabConfigs.map((tab) => (
-            <AnimatedTabContent key={tab.value} value={tab.value}>
+            <TabsContent key={tab.value} value={tab.value}>
               <TranscriptionForm stepKey={tab.value} />
-            </AnimatedTabContent>
+            </TabsContent>
           ))}
 
-          <AnimatedTabContent value={DASHBOARD_TABS.RESULTS}>
+          <TabsContent value={DASHBOARD_TABS.RESULTS}>
             <TranscriptionResults />
-          </AnimatedTabContent>
+          </TabsContent>
         </AnimatePresence>
       </Tabs>
     </Card>

@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card'
 import { CheckCircle, Copy, ExternalLink } from 'lucide-react'
 import { useState } from 'react'
+import { AnimatedSection } from '../animation'
 
 /**
  * Component providing detailed instructions for obtaining a Google Gemini API key
@@ -40,85 +41,89 @@ export function ApiKeyInstructions({ className }: { className?: string }) {
           nieograniczonego przetwarzania
         </CardDescription>
       </CardHeader>
-      <CardContent className='space-y-6'>
-        {/* Quick Links */}
-        <div className='flex flex-wrap gap-2'>
-          <Button variant='outline' size='sm' asChild>
-            <a
-              href='https://aistudio.google.com/app/apikey'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='flex items-center gap-2'>
-              <ExternalLink className='h-3 w-3' />
-              Google AI Studio
-            </a>
-          </Button>
-          <Button variant='outline' size='sm' asChild>
-            <a
-              href='https://console.cloud.google.com/'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='flex items-center gap-2'>
-              <ExternalLink className='h-3 w-3' />
-              Google Cloud Console
-            </a>
-          </Button>
-        </div>
+      <CardContent>
+        <AnimatedSection isVisible>
+          <div className='space-y-6'>
+            {/* Quick Links */}
+            <div className='flex flex-wrap gap-2'>
+              <Button variant='outline' size='sm' asChild>
+                <a
+                  href='https://aistudio.google.com/app/apikey'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='flex items-center gap-2'>
+                  <ExternalLink className='h-3 w-3' />
+                  Google AI Studio
+                </a>
+              </Button>
+              <Button variant='outline' size='sm' asChild>
+                <a
+                  href='https://console.cloud.google.com/'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='flex items-center gap-2'>
+                  <ExternalLink className='h-3 w-3' />
+                  Google Cloud Console
+                </a>
+              </Button>
+            </div>
 
-        {/* Step-by-step Instructions */}
-        <div className='space-y-4'>
-          <h4 className='font-medium'>Przewodnik krok po kroku:</h4>
+            {/* Step-by-step Instructions */}
+            <div className='space-y-4'>
+              <h4 className='font-medium'>Przewodnik krok po kroku:</h4>
 
-          <div className='space-y-4'>
-            {/* Step 1 */}
-            <InstructionStep
-              number={1}
-              title='Odwiedź Google AI Studio'
-              description='Przejdź do Google AI Studio, aby utworzyć swój klucz API'
-              action={
-                <Button variant='outline' size='sm' asChild>
-                  <a
-                    href='https://aistudio.google.com/app/apikey'
-                    target='_blank'
-                    rel='noopener noreferrer'>
-                    Otwórz AI Studio
-                  </a>
-                </Button>
-              }
-            />
+              <div className='space-y-4'>
+                {/* Step 1 */}
+                <InstructionStep
+                  number={1}
+                  title='Odwiedź Google AI Studio'
+                  description='Przejdź do Google AI Studio, aby utworzyć swój klucz API'
+                  action={
+                    <Button variant='outline' size='sm' asChild>
+                      <a
+                        href='https://aistudio.google.com/app/apikey'
+                        target='_blank'
+                        rel='noopener noreferrer'>
+                        Otwórz AI Studio
+                      </a>
+                    </Button>
+                  }
+                />
 
-            {/* Step 2 */}
-            <InstructionStep
-              number={2}
-              title='Zaloguj się kontem Google'
-              description='Użyj swojego konta Google, aby uzyskać dostęp do AI Studio. Jeśli go nie masz, najpierw utwórz bezpłatne konto Google.'
-            />
+                {/* Step 2 */}
+                <InstructionStep
+                  number={2}
+                  title='Zaloguj się kontem Google'
+                  description='Użyj swojego konta Google, aby uzyskać dostęp do AI Studio. Jeśli go nie masz, najpierw utwórz bezpłatne konto Google.'
+                />
 
-            {/* Step 3 */}
-            <InstructionStep
-              number={3}
-              title='Utwórz klucz API'
-              description='Kliknij przycisk "Utwórz klucz API" i wybierz swój projekt Google Cloud (lub utwórz nowy, jeśli potrzeba).'
-            />
+                {/* Step 3 */}
+                <InstructionStep
+                  number={3}
+                  title='Utwórz klucz API'
+                  description='Kliknij przycisk "Utwórz klucz API" i wybierz swój projekt Google Cloud (lub utwórz nowy, jeśli potrzeba).'
+                />
 
-            {/* Step 4 */}
-            <InstructionStep
-              number={4}
-              title='Skopiuj swój klucz API'
-              description='Po utworzeniu skopiuj klucz API. Powinien zaczynać się od "AIza" i mieć 39 znaków.'
-              copyText='AIzaSyC...'
-              onCopy={() => copyToClipboard('AIzaSyC...', 4)}
-              copied={copiedStep === 4}
-            />
+                {/* Step 4 */}
+                <InstructionStep
+                  number={4}
+                  title='Skopiuj swój klucz API'
+                  description='Po utworzeniu skopiuj klucz API. Powinien zaczynać się od "AIza" i mieć 39 znaków.'
+                  copyText='AIzaSyC...'
+                  onCopy={() => copyToClipboard('AIzaSyC...', 4)}
+                  copied={copiedStep === 4}
+                />
 
-            {/* Step 5 */}
-            <InstructionStep
-              number={5}
-              title='Wklej w ustawieniach'
-              description='Wróć na tę stronę i wklej swój klucz API w formularzu powyżej, aby przejść na poziom BYOK.'
-            />
+                {/* Step 5 */}
+                <InstructionStep
+                  number={5}
+                  title='Wklej w ustawieniach'
+                  description='Wróć na tę stronę i wklej swój klucz API w formularzu powyżej, aby przejść na poziom BYOK.'
+                />
+              </div>
+            </div>
           </div>
-        </div>
+        </AnimatedSection>
       </CardContent>
     </Card>
   )

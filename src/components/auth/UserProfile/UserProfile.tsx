@@ -1,3 +1,4 @@
+import { AnimatedSection } from '@/components/animation'
 import {
   Card,
   CardContent,
@@ -38,15 +39,17 @@ export async function UserProfile({ className }: { className?: string }) {
         className='space-y-6 flex-1 flex flex-col
       justify-between
       '>
-        <div className='space-y-6'>
-          <UserInfo user={userProfile} />
+        <AnimatedSection isVisible>
+          <div className='space-y-6'>
+            <UserInfo user={userProfile} />
 
-          <AccountDetails user={userProfile} />
-        </div>
+            <AccountDetails user={userProfile} />
+          </div>
 
-        <div className='pt-4'>
-          <LogoutButton size='sm' variant='outline' />
-        </div>
+          <div className='pt-4'>
+            <LogoutButton size='sm' variant='outline' />
+          </div>
+        </AnimatedSection>
       </CardContent>
     </Card>
   )

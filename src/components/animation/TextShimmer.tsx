@@ -2,21 +2,25 @@
 
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
+import { usePathname } from 'next/navigation'
 
 interface TextShimmerProps {
-  text: string
+  children: React.ReactNode
   className?: string
   isLoading?: boolean
 }
 
 export default function TextShimmer({
-  text,
+  children,
   className = '',
   isLoading = false,
 }: TextShimmerProps) {
+  const pathname = usePathname()
+
   return (
     <motion.h1
-      className={`relative overflow-hidden inline-block ${className}`}
+      key={pathname}
+      className={`relative overflow-hidden inline-block text-4xl font-bold text-gray-800 dark:text-white ${className}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
@@ -24,7 +28,7 @@ export default function TextShimmer({
         ease: 'easeOut',
         delay: 0.2,
       }}>
-      {text}
+      {children}
       <motion.div
         className={cn(
           isLoading ? 'absolute' : 'hidden',

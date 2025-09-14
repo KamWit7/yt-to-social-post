@@ -1,3 +1,4 @@
+import { TextShimmer } from '@/components/animation'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/utils/constants'
 import { ArrowLeft, LucideIcon } from 'lucide-react'
@@ -44,9 +45,7 @@ export function GenericHeader({
         </div>
 
         <div className='space-y-2'>
-          <h1 className='text-4xl font-bold bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent'>
-            {title}
-          </h1>
+          <TextShimmer>{title}</TextShimmer>
           <p className='text-lg text-muted-foreground/80 leading-relaxed'>
             {description}
           </p>

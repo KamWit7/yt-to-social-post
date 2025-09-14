@@ -1,3 +1,4 @@
+import InitialTransition from '@/components/animation/InitialTransition'
 import Footer from '@/components/common/Footer'
 import Header from '@/components/common/Header'
 import { QueryProvider } from '@/components/provider/QueryProvider'
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     'Wklej link do filmu z YouTube, aby uzyskać automatyczną transkrypcję, streszczenie i listę poruszanych tematów.',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
@@ -37,11 +38,14 @@ export default function RootLayout({
             <UsageProvider>
               <div
                 className='bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 font-sans
-              flex flex-col min-h-screen min-h-dvh'>
+              flex flex-col min-h-screen'>
                 <Header />
+
                 <main className='p-4 md:p-8 flex-1'>{children}</main>
                 <Footer />
               </div>
+
+              <InitialTransition />
             </UsageProvider>
           </QueryProvider>
         </SessionProvider>
