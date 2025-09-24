@@ -76,4 +76,5 @@ export const ROUTES = {
   DASHBOARD: '/',
   PROFILE: '/profile',
   SETTINGS: '/settings',
+  CHAT: '/chat',
 } as const

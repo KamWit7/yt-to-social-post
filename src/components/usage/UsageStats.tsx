@@ -200,27 +200,15 @@ export async function UsageStats({ className }: { className?: string }) {
                     : 'text-green-500'
                 )}
               />
-              <div className='flex-1 space-y-2'>
-                <p className='text-sm text-muted-foreground'>
-                  {!isFreeAccount
-                    ? 'Masz nieograniczone użycie dzięki własnemu kluczowi API. Twórz bez limitów!'
-                    : status.level === UsageLevel.DANGER
-                    ? 'Osiągnąłeś swój limit użycia. Rozważ upgrade planu i uzyskaj nieograniczone podsumowania z własnym kluczem.'
-                    : status.level === UsageLevel.WARNING
-                    ? 'Zbliżasz się do swojego limitu użycia. Monitoruj pozostałe podsumowania.'
-                    : 'Jesteś w granicach swoich limitów użycia. Kontynuuj tworzenie podsumowań!'}
-                </p>
-                {isFreeAccount && status.level === UsageLevel.DANGER && (
-                  <Link href={ROUTES.SETTINGS}>
-                    <Button
-                      size='sm'
-                      className='mt-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-md hover:shadow-lg transition-all duration-300'>
-                      <Crown className='w-4 h-4 mr-2' />
-                      Przejdź na BYOK
-                    </Button>
-                  </Link>
-                )}
-              </div>
+              <p className='text-sm text-muted-foreground'>
+                {!isFreeAccount
+                  ? 'Masz nieograniczone użycie dzięki własnemu kluczowi API. Twórz bez limitów!'
+                  : status.level === UsageLevel.DANGER
+                  ? 'Osiągnąłeś swój limit użycia. Rozważ upgrade planu i uzyskaj nieograniczone podsumowania z własnym kluczem.'
+                  : status.level === UsageLevel.WARNING
+                  ? 'Zbliżasz się do swojego limitu użycia. Monitoruj pozostałe podsumowania.'
+                  : 'Jesteś w granicach swoich limitów użycia. Kontynuuj tworzenie podsumowań!'}
+              </p>
             </div>
           </div>
         </AnimatedSection>

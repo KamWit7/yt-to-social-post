@@ -1,10 +1,5 @@
 import { cn } from '@/lib/utils'
 
-/**
- * Footer component with social links and enhanced visual design
- * Features a lower profile design with strategic use of negative space
- * and micro-interactions for better user engagement
- */
 export default function Footer({ className }: { className?: string }) {
   return (
     <footer
