@@ -1,6 +1,10 @@
+import {
+  AIProcessingV2Error,
+  AIProcessingV2Response,
+} from '@/api/hooks/useAIProcessingV2'
+import { ApiResponse } from '@/types'
 import z from 'zod'
 import { PurposeOnlyFormData } from './TranscriptionForms/types/formTypes'
-import { ApiResponse, AIProcessingResponse } from '@/types'
 
 export const TRANSCRIPTION_FORMS_STORAGE_KEY = 'transcriptionForms'
 
@@ -24,7 +28,10 @@ export interface FormStepsState {
   [DASHBOARD_TABS.YOUTUBE]?: string
   [DASHBOARD_TABS.TRANSCRIPT]?: string
   [DASHBOARD_TABS.PURPOSE]?: PurposeOnlyFormData
-  [DASHBOARD_TABS.RESULTS]?: ApiResponse<AIProcessingResponse>
+  [DASHBOARD_TABS.RESULTS]?: ApiResponse<
+    AIProcessingV2Response,
+    AIProcessingV2Error
+  >
 }
 
 export interface StepCompleted {

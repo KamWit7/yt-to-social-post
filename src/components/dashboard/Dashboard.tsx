@@ -2,16 +2,14 @@
 
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Brain, FileText, Sparkles, Youtube } from 'lucide-react'
-import { Fragment, useMemo } from 'react'
+import { useMemo } from 'react'
 import { TranscriptionForm } from '.'
+import { TextShimmer } from '../animation'
 import { DashboardTabTrigger } from './components'
 import { DASHBOARD_TABS } from './Dashboard.helpers'
-import {
-  TranscriptionFormsProvider,
-  useTranscriptionForms,
-} from './TranscriptionForms/context'
+import { useTranscriptionForms } from './TranscriptionForms/context'
 import TranscriptionResults from './TranscriptionResults/TranscriptionResults'
 
 function DashboardContent() {
@@ -80,20 +78,38 @@ function DashboardContent() {
   )
 }
 
-export default function Dashboard({
-  isLoading,
-  setIsLoading,
-}: {
-  isLoading: boolean
-  setIsLoading: (isLoading: boolean) => void
-}) {
+export default function Dashboard() {
+  const { isLoading, activeTab } = useTranscriptionForms()
+
+  const isResultsTab = activeTab === DASHBOARD_TABS.RESULTS
+
   return (
-    <Fragment>
-      <TranscriptionFormsProvider
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}>
-        <DashboardContent />
-      </TranscriptionFormsProvider>
-    </Fragment>
+    <motion.div
+      className={`mx-auto`}
+      initial={{
+        maxWidth: '56rem', // equivalent to max-w-4xl (896px)
+      }}
+      animate={{
+        maxWidth: isResultsTab ? '100%' : '56rem',
+        width: isResultsTab ? '100%' : 'auto',
+      }}
+      transition={{
+        duration: 0.3,
+        ease: 'easeInOut',
+      }}>
+      <div className='text-center my-10 md:my-12'>
+        <TextShimmer
+          className='text-4xl md:text-6xl font-bold mb-4 text-gray-800 dark:text-white'
+          isLoading={isLoading}>
+          Analiza wideo z AI.
+        </TextShimmer>
+        <p className='max-w-2xl mx-auto text-lg md:text-xl text-gray-600 dark:text-gray-400'>
+          Wklej link do filmu z YouTube, aby uzyskać automatyczną transkrypcję,
+          streszczenie i listę poruszanych tematów.
+        </p>
+      </div>
+
+      <DashboardContent />
+    </motion.div>
   )
 }

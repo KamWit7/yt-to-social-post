@@ -9,10 +9,10 @@ export interface MindMapNodeData {
   originalValue?: unknown
 }
 
-export interface ApiResponse<T> {
+export interface ApiResponse<T, E = string> {
   success: boolean
   data?: T
-  error?: string
+  error?: E
   details?: string
 }
 

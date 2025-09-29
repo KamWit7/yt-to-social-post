@@ -7,7 +7,7 @@ import { ANIMATION_DELAYS } from '../../components/Section.helpers'
 import { FORM_FIELD_NAMES } from '../../constants/formConstants'
 
 interface ConditionalOptionsProps {
-  purpose: string
+  purpose?: string
 }
 
 export function ConditionalOptions({ purpose }: ConditionalOptionsProps) {

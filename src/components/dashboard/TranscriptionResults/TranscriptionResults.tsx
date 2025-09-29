@@ -1,149 +1,149 @@
 'use client'
 
-import { CopyButton } from '@/components/common'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { AIProcessingResponse, ApiResponse } from '@/types'
+import {
+  AIProcessingV2Response,
+  isAnyPurposeLoading,
+  isAnyPurposeSuccess,
+} from '@/api/hooks/useAIProcessingV2'
+import { Dictionary } from '@/app/api/dictionaries'
+import { AILoadingAnimation } from '@/components/animation'
+import { useUsage } from '@/context'
+import { trackUserUsage } from '@/lib/actions/usage'
+import { MindMapData } from '@/types'
 import { FileText, Hash, MessageSquare } from 'lucide-react'
+import { useEffect, useMemo } from 'react'
 import { DASHBOARD_TABS } from '../Dashboard.helpers'
 import { useTranscriptionForms } from '../TranscriptionForms/context'
-import { MindMapCard } from './components'
+import { ResultCard } from './components'
+
+// Helper function to extract data from AIProcessingV2Response record
+function extractDataFromResponse(response?: AIProcessingV2Response) {
+  const result: {
+    summary?: string
+    topics?: string
+    socialPost?: string
+    customOutput?: string
+    mindMap?: MindMapData | Record<string, unknown>
+  } = {}
+
+  if (!response) {
+    return result
+  }
+
+  Object.entries(response).forEach(([key, value]) => {
+    switch (key) {
+      case Dictionary.Purpose.Summary:
+        result.summary = value
+        break
+      case Dictionary.Purpose.Topics:
+        result.topics = value
+        break
+      case Dictionary.Purpose.SocialMedia:
+        result.socialPost = value
+        break
+      case Dictionary.Purpose.Custom:
+        result.customOutput = value
+        break
+      default:
+        break
+    }
+  })
+
+  return result
+}
 
 export default function TranscriptionResults() {
-  const { formStepsState } = useTranscriptionForms()
-  const data = formStepsState[DASHBOARD_TABS.RESULTS] as
-    | ApiResponse<AIProcessingResponse>
-    | undefined
+  const { formStepsState, handleLoadingStateChange, aiProcessing } =
+    useTranscriptionForms()
 
-  const error =
-    data && !data.success ? new Error(data.error || 'Unknown error') : null
+  const { refreshUsage } = useUsage()
 
-  if (error) {
-    return (
-      <Card className='border-destructive'>
-        <CardContent className='pt-6'>
-          <div className='text-center text-destructive'>
-            <p className='font-medium'>Wystąpił błąd podczas przetwarzania</p>
-            <p className='text-sm mt-1'>{error?.message}</p>
-          </div>
-        </CardContent>
-      </Card>
-    )
+  const purposeData = useMemo(
+    () => formStepsState[DASHBOARD_TABS.PURPOSE],
+    [formStepsState]
+  )
+
+  const {
+    isLoading: aiLoading,
+    isSuccess: aiSuccess,
+    response: aiResponse,
+    error: aiError,
+  } = aiProcessing
+
+  useEffect(() => {
+    if (!isAnyPurposeLoading(aiLoading) && isAnyPurposeSuccess(aiSuccess)) {
+      trackUserUsage()
+      refreshUsage()
+    }
+  }, [aiSuccess, aiLoading, refreshUsage])
+
+  useEffect(() => {
+    handleLoadingStateChange(isAnyPurposeLoading(aiLoading))
+  }, [aiLoading, handleLoadingStateChange])
+
+  if (isAnyPurposeLoading(aiLoading) && !aiResponse) {
+    return <AILoadingAnimation />
   }
 
-  if (!data || !data.success || !data.data) {
-    return (
-      <Card className='border-muted'>
-        <CardContent className='pt-6'>
-          <div className='text-center text-muted-foreground'>
-            <p className='font-medium'>Brak wyników przetwarzania</p>
-            <p className='text-sm mt-1'>
-              Przetworz swój transkrypt w zakładce &quot;Cel&quot;, aby zobaczyć
-              wyniki
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-    )
-  }
+  const extractedData = extractDataFromResponse(aiResponse)
+  console.log('extractedData', extractedData)
 
   return (
-    <div className='space-y-6'>
-      {/* Streszczenie */}
-      {data.data.summary && (
-        <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
-          <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <FileText className='w-5 h-5' />
-              Streszczenie
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className='flex justify-between items-start gap-4'>
-              <p className='text-sm leading-7 flex-1'>{data.data.summary}</p>
-              <CopyButton
-                text={data.data.summary || ''}
-                className='shrink-0'
-                aria-label='Kopiuj streszczenie'
-              />
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Tematy */}
-      {data.data.topics && (
-        <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
-          <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <Hash className='w-5 h-5' />
-              Kluczowe tematy
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className='flex justify-between items-start gap-4'>
-              <div className='flex-1 whitespace-pre-line text-sm leading-7'>
-                {data.data.topics}
-              </div>
-              <CopyButton
-                text={data.data.topics || ''}
-                className='shrink-0'
-                aria-label='Kopiuj tematy'
-              />
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Mapa myśli */}
-      {data.data.mindMap && <MindMapCard mindMap={data.data.mindMap} />}
+    <div className='flex flex-row gap-4'>
+      <div className='flex flex-col gap-4 w-full lg:w-lg'>
+        <ResultCard
+          sectionName='Kluczowe tematy'
+          title='Kluczowe tematy'
+          content={extractedData.topics || ''}
+          icon={Hash}
+          purpose={Dictionary.Purpose.Topics}
+          aiErrors={aiError}
+          ariaLabel='Kopiuj tematy'
+          purposeData={purposeData}
+          aiLoading={aiLoading}
+          className='flex-0 min-h-[400px]'
+        />
+        <ResultCard
+          sectionName='Streszczenie'
+          title='Streszczenie'
+          content={extractedData.summary || ''}
+          icon={FileText}
+          purpose={Dictionary.Purpose.Summary}
+          aiErrors={aiError}
+          ariaLabel='Kopiuj streszczenie'
+          purposeData={purposeData}
+          aiLoading={aiLoading}
+          className='max-h-[calc(500px-16px)]'
+        />
+      </div>
 
       {/* Post na social media */}
-      {data.data.socialPost && (
-        <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
-          <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <MessageSquare className='w-5 h-5' />
-              Post na social media
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className='flex justify-between items-start gap-4'>
-              <div className='flex-1 whitespace-pre-line text-sm leading-7'>
-                {data.data.socialPost}
-              </div>
-              <CopyButton
-                text={data.data.socialPost || ''}
-                className='shrink-0'
-                aria-label='Kopiuj post na social media'
-              />
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <ResultCard
+        sectionName='Post na social media'
+        title='Post na social media'
+        content={extractedData.socialPost || ''}
+        icon={MessageSquare}
+        purpose={Dictionary.Purpose.SocialMedia}
+        aiErrors={aiError}
+        ariaLabel='Kopiuj post na social media'
+        purposeData={purposeData}
+        aiLoading={aiLoading}
+        className='max-h-[500px]'
+      />
 
       {/* Własne polecenie */}
-      {data.data.customOutput && (
-        <Card className='border border-border/60 shadow-sm hover:shadow-md transition-shadow'>
-          <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <FileText className='w-5 h-5' />
-              Wynik własnego polecenia
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className='flex justify-between items-start gap-4'>
-              <div className='flex-1 whitespace-pre-line text-sm leading-7'>
-                {data.data.customOutput}
-              </div>
-              <CopyButton
-                text={data.data.customOutput || ''}
-                className='shrink-0'
-                aria-label='Kopiuj wynik własnego polecenia'
-              />
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <ResultCard
+        sectionName='Wynik własnego polecenia'
+        title='Wynik własnego polecenia'
+        content={extractedData.customOutput || ''}
+        icon={FileText}
+        purpose={Dictionary.Purpose.Custom}
+        aiErrors={aiError}
+        ariaLabel='Kopiuj wynik własnego polecenia'
+        purposeData={purposeData}
+        aiLoading={aiLoading}
+        className='max-h-[900px]'
+      />
     </div>
   )
 }

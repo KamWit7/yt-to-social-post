@@ -1,0 +1,28 @@
+export const getPrompt = (
+  transcript?: string,
+  language?: string
+) => `Your task is to analyze the following transcript and create a concise summary in the specified language. 
+Here is the transcript:
+
+<transcript>
+${transcript}
+</transcript>
+
+<language>
+${language}
+</language>
+
+Carefully read the above transcript and create a concise summary in the specified language that:
+
+1.  Consists of 100-200 words
+2.  Contains the main points and key information from the transcript
+3.  Is clear and concise, without unnecessary details
+
+When creating the summary, focus on:
+
+* The main topic or purpose of the conversation/presentation
+* The most important points or arguments discussed
+* Key conclusions or outcomes (if present)
+
+Your final summary should be concise yet informative, capturing the essence of the original transcript.
+Your response should contain only this summary, without any additional comments or explanations.`

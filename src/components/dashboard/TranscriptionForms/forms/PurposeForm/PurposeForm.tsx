@@ -1,30 +1,26 @@
 'use client'
 
-import { useAIProcessing } from '@/api/hooks/useAIProcessing'
 import { useDictionary } from '@/api/hooks/useDictionary'
 import { DictionaryCode } from '@/api/services/dictionaryService'
-import { AILoadingAnimation, AnimatedSection } from '@/components/animation'
+import { AnimatedSection } from '@/components/animation'
 import { ControlledSelect, SubmitButton } from '@/components/common'
 import SectionHeader from '@/components/ui/SectionHeader'
-import { useUsage } from '@/context'
-import {
-  AIModels,
-  DEFAULT_AI_MODEL,
-  DEFAULT_LANGUAGE,
-  type AIProcessingRequest,
-} from '@/types'
+import { AIModels, DEFAULT_AI_MODEL, DEFAULT_LANGUAGE } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Sparkles } from 'lucide-react'
-import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
-import { getUserApiKey, trackUserUsage } from '@/lib/actions/usage'
+import { Dictionary } from '@/app/api/dictionaries'
+import { ProcessTranscriptRequest } from '@/app/api/result/ai.validations'
 import { DASHBOARD_TABS } from '../../../Dashboard.helpers'
 import {
   ANIMATION_DELAYS,
   BUTTON_STYLES,
 } from '../../components/Section.helpers'
-import { FORM_FIELD_NAMES } from '../../constants/formConstants'
+import {
+  DEFAULT_PURPOSE,
+  FORM_FIELD_NAMES,
+} from '../../constants/formConstants'
 import { useTranscriptionForms } from '../../context'
 import type { PurposeOnlyFormData } from '../../types/formTypes'
 import { ConditionalOptions } from './ConditionalOptions'
@@ -36,13 +32,10 @@ export function PurposeForm() {
     formStepsState,
     handleStepComplete,
     handleTabChange,
-    handleLoadingStateChange,
     handleFormStepUpdate,
+    aiProcessing,
   } = useTranscriptionForms()
 
-  const { refreshUsage } = useUsage()
-
-  const transcript = formStepsState[DASHBOARD_TABS.TRANSCRIPT] || ''
   const existingPurposeData = formStepsState[DASHBOARD_TABS.PURPOSE]
 
   const { data: purposeDict, isLoading: isPurposeLoading } = useDictionary(
@@ -60,13 +53,6 @@ export function PurposeForm() {
     ? languageDict.data.map((item) => ({ label: item.label, value: item.code }))
     : []
 
-  const {
-    mutate: processAI,
-    isPending: isAIProcessing,
-    isSuccess,
-    data: aiResponse,
-  } = useAIProcessing(transcript)
-
   const localMethods = useForm<PurposeOnlyFormData>({
     resolver: zodResolver(purposeSchema),
     mode: 'onChange',
@@ -78,57 +64,35 @@ export function PurposeForm() {
   const purpose = watch(FORM_FIELD_NAMES.PURPOSE)
 
   const onFormSubmit = async (data: PurposeOnlyFormData) => {
-    const rawPrompt = data.customPrompt ?? ''
-
-    const { apiKey, success } = await getUserApiKey()
-
-    console.log('apiKey', apiKey, success)
-
-    const completeData: AIProcessingRequest = {
-      transcript,
-      apiKey: success ? apiKey : null,
-      purpose: data.purpose,
-      language: data.language || DEFAULT_LANGUAGE,
-      customPrompt: rawPrompt.trim(),
-      model: data.model || DEFAULT_AI_MODEL,
-    }
-
-    // Save form data to state
     handleFormStepUpdate(DASHBOARD_TABS.PURPOSE, data)
-
-    processAI(completeData)
-  }
-
-  useEffect(() => {
-    if (!isSuccess || isPurposeLoading || !aiResponse) {
-      return
-    }
-
-    // Save AI response to state
-    handleFormStepUpdate(DASHBOARD_TABS.RESULTS, aiResponse)
 
     handleStepComplete(DASHBOARD_TABS.PURPOSE)
     handleStepComplete(DASHBOARD_TABS.RESULTS)
     handleTabChange(DASHBOARD_TABS.RESULTS)
 
-    trackUserUsage()
-    refreshUsage()
-  }, [
-    isSuccess,
-    handleStepComplete,
-    handleTabChange,
-    isPurposeLoading,
-    aiResponse,
-    handleFormStepUpdate,
-    refreshUsage,
-  ])
+    const { processTranscript } = aiProcessing
 
-  useEffect(() => {
-    handleLoadingStateChange(isAIProcessing)
-  }, [isAIProcessing, handleLoadingStateChange])
+    const completeData: ProcessTranscriptRequest = {
+      transcript: formStepsState[DASHBOARD_TABS.TRANSCRIPT] || '',
+      purpose: data.purpose || DEFAULT_PURPOSE,
+      language: data.language || DEFAULT_LANGUAGE,
+      customPrompt: data.customPrompt || '',
+      model: data.model || DEFAULT_AI_MODEL,
+    }
 
-  if (isAIProcessing) {
-    return <AILoadingAnimation />
+    const fetchData = async () => {
+      try {
+        await Promise.all([
+          processTranscript(completeData.purpose, completeData),
+          processTranscript(Dictionary.Purpose.Summary, completeData),
+          processTranscript(Dictionary.Purpose.Topics, completeData),
+        ])
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
+
+    await fetchData()
   }
 
   return (
@@ -147,7 +111,6 @@ export function PurposeForm() {
             />
 
             <div className='space-y-8'>
-              {/* Enhanced Selector Section with Visual Hierarchy */}
               <div className='bg-gradient-to-br from-white/5 to-purple-50/10 backdrop-blur-sm rounded-xl border-2 border-gray-200 dark:border-gray-700 p-6'>
                 <div className='mb-4'>
                   <h3 className='text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2 flex items-center gap-2'>
@@ -160,7 +123,6 @@ export function PurposeForm() {
                 </div>
 
                 <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
-                  {/* Purpose Selector */}
                   <div className='space-y-2'>
                     <ControlledSelect
                       name={FORM_FIELD_NAMES.PURPOSE}
@@ -173,7 +135,6 @@ export function PurposeForm() {
                     />
                   </div>
 
-                  {/* Language Selector */}
                   <div className='space-y-2'>
                     <ControlledSelect
                       name={FORM_FIELD_NAMES.LANGUAGE}
@@ -186,7 +147,6 @@ export function PurposeForm() {
                     />
                   </div>
 
-                  {/* Model Selector */}
                   <div className='space-y-2'>
                     <ControlledSelect
                       name={FORM_FIELD_NAMES.MODEL}
@@ -217,7 +177,6 @@ export function PurposeForm() {
 
               <SubmitButton
                 disabled={!purpose}
-                isLoading={isAIProcessing}
                 loadingText='Przetwarzam...'
                 normalText='Przetwórz z AI'
                 icon={Sparkles}

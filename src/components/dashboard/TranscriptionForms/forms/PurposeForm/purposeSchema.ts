@@ -1,3 +1,4 @@
+import { Dictionary } from '@/app/api/dictionaries'
 import { AIModels, DEFAULT_AI_MODEL } from '@/types'
 import { z } from 'zod'
 import {
@@ -7,7 +8,12 @@ import {
 
 export const purposeSchema = z
   .object({
-    [FORM_FIELD_NAMES.PURPOSE]: z.string().min(1, 'Wybierz cel transkrypcji'),
+    [FORM_FIELD_NAMES.PURPOSE]: z
+      .enum(Object.values(Dictionary.Purpose))
+      .default(DEFAULT_PURPOSE)
+      .refine((val) => val && val.trim().length > 0, {
+        message: 'Wybierz cel transkrypcji',
+      }),
     [FORM_FIELD_NAMES.LANGUAGE]: z.enum(['pl', 'en']).default('pl'),
     [FORM_FIELD_NAMES.CUSTOM_PROMPT]: z.string().trim(),
     [FORM_FIELD_NAMES.MODEL]: z

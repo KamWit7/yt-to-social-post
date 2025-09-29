@@ -1,4 +1,6 @@
+export { ErrorSectionHandler } from './ErrorSectionHandler'
 export { default as MindMapCard } from './MindMapCard/MindMapCard'
+export { default as ResultCard } from './ResultCard'
 export { default as SummaryCard } from './SummaryCard'
 export { default as TopicsCard } from './TopicsCard'
 export { default as TranscriptCard } from './TranscriptCard'

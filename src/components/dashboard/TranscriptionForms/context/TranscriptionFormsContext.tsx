@@ -1,5 +1,14 @@
 'use client'
 
+import {
+  AIProcessingV2Error,
+  AIProcessingV2Loading,
+  AIProcessingV2Response,
+  AIProcessingV2Success,
+  useAIProcessingV2,
+} from '@/api/hooks/useAIProcessingV2'
+import { PurposeValue } from '@/app/api/dictionaries'
+import { ProcessTranscriptRequest } from '@/app/api/result/ai.validations'
 import { getStateFromSessionStorage } from '@/utils/sessionStorage'
 import {
   createContext,
@@ -36,6 +45,19 @@ export interface TranscriptionFormsContextType {
     step: T,
     data: FormStepsState[T]
   ) => void
+
+  // AI Processing
+  aiProcessing: {
+    isLoading?: AIProcessingV2Loading
+    isSuccess?: AIProcessingV2Success
+    response?: AIProcessingV2Response
+    error?: AIProcessingV2Error
+    processTranscript: (
+      purpose: PurposeValue,
+      data: ProcessTranscriptRequest
+    ) => Promise<void>
+    reset: () => void
+  }
 }
 
 const TranscriptionFormsContext = createContext<
@@ -44,15 +66,13 @@ const TranscriptionFormsContext = createContext<
 
 export interface TranscriptionFormsProviderProps {
   children: ReactNode
-  isLoading: boolean
-  setIsLoading: (isLoading: boolean) => void
 }
 
 export function TranscriptionFormsProvider({
   children,
-  isLoading,
-  setIsLoading,
 }: TranscriptionFormsProviderProps) {
+  const [isLoading, setIsLoading] = useState(false)
+
   // Removed separate states - now using formStepsState
   const [formStepsState, setFormStepsState] = useState<FormStepsState>({
     [DASHBOARD_TABS.YOUTUBE]: undefined,
@@ -161,6 +181,15 @@ export function TranscriptionFormsProvider({
     setActiveTab(value as DashboardTab)
   }, [])
 
+  const {
+    processTranscript,
+    isLoading: aiLoading,
+    isSuccess: aiSuccess,
+    response: aiResponse,
+    error: aiError,
+    reset,
+  } = useAIProcessingV2()
+
   const contextValue: TranscriptionFormsContextType = {
     formStepsState,
     activeTab,
@@ -173,6 +202,14 @@ export function TranscriptionFormsProvider({
     handleLoadingStateChange,
     handleTranscriptUpdate,
     handleFormStepUpdate,
+    aiProcessing: {
+      isLoading: aiLoading,
+      isSuccess: aiSuccess,
+      response: aiResponse,
+      error: aiError,
+      processTranscript,
+      reset,
+    },
   }
 
   return (
