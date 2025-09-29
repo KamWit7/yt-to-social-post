@@ -75,11 +75,9 @@ export default function ResultCard({
     return null
   }
 
-  // Find the specific error and loading state for this purpose
   const aiError = aiErrors?.[purpose as PurposeValue]
   const isLoading = aiLoading?.[purpose as PurposeValue]
 
-  console.log('content', content)
   return (
     <ErrorSectionHandler
       sectionName={sectionName}
@@ -87,26 +85,27 @@ export default function ResultCard({
       isLoading={isLoading}>
       <Card
         className={cn(
-          `border border-border/60 shadow-sm hover:shadow-md transition-shadow flex-1 overflow-y-auto ${
+          `border border-border/60 shadow-sm hover:shadow-md transition-shadow flex-1 overflow-x-auto ${
             className || ''
           }`
         )}>
         <CardHeader>
-          <CardTitle className='flex items-center gap-2'>
-            <Icon className='w-5 h-5' />
-            {title}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className='flex justify-between items-start gap-4'>
-            <div className='flex-1'>
-              <MarkdownParser text={content || ''}/>
-            </div>
+          <div className='flex justify-between items-center gap-4'>
+            <CardTitle className='flex items-center gap-2'>
+              <Icon className='w-5 h-5' />
+              {title}
+            </CardTitle>
+
             <CopyButton
               text={content || ''}
               className='shrink-0'
               aria-label={ariaLabel}
             />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className='max-w-fit'>
+            <MarkdownParser text={content || ''} />
           </div>
         </CardContent>
       </Card>

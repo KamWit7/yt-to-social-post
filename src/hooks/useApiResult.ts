@@ -109,8 +109,9 @@ export function useApiResult(): UseApiResultReturn {
                 result += parsed.text
                 setResponse(result)
               }
-            } catch (e) {
+            } catch (error) {
               // Ignore parsing errors for malformed JSON
+              console.error('Parsing error:', error)
             }
           }
         }

@@ -86,10 +86,9 @@ export default function TranscriptionResults() {
   }
 
   const extractedData = extractDataFromResponse(aiResponse)
-  console.log('extractedData', extractedData)
 
   return (
-    <div className='flex flex-row gap-4'>
+    <div className='flex flex-row gap-4 sm:flex-col lg:flex-row'>
       <div className='flex flex-col gap-4 w-full lg:w-lg'>
         <ResultCard
           sectionName='Kluczowe tematy'
@@ -117,7 +116,6 @@ export default function TranscriptionResults() {
         />
       </div>
 
-      {/* Post na social media */}
       <ResultCard
         sectionName='Post na social media'
         title='Post na social media'
@@ -128,10 +126,9 @@ export default function TranscriptionResults() {
         ariaLabel='Kopiuj post na social media'
         purposeData={purposeData}
         aiLoading={aiLoading}
-        className='max-h-[500px]'
+        className='max-h-[500px] w-lg'
       />
 
-      {/* Własne polecenie */}
       <ResultCard
         sectionName='Wynik własnego polecenia'
         title='Wynik własnego polecenia'

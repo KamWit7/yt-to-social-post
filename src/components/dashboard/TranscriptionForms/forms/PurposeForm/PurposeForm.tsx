@@ -1,7 +1,5 @@
 'use client'
 
-import { useDictionary } from '@/api/hooks/useDictionary'
-import { DictionaryCode } from '@/api/services/dictionaryService'
 import { AnimatedSection } from '@/components/animation'
 import { ControlledSelect, SubmitButton } from '@/components/common'
 import SectionHeader from '@/components/ui/SectionHeader'
@@ -10,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Sparkles } from 'lucide-react'
 import { FormProvider, useForm } from 'react-hook-form'
 
-import { Dictionary } from '@/app/api/dictionaries'
+import { Dictionary, DictionaryDisplay } from '@/app/api/dictionaries'
 import { ProcessTranscriptRequest } from '@/app/api/result/ai.validations'
 import { DASHBOARD_TABS } from '../../../Dashboard.helpers'
 import {
@@ -38,20 +36,15 @@ export function PurposeForm() {
 
   const existingPurposeData = formStepsState[DASHBOARD_TABS.PURPOSE]
 
-  const { data: purposeDict, isLoading: isPurposeLoading } = useDictionary(
-    DictionaryCode.Purpose
-  )
-  const { data: languageDict, isLoading: isLanguageLoading } = useDictionary(
-    DictionaryCode.Language
-  )
+  const purposeOptions = DictionaryDisplay.Purpose.map((item) => ({
+    label: item.label,
+    value: item.code,
+  }))
 
-  const purposeOptions = Array.isArray(purposeDict?.data)
-    ? purposeDict.data.map((item) => ({ label: item.label, value: item.code }))
-    : []
-
-  const languageOptions = Array.isArray(languageDict?.data)
-    ? languageDict.data.map((item) => ({ label: item.label, value: item.code }))
-    : []
+  const languageOptions = DictionaryDisplay.Language.map((item) => ({
+    label: item.label,
+    value: item.code,
+  }))
 
   const localMethods = useForm<PurposeOnlyFormData>({
     resolver: zodResolver(purposeSchema),
@@ -70,7 +63,7 @@ export function PurposeForm() {
     handleStepComplete(DASHBOARD_TABS.RESULTS)
     handleTabChange(DASHBOARD_TABS.RESULTS)
 
-    const { processTranscript } = aiProcessing
+    const { processTranscript, reset } = aiProcessing
 
     const completeData: ProcessTranscriptRequest = {
       transcript: formStepsState[DASHBOARD_TABS.TRANSCRIPT] || '',
@@ -79,6 +72,8 @@ export function PurposeForm() {
       customPrompt: data.customPrompt || '',
       model: data.model || DEFAULT_AI_MODEL,
     }
+    
+    reset()
 
     const fetchData = async () => {
       try {
@@ -128,7 +123,7 @@ export function PurposeForm() {
                       name={FORM_FIELD_NAMES.PURPOSE}
                       label='📝 Typ treści'
                       placeholder='Wybierz cel...'
-                      disabled={isPurposeLoading}
+                      disabled={false}
                       required
                       options={purposeOptions}
                       className='w-full'
@@ -140,7 +135,7 @@ export function PurposeForm() {
                       name={FORM_FIELD_NAMES.LANGUAGE}
                       label='🌍 Język'
                       placeholder='Wybierz język...'
-                      disabled={isLanguageLoading}
+                      disabled={false}
                       required
                       options={languageOptions}
                       className='w-full'
