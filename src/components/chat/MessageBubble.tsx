@@ -47,7 +47,7 @@ export function MessageBubble({
           </p>
         ) : (
           <div>
-            <MarkdownParser>{message.content}</MarkdownParser>
+            <MarkdownParser text={message.content} />
             {isStreaming && (
               <div className='inline-flex items-center gap-1 mt-1 sm:mt-2'>
                 <div className='w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full animate-pulse' />

@@ -1,13 +1,17 @@
 'use client'
 
-import { Dictionary, DictionaryDisplay } from '@/app/api/dictionaries'
+import {
+  Dictionary,
+  DictionaryDisplay,
+  PurposeValue,
+} from '@/app/api/dictionaries'
 import { AIModels, DEFAULT_AI_MODEL } from '@/types'
 import { useState } from 'react'
 
 export default function DemoPage() {
   const [formData, setFormData] = useState({
     transcript: '',
-    purpose: Dictionary.Purpose.SocialMedia,
+    purpose: Dictionary.Purpose.SocialMedia as PurposeValue,
     language: 'pl' as 'pl' | 'en',
     customPrompt: '',
     model: DEFAULT_AI_MODEL,
@@ -73,7 +77,7 @@ export default function DemoPage() {
                 result += parsed.text
                 setResponse(result)
               }
-            } catch (e) {
+            } catch {
               // Ignore parsing errors for malformed JSON
             }
           }
@@ -171,7 +175,7 @@ export default function DemoPage() {
             </div>
 
             {/* Custom Prompt (only show when Custom purpose is selected) */}
-            {formData.purpose === Dictionary.Purpose.Custom && (
+            {formData.purpose === 'custom' && (
               <div>
                 <label
                   htmlFor='customPrompt'
@@ -187,7 +191,7 @@ export default function DemoPage() {
                   rows={3}
                   className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                   placeholder='Enter your custom prompt...'
-                  required={formData.purpose === Dictionary.Purpose.Custom}
+                  required={formData.purpose === 'custom'}
                 />
               </div>
             )}
@@ -302,8 +306,9 @@ export default function DemoPage() {
               <strong>Required Fields:</strong> transcript, purpose
             </div>
             <div>
-              <strong>Optional Fields:</strong> language (default: 'pl'),
-              customPrompt, model (default: 'gemini-2.5-flash')
+              <strong>Optional Fields:</strong> language (default:
+              &apos;pl&apos;), customPrompt, model (default:
+              &apos;gemini-2.5-flash&apos;)
             </div>
           </div>
         </div>
