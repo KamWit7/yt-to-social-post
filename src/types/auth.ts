@@ -1,4 +1,3 @@
-import { AccountTier } from '@prisma/client'
 import { DefaultSession } from 'next-auth'
 
 declare module 'next-auth' {
@@ -8,8 +7,5 @@ declare module 'next-auth' {
 
   interface User {
     id: string
-    usage?: {
-      accountTier: AccountTier
-    }
   }
 }

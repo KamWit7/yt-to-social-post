@@ -1,5 +1,6 @@
 'use client'
 
+import { DEFAULT_USAGE_STATS } from '@/components/dashboard/TranscriptionForms/forms/UsageGate/UsageGate'
 import { Button } from '@/components/ui/button'
 import {
   Popover,
@@ -7,11 +8,10 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { useUsage } from '@/context'
-import { getUserUsageStats } from '@/lib/actions/usage'
+import { getUserUsageStats, UsageStats } from '@/lib/actions/usage'
 import { getUsageWarningLevel } from '@/lib/usage'
 import { cn } from '@/lib/utils'
 import { ROUTES, UsageLevel } from '@/utils/constants'
-import { AccountTier } from '@prisma/client'
 import { ArrowRight, ChartColumnIncreasing } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
@@ -20,12 +20,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { USAGE_COUNTER_CONSTANTS } from '../constants'
 import { UsageCounterLoader } from './components/UsageCounterLoader'
 
-type UsageStats = {
-  current: number
-  limit: number
-  remaining: number
-  percentage: number
-}
+type UserCounterStats = UsageStats['usage']
 
 export function UsageCounter() {
   const pathname = usePathname()
@@ -33,7 +28,7 @@ export function UsageCounter() {
   const { data: session, status } = useSession()
   const { registerRefreshHandler } = useUsage()
 
-  const [usageStats, setUsageStats] = useState<UsageStats | null>(null)
+  const [usageStats, setUsageStats] = useState<UserCounterStats | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [hasError, setHasError] = useState(false)
 
@@ -78,24 +73,17 @@ export function UsageCounter() {
     return null
   }
 
-  if (
-    session.user.usage?.accountTier === AccountTier.BYOK ||
-    pathname === ROUTES.PROFILE
-  ) {
+  if (pathname === ROUTES.PROFILE) {
     return null
   }
 
   // Use fetched stats or fallback to default values
-  const currentStats = usageStats || {
-    current: 0,
-    limit: 10,
-    remaining: 10,
-    percentage: 0,
-  }
+  const currentStats = usageStats ?? DEFAULT_USAGE_STATS.usage
 
   const statusLevel = getUsageWarningLevel(
     currentStats.current,
-    currentStats.limit
+    currentStats.limit,
+    currentStats.accountTier
   )
 
   return (
@@ -107,7 +95,8 @@ export function UsageCounter() {
               'w-6 h-6 transition-transform duration-200 hover:scale-105',
               statusLevel === UsageLevel.SAFE && 'stroke-green-500',
               statusLevel === UsageLevel.WARNING && 'stroke-yellow-500',
-              statusLevel === UsageLevel.DANGER && 'stroke-red-500'
+              statusLevel === UsageLevel.DANGER && 'stroke-red-500',
+              statusLevel === UsageLevel.BYOK && 'stroke-purple-500'
             )}
           />
         </Button>
@@ -138,14 +127,21 @@ export function UsageCounter() {
                   'w-2 h-2 rounded-full',
                   statusLevel === UsageLevel.SAFE && 'bg-green-500',
                   statusLevel === UsageLevel.WARNING && 'bg-yellow-500',
-                  statusLevel === UsageLevel.DANGER && 'bg-red-500'
+                  statusLevel === UsageLevel.DANGER && 'bg-red-500',
+                  statusLevel === UsageLevel.BYOK && 'bg-purple-500'
                 )}
               />
 
-              <span className='text-xs text-muted-foreground'>
-                {Math.round(currentStats.percentage)}% wykorzystane
-                {usageStats && ' (odświeżone)'}
-              </span>
+              {statusLevel === UsageLevel.BYOK ? (
+                <span className='text-xs text-muted-foreground'>
+                  Nieograniczone użycie
+                </span>
+              ) : (
+                <span className='text-xs text-muted-foreground'>
+                  {Math.round(currentStats.percentage)}% wykorzystane
+                  {usageStats && ' (odświeżone)'}
+                </span>
+              )}
             </div>
           )}
         </div>

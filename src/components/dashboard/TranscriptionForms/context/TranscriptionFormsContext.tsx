@@ -1,14 +1,9 @@
 'use client'
 
 import {
-  AIProcessingV2Error,
-  AIProcessingV2Loading,
-  AIProcessingV2Response,
-  AIProcessingV2Success,
   useAIProcessingV2,
+  UseAIProcessingV2Return,
 } from '@/api/hooks/useAIProcessingV2'
-import { PurposeValue } from '@/app/api/dictionaries'
-import { ProcessTranscriptRequest } from '@/app/api/result/ai.validations'
 import { getStateFromSessionStorage } from '@/utils/sessionStorage'
 import {
   createContext,
@@ -47,17 +42,7 @@ export interface TranscriptionFormsContextType {
   ) => void
 
   // AI Processing
-  aiProcessing: {
-    isLoading?: AIProcessingV2Loading
-    isSuccess?: AIProcessingV2Success
-    response?: AIProcessingV2Response
-    error?: AIProcessingV2Error
-    processTranscript: (
-      purpose: PurposeValue,
-      data: ProcessTranscriptRequest
-    ) => Promise<void>
-    reset: () => void
-  }
+  aiProcessing: UseAIProcessingV2Return
 }
 
 const TranscriptionFormsContext = createContext<
@@ -188,6 +173,7 @@ export function TranscriptionFormsProvider({
     response: aiResponse,
     error: aiError,
     reset,
+    resetByPurpose,
   } = useAIProcessingV2()
 
   const contextValue: TranscriptionFormsContextType = {
@@ -209,6 +195,7 @@ export function TranscriptionFormsProvider({
       error: aiError,
       processTranscript,
       reset,
+      resetByPurpose,
     },
   }
 

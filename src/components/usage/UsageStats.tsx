@@ -74,11 +74,11 @@ export async function UsageStats({ className }: { className?: string }) {
     redirect(ROUTES.LOGIN)
   }
 
+  const isFreeAccount = stats.usage.accountTier === AccountTier.free
   const status = getUsageStatus(stats.usage.current)
   const StatusIcon = status.icon
   const tierInfo = getAccountTierInfo(stats.usage.accountTier)
   const TierIcon = tierInfo.icon
-  const isFreeAccount = stats.usage.accountTier === AccountTier.free
 
   return (
     <Card className={className}>
@@ -86,7 +86,9 @@ export async function UsageStats({ className }: { className?: string }) {
         <div>
           <CardTitle className='pb-2'>Przegląd Użycia</CardTitle>
           <CardDescription>
-            Śledź swoje miesięczne generowanie podsumowań
+            {isFreeAccount
+              ? 'Śledź swoje miesięczne generowanie podsumowań'
+              : 'Śledź swoje generowanie podsumowań'}
           </CardDescription>
         </div>
         <Link href={ROUTES.SETTINGS}>
@@ -167,7 +169,7 @@ export async function UsageStats({ className }: { className?: string }) {
               <div className='flex-1 text-center p-4 border rounded-lg hover:shadow-md transition-all duration-300 hover:scale-[1.02]'>
                 <div className='space-y-2'>
                   <p className='text-sm font-medium text-muted-foreground'>
-                    Użyte w tym miesiącu
+                    {isFreeAccount ? 'Użyte w tym miesiącu' : 'Łącznie użyte'}
                   </p>
                   <p className='text-2xl font-bold text-foreground'>
                     {stats.usage.current}

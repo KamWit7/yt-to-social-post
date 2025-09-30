@@ -2,8 +2,8 @@
 
 import {
   AIProcessingV2Response,
+  isAllPurposeSuccess,
   isAnyPurposeLoading,
-  isAnyPurposeSuccess,
 } from '@/api/hooks/useAIProcessingV2'
 import { Dictionary } from '@/app/api/dictionaries'
 import { AILoadingAnimation } from '@/components/animation'
@@ -11,7 +11,7 @@ import { useUsage } from '@/context'
 import { trackUserUsage } from '@/lib/actions/usage'
 import { MindMapData } from '@/types'
 import { FileText, Hash, MessageSquare } from 'lucide-react'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { DASHBOARD_TABS } from '../Dashboard.helpers'
 import { useTranscriptionForms } from '../TranscriptionForms/context'
 import { ResultCard } from './components'
@@ -70,8 +70,19 @@ export default function TranscriptionResults() {
     error: aiError,
   } = aiProcessing
 
+  const count = useRef(0)
+
+  console.log('aiSuccess', aiSuccess, aiLoading)
   useEffect(() => {
-    if (!isAnyPurposeLoading(aiLoading) && isAnyPurposeSuccess(aiSuccess)) {
+    // If all purposes are successful and not loading, track usage
+    if (!isAnyPurposeLoading(aiLoading) && isAllPurposeSuccess(aiSuccess)) {
+      count.current++
+      console.log(
+        'trackUserUsage',
+        count.current,
+        isAnyPurposeLoading(aiLoading),
+        aiLoading
+      )
       trackUserUsage()
       refreshUsage()
     }
@@ -88,7 +99,7 @@ export default function TranscriptionResults() {
   const extractedData = extractDataFromResponse(aiResponse)
 
   return (
-    <div className='flex flex-row gap-4 sm:flex-col lg:flex-row'>
+    <div className='flex gap-4 flex-col lg:flex-row'>
       <div className='flex flex-col gap-4 w-full lg:w-lg'>
         <ResultCard
           sectionName='Kluczowe tematy'

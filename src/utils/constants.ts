@@ -67,6 +67,7 @@ export const UsageLevel = {
   SAFE: 'safe',
   WARNING: 'warning',
   DANGER: 'danger',
+  BYOK: 'byok',
 } as const
 
 // Route paths

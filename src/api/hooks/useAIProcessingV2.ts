@@ -14,9 +14,12 @@ export function isAnyPurposeLoading(loadingState?: AIProcessingV2Loading) {
   return Object.values(loadingState).some((loading) => loading === true)
 }
 
-export function isAnyPurposeSuccess(successState?: AIProcessingV2Success) {
-  if (!successState) return false
-  return Object.values(successState).some((success) => success === true)
+export function isAllPurposeSuccess(successState?: AIProcessingV2Success) {
+  if (!successState) {
+    return false
+  }
+
+  return Object.values(successState).every((success) => success === true)
 }
 
 export interface UseAIProcessingV2Return {
@@ -29,6 +32,7 @@ export interface UseAIProcessingV2Return {
   ) => Promise<void>
   isSuccess: AIProcessingV2Success
   reset: () => void
+  resetByPurpose: (purpose: PurposeValue) => void
 }
 
 export function useAIProcessingV2(): UseAIProcessingV2Return {
@@ -81,10 +85,31 @@ export function useAIProcessingV2(): UseAIProcessingV2Return {
       })
 
       if (!response.ok) {
-        const errorText = await response.text()
-        setErrorForPurpose(purpose, errorText)
+        let errorMessage = `HTTP ${response.status}: Unknown error`
+
+        try {
+          // Try to parse as JSON first (new error format)
+          const errorData = await response.json()
+          if (errorData.error) {
+            errorMessage = errorData.error
+          } else {
+            errorMessage = `HTTP ${response.status}: ${JSON.stringify(
+              errorData
+            )}`
+          }
+        } catch {
+          // If JSON parsing fails, try as text (fallback for old format)
+          try {
+            const errorText = await response.text()
+            errorMessage = errorText || `HTTP ${response.status}: Unknown error`
+          } catch {
+            errorMessage = `HTTP ${response.status}: Unable to parse error`
+          }
+        }
+
+        setErrorForPurpose(purpose, errorMessage)
         setSuccessForPurpose(purpose, false)
-        throw new Error(`HTTP ${response.status}: ${errorText}`)
+        throw new Error(errorMessage)
       }
 
       if (!response.body) {
@@ -96,7 +121,6 @@ export function useAIProcessingV2(): UseAIProcessingV2Return {
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
 
-      setLoadingForPurpose(purpose, false)
       while (true) {
         const { done, value } = await reader.read()
         if (done) break
@@ -109,6 +133,7 @@ export function useAIProcessingV2(): UseAIProcessingV2Return {
             const data = line.slice(6)
             if (data === '[DONE]') {
               setSuccessForPurpose(purpose, true)
+              setLoadingForPurpose(purpose, false)
               clearErrorForPurpose(purpose)
               return
             }
@@ -126,7 +151,7 @@ export function useAIProcessingV2(): UseAIProcessingV2Return {
                 }
               })
             } catch {
-              // Ignore parsing errors for malformed JSON
+              throw new Error(`Parsing error: ${data}`)
             }
           }
         }
@@ -148,6 +173,19 @@ export function useAIProcessingV2(): UseAIProcessingV2Return {
     setIsSuccess(null)
   }
 
+  const resetByPurpose = (purpose: PurposeValue) => {
+    setResponse((response) => {
+      if (!response) {
+        return response
+      }
+      return { ...response, [purpose]: undefined } as AIProcessingV2Response
+    })
+
+    setError(
+      (error) => ({ ...error, [purpose]: undefined } as AIProcessingV2Error)
+    )
+  }
+
   return {
     isLoading,
     response,
@@ -155,5 +193,6 @@ export function useAIProcessingV2(): UseAIProcessingV2Return {
     processTranscript,
     isSuccess,
     reset,
+    resetByPurpose,
   }
 }

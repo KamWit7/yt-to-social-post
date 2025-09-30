@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { UserUsage } from '@prisma/client'
+import { AccountTier, UserUsage } from '@prisma/client'
 
 // Usage Tracking Operations
 export async function createUserUsage(userId: string): Promise<UserUsage> {
@@ -51,12 +51,18 @@ export async function checkUsageLimit(
   limit: number
 }> {
   const usage = await getUserUsage(userId)
+  console.log('usage', usage?.accountTier)
   const currentUsage = usage?.summaryCount || 0
 
+  const tierLimit = usage?.accountTier === AccountTier.BYOK ? Infinity : limit
+
+  const isWithinLimit =
+    usage?.accountTier === AccountTier.BYOK ? true : currentUsage < tierLimit
+
   return {
-    withinLimit: currentUsage < limit,
+    withinLimit: isWithinLimit,
     currentUsage,
-    limit,
+    limit: tierLimit,
   }
 }
 

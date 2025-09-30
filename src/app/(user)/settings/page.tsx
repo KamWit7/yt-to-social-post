@@ -16,9 +16,6 @@ import { AccountTier } from '@prisma/client'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 
-/**
- * Settings page for user account management and BYOK configuration
- */
 export default async function SettingsPage() {
   const session = await getServerSession(authOptions)
 
@@ -26,12 +23,10 @@ export default async function SettingsPage() {
     redirect(ROUTES.LOGIN)
   }
 
-  // Get user usage data to determine current tier and API key status
   const userUsage = await getUserUsage(session.user.id)
 
   return (
-    <>
-      {/* Instructions Section */}
+    <div className='flex flex-col-reverse lg:flex-row gap-4'>
       <ApiKeyInstructions className='max-w-md' />
 
       <Card className='max-w-md'>
@@ -55,6 +50,6 @@ export default async function SettingsPage() {
           </AnimatedSection>
         </CardContent>
       </Card>
-    </>
+    </div>
   )
 }

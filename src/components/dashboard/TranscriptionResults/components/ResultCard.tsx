@@ -3,6 +3,7 @@ import {
   AIProcessingV2Loading,
 } from '@/api/hooks/useAIProcessingV2'
 import { Dictionary, PurposeValue } from '@/app/api/dictionaries'
+import { TextShimmer } from '@/components/animation'
 import { CopyButton } from '@/components/common'
 import { MarkdownParser } from '@/components/MarkdownParser'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -20,7 +21,7 @@ interface ResultCardProps {
   title: string
   content: string
   icon: LucideIcon
-  purpose: string
+  purpose: PurposeValue
   aiErrors?: AIProcessingV2Error
   ariaLabel: string
   purposeData?: PurposeData
@@ -29,11 +30,11 @@ interface ResultCardProps {
 }
 
 function shouldShowSection(
-  purpose: string,
+  purpose: PurposeValue,
   purposeData?: PurposeData
 ): boolean {
   // Always visible sections
-  const alwaysVisible: Array<string> = [
+  const alwaysVisible: Array<PurposeValue> = [
     Dictionary.Purpose.Summary,
     Dictionary.Purpose.Topics,
   ]
@@ -82,18 +83,26 @@ export default function ResultCard({
     <ErrorSectionHandler
       sectionName={sectionName}
       aiError={aiError}
-      isLoading={isLoading}>
+      isLoading={isLoading}
+      purpose={purpose}>
       <Card
         className={cn(
-          `border border-border/60 shadow-sm hover:shadow-md transition-shadow flex-1 overflow-x-auto ${
+          `relative border border-border/60 shadow-sm hover:shadow-md transition-shadow flex-1 overflow-x-auto pt-0 gap-0 ${
             className || ''
           }`
         )}>
-        <CardHeader>
+        <CardHeader
+          className={cn(
+            'sticky top-0 z-10 bg-white/60 backdrop-blur-xl pt-6 pb-2 transition-all duration-300',
+            isLoading && 'bg-white'
+          )}>
           <div className='flex justify-between items-center gap-4'>
             <CardTitle className='flex items-center gap-2'>
               <Icon className='w-5 h-5' />
-              {title}
+
+              <TextShimmer className='text-2xl' as='h2' isLoading={isLoading}>
+                {title}
+              </TextShimmer>
             </CardTitle>
 
             <CopyButton

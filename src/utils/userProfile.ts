@@ -1,17 +1,22 @@
 import { Session } from 'next-auth'
 
 import { UserProfileData } from '@/components/auth/UserProfile/UserProfile.helpers'
+import { getUserUsage } from '@/lib/db/usage'
 import { AccountTier } from '@prisma/client'
 
-export function transformSessionToUserProfile(
+export async function transformSessionToUserProfile(
   session: Session
-): UserProfileData {
+): Promise<UserProfileData> {
+  'use server'
+
+  const usage = await getUserUsage(session?.user.id)
+
   return {
     id: session.user.id,
     name: session.user.name,
     email: session.user.email,
     image: session.user.image,
-    accountTier: session.user.usage?.accountTier ?? AccountTier.free,
+    accountTier: usage?.accountTier ?? AccountTier.free,
   }
 }
 

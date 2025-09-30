@@ -60,7 +60,7 @@ export async function trackUserUsage(): Promise<UsageResponse> {
       success: true,
       usage: {
         current: updatedUsage.summaryCount,
-        limit: DEFAULT_USAGE_LIMIT,
+        limit: limitCheck.limit,
       },
     }
   } catch (error) {
@@ -76,7 +76,7 @@ export async function trackUserUsage(): Promise<UsageResponse> {
   }
 }
 
-type UsageStats = UsageBaseResponse & {
+export type UsageStats = UsageBaseResponse & {
   usage: {
     current: number
     limit: number

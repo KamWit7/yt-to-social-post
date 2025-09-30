@@ -5,7 +5,7 @@ import {
   TRANSCRIPTION_FORMS_STORAGE_KEY,
 } from '@/components/dashboard/Dashboard.helpers'
 import { Button } from '@/components/ui/button'
-import { getUserUsageStats } from '@/lib/actions/usage'
+import { getUserUsageStats, UsageStats } from '@/lib/actions/usage'
 import {
   ROUTES,
   USAGE_GATE_TEXT,
@@ -23,22 +23,26 @@ interface UsageGateProps {
   children: React.ReactNode
 }
 
-type UsageStats = {
-  success: boolean
-  usage: {
-    current: number
-    limit: number
-    remaining: number
-    percentage: number
-  }
+type UsageStatsWithError = UsageStats & {
   error?: string
+}
+
+export const DEFAULT_USAGE_STATS: UsageStats = {
+  success: false,
+  usage: {
+    current: 0,
+    limit: 10,
+    remaining: 10,
+    percentage: 0,
+    accountTier: AccountTier.free,
+  },
 }
 
 export function UsageGate({ children }: UsageGateProps) {
   const { data: session, status } = useSession()
   const { formStepsState, activeTab, stepCompleted } = useTranscriptionForms()
 
-  const [usageStats, setUsageStats] = useState<UsageStats | null>(null)
+  const [usageStats, setUsageStats] = useState<UsageStatsWithError | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -67,10 +71,7 @@ export function UsageGate({ children }: UsageGateProps) {
         console.error('Error fetching usage stats:', err)
         setError(USAGE_LIMIT_MESSAGES.USAGE_CHECK_ERROR)
         // Fail-open approach: allow access if usage check fails
-        setUsageStats({
-          success: true,
-          usage: { current: 0, limit: 10, remaining: 10, percentage: 0 },
-        })
+        setUsageStats(DEFAULT_USAGE_STATS)
       } finally {
         setIsLoading(false)
       }
@@ -94,7 +95,7 @@ export function UsageGate({ children }: UsageGateProps) {
   }
 
   // If user has BYOK tier, allow access
-  if (session?.user.usage?.accountTier === AccountTier.BYOK) {
+  if (usageStats?.usage.accountTier === AccountTier.BYOK) {
     return <>{children}</>
   }
 

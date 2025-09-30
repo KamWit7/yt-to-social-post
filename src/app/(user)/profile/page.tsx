@@ -13,13 +13,13 @@ export const metadata: Metadata = {
 
 export default async function ProfilePage() {
   return (
-    <>
+    <div className='flex flex-col lg:flex-row gap-4'>
       <Suspense fallback={<ProfileSkeleton className='flex-1 max-w-md' />}>
         <UserProfile className='flex-1 max-w-md' />
       </Suspense>
       <Suspense fallback={<UsageStatsSkeleton className='flex-1 max-w-md' />}>
         <UsageStats className='flex-1 max-w-md' />
       </Suspense>
-    </>
+    </div>
   )
 }

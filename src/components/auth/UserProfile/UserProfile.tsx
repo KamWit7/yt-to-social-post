@@ -24,7 +24,7 @@ export async function UserProfile({ className }: { className?: string }) {
     return <EmptySessionCard />
   }
 
-  const userProfile = transformSessionToUserProfile(session)
+  const userProfile = await transformSessionToUserProfile(session)
 
   return (
     <Card className={className}>

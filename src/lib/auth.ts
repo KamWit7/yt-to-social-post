@@ -3,7 +3,6 @@ import { getGoogleOAuthCredentials, serverEnv } from '@/lib/env/server'
 import { prisma } from '@/lib/prisma'
 import { ROUTES } from '@/utils/constants'
 import { PrismaAdapter } from '@auth/prisma-adapter'
-import { AccountTier, UserUsage } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
@@ -36,7 +35,6 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             name: user.name,
             image: user.image,
-            usage: { accountTier: user.usage?.accountTier ?? AccountTier.free },
           }
         }
 
@@ -58,7 +56,6 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
-        token.usage = user.usage
       }
 
       return token
@@ -67,7 +64,6 @@ export const authOptions: NextAuthOptions = {
       // Przekazujemy ID z tokena JWT do sesji
       if (token?.id) {
         session.user.id = token.id as string
-        session.user.usage = token.usage as UserUsage
       }
 
       return session
