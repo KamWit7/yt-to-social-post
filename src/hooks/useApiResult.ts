@@ -1,11 +1,11 @@
-import { Dictionary } from '@/app/api/dictionaries'
+import { Dictionary, LanguageValue } from '@/app/api/dictionaries'
 import { DEFAULT_AI_MODEL } from '@/types'
 import { useState } from 'react'
 
 export interface ApiResultFormData {
   transcript: string
   purpose: string
-  language: 'pl' | 'en'
+  language: LanguageValue
   customPrompt: string
   model: string
 }
@@ -24,7 +24,7 @@ export interface UseApiResultReturn {
 const initialFormData: ApiResultFormData = {
   transcript: '',
   purpose: Dictionary.Purpose.SocialMedia,
-  language: 'pl',
+  language: Dictionary.Language.Polish,
   customPrompt: '',
   model: DEFAULT_AI_MODEL,
 }

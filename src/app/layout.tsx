@@ -1,3 +1,4 @@
+import { Dictionary } from '@/app/api/dictionaries'
 import InitialTransition from '@/components/animation/InitialTransition'
 import Footer from '@/components/common/Footer'
 import Header from '@/components/common/Header'
@@ -37,7 +38,7 @@ export default async function RootLayout({
 
   const isChatPage = pathname === ROUTES.CHAT
   return (
-    <html lang='pl'>
+    <html lang={Dictionary.Language.Polish}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SessionProvider>

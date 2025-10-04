@@ -9,7 +9,6 @@ import { Wand2, Youtube } from 'lucide-react'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { DASHBOARD_TABS } from '../../../Dashboard.helpers'
-import { ErrorDisplay } from '../../components'
 import {
   ANIMATION_DELAYS,
   BUTTON_STYLES,
@@ -20,6 +19,7 @@ import {
 } from '../../constants/formConstants'
 import { useTranscriptionForms } from '../../context'
 import type { YouTubeFormData } from '../../types/formTypes'
+import { YouTubeErrorDisplay } from './YouTubeErrorDisplay'
 import { getYouTubeDefaultValues } from './YouTubeForm.helpers'
 import { youtubeSchema } from './youtubeSchema'
 
@@ -129,11 +129,15 @@ export function YouTubeForm() {
                 className={BUTTON_STYLES.youtubeFullWidth}
               />
 
-              {transcriptError && (
-                <ErrorDisplay
+              {(transcriptError ||
+                (transcriptData && !transcriptData.success)) && (
+                <YouTubeErrorDisplay
                   error={transcriptError}
+                  errorMessage={
+                    transcriptData?.error || transcriptError?.message || ''
+                  }
+                  onRetry={refetchTranscript}
                   isRetrying={isTranscriptLoading}
-                  showBackButton={false}
                 />
               )}
             </div>

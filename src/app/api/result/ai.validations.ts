@@ -7,7 +7,9 @@ export const ProcessTranscriptRequestSchema = z.object({
     message: 'Transkrypcja nie może być pusta',
   }),
   purpose: z.enum(Object.values(Dictionary.Purpose)),
-  language: z.enum(['pl', 'en']).default('pl'),
+  language: z
+    .enum([Dictionary.Language.Polish, Dictionary.Language.English])
+    .default(Dictionary.Language.Polish),
   customPrompt: z.preprocess((val) => {
     if (val === null || val === undefined) return undefined
     const str = String(val).trim()

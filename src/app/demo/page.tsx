@@ -3,6 +3,7 @@
 import {
   Dictionary,
   DictionaryDisplay,
+  LanguageValue,
   PurposeValue,
 } from '@/app/api/dictionaries'
 import { AIModels, DEFAULT_AI_MODEL } from '@/types'
@@ -12,7 +13,7 @@ export default function DemoPage() {
   const [formData, setFormData] = useState({
     transcript: '',
     purpose: Dictionary.Purpose.SocialMedia as PurposeValue,
-    language: 'pl' as 'pl' | 'en',
+    language: Dictionary.Language.Polish as LanguageValue,
     customPrompt: '',
     model: DEFAULT_AI_MODEL,
   })
@@ -28,6 +29,8 @@ export default function DemoPage() {
     }))
     setError('')
   }
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

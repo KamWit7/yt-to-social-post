@@ -2,7 +2,7 @@
 [+] Must zmiana jęzka na polski 
 [+] poprawa związana z usage przekierownia na seeings 
 [+] usage i profil połączyć w jedno 
-[ ] obsługa błędów na FE
+[+] obsługa błędów na FE
 
 BIG
 [ ] stworzenie czatu AI
@@ -14,3 +14,9 @@ BIG
  - [ ] wklejanie linku
  - [ ] zmiana modelu/temperatury
  - [ ] przejrzeć t3 + google notatki
+
+
+CORE
+-------
+[ ] modele od gemini -> zmiana tylko dla BYOK (domyślnie flesh)
+[ ] dodanie temperatury -> tam samo zmiana tylko dla BYOK (pokazywać domyślną)

@@ -1,3 +1,4 @@
+import { handleApiError } from '@/app/api/result/errors/api-error-handler'
 import { AIModels } from '@/types'
 import { GoogleGenAI } from '@google/genai'
 import z from 'zod'
@@ -68,7 +69,6 @@ export async function POST(request: Request) {
       },
     })
   } catch (error) {
-    console.error('Chat API error:', error)
-    return new Response('Internal server error', { status: 500 })
+    return handleApiError(error, 'Chat API')
   }
 }

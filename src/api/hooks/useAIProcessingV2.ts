@@ -138,7 +138,11 @@ export function useAIProcessingV2(): UseAIProcessingV2Return {
               return
             }
             try {
-              const parsed = JSON.parse(data)
+              //check is stream is endpint with data: [DONE]
+              const safeData = data.endsWith('data: [DONE]')
+                ? data.slice(0, -12)
+                : data
+              const parsed = JSON.parse(safeData)
 
               setResponse((currentResponse) => {
                 if (!currentResponse) {
@@ -150,8 +154,13 @@ export function useAIProcessingV2(): UseAIProcessingV2Return {
                   [purpose]: (currentResponse[purpose] ?? '') + parsed.text,
                 }
               })
-            } catch {
-              throw new Error(`Parsing error: ${data}`)
+            } catch (error) {
+              // check if error is parsing error
+              // iParsing error: {"text":"Key topics:\n- Lojalność i oddanie w związku\n- Deklaracja głębokich uczuć\n- Obietnica stałości i wsparcia"}data: [DONE]
+
+              // Ignore parsing errors for malformed JSON chunks (e.g., when data and [DONE] are concatenated)
+              console.warn('Parsing error for chunk:', data, error)
+              // Don't throw error, just continue processing
             }
           }
         }

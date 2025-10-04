@@ -14,7 +14,9 @@ export const purposeSchema = z
       .refine((val) => val && val.trim().length > 0, {
         message: 'Wybierz cel transkrypcji',
       }),
-    [FORM_FIELD_NAMES.LANGUAGE]: z.enum(['pl', 'en']).default('pl'),
+    [FORM_FIELD_NAMES.LANGUAGE]: z
+      .enum([Dictionary.Language.Polish, Dictionary.Language.English])
+      .default(Dictionary.Language.Polish),
     [FORM_FIELD_NAMES.CUSTOM_PROMPT]: z.string().trim(),
     [FORM_FIELD_NAMES.MODEL]: z
       .enum([
