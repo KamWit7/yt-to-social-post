@@ -1,6 +1,6 @@
 'use client'
 
-import { DEFAULT_USAGE_STATS } from '@/components/dashboard/TranscriptionForms/forms/UsageGate/UsageGate'
+import { DEFAULT_USAGE_STATS } from '@/components/dashboard/TranscriptionForms/gates/UsageGate/UsageGate'
 import { Button } from '@/components/ui/button'
 import {
   Popover,
@@ -26,7 +26,7 @@ export function UsageCounter() {
   const pathname = usePathname()
 
   const { data: session, status } = useSession()
-  const { registerRefreshHandler } = useUsage()
+  const { registerRefreshUsageHandler } = useUsage()
 
   const [usageStats, setUsageStats] = useState<UserCounterStats | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -62,8 +62,8 @@ export function UsageCounter() {
   }, [session?.user.id])
 
   useEffect(() => {
-    return registerRefreshHandler(handleGetUsageStats)
-  }, [registerRefreshHandler, handleGetUsageStats])
+    return registerRefreshUsageHandler(handleGetUsageStats)
+  }, [registerRefreshUsageHandler, handleGetUsageStats])
 
   if (status === 'loading') {
     return <UsageCounterLoader />
@@ -104,7 +104,7 @@ export function UsageCounter() {
 
       <PopoverContent
         side='bottom'
-        className='max-w-xs p-4 border border-primary/20'>
+        className='max-w-xs p-4 border border-primary/20 bg-white/20 backdrop-blur-md'>
         <div className='space-y-2'>
           <p className='font-medium text-foreground'>
             {USAGE_COUNTER_CONSTANTS.TOOLTIP_TITLE}

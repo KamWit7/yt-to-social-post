@@ -30,6 +30,7 @@ export function YouTubeForm() {
     handleStepComplete,
     handleTabChange,
     handleLoadingStateChange,
+    handleSaveState,
   } = useTranscriptionForms()
 
   const contextUrl = formStepsState[DASHBOARD_TABS.YOUTUBE] || ''
@@ -75,6 +76,8 @@ export function YouTubeForm() {
     handleTranscriptChange(transcriptData.data.transcript)
     handleStepComplete(DASHBOARD_TABS.YOUTUBE)
     handleTabChange(DASHBOARD_TABS.TRANSCRIPT)
+    handleSaveState()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     transcriptData,
     handleTranscriptChange,

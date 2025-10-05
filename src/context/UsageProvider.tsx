@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, type ReactNode } from 'react'
 
 interface UsageContextType {
   refreshUsage: () => void
-  registerRefreshHandler: (handler: () => void) => () => void
+  registerRefreshUsageHandler: (handler: () => void) => () => void
 }
 
 const UsageContext = createContext<UsageContextType | undefined>(undefined)
@@ -14,19 +14,19 @@ interface UsageProviderProps {
 }
 
 export function UsageProvider({ children }: UsageProviderProps) {
-  const refreshHandlers = new Set<() => void>()
+  const usageHandlers = new Set<() => void>()
 
-  const registerRefreshHandler = useCallback((handler: () => void) => {
-    refreshHandlers.add(handler)
+  const registerRefreshUsageHandler = useCallback((handler: () => void) => {
+    usageHandlers.add(handler)
 
     return () => {
-      refreshHandlers.delete(handler)
+      usageHandlers.delete(handler)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const refreshUsage = useCallback(() => {
-    refreshHandlers.forEach((handler) => {
+    usageHandlers.forEach((handler) => {
       try {
         handler()
       } catch (error) {
@@ -38,7 +38,7 @@ export function UsageProvider({ children }: UsageProviderProps) {
 
   const contextValue: UsageContextType = {
     refreshUsage,
-    registerRefreshHandler,
+    registerRefreshUsageHandler,
   }
 
   return (

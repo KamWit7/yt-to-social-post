@@ -19,12 +19,12 @@ import {
 } from '../../constants/formConstants'
 import { useTranscriptionForms } from '../../context'
 import {
-  AIModels,
   DEFAULT_AI_MODEL,
   DEFAULT_LANGUAGE,
   Dictionary,
   DictionaryDisplay,
 } from '../Form.constants'
+import { AIModelSelect } from './components/AIModelSelect/AIModelSelect'
 import { ConditionalOptions } from './ConditionalOptions'
 import { getPurposeDefaultValues } from './PurposeForm.helpers'
 import { purposeSchema, type PurposeOnlyFormData } from './purposeSchema'
@@ -147,25 +147,10 @@ export function PurposeForm() {
                   </div>
 
                   <div className='space-y-2'>
-                    <ControlledSelect
+                    <AIModelSelect
                       name={FORM_FIELD_NAMES.MODEL}
                       label='🤖 Model AI'
                       placeholder='Wybierz model...'
-                      required
-                      options={[
-                        {
-                          label: AIModels.Gemini25Pro,
-                          value: AIModels.Gemini25Pro,
-                        },
-                        {
-                          label: AIModels.Gemini25Flash,
-                          value: AIModels.Gemini25Flash,
-                        },
-                        {
-                          label: AIModels.Gemini25FlashLite,
-                          value: AIModels.Gemini25FlashLite,
-                        },
-                      ]}
                       className='w-full'
                     />
                   </div>

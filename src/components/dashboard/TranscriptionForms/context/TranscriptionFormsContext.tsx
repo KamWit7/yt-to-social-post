@@ -4,7 +4,10 @@ import {
   useAIProcessing,
   UseAIProcessingReturn,
 } from '@/api/hooks/useAIProcessingV2'
-import { getStateFromSessionStorage } from '@/utils/sessionStorage'
+import {
+  getStateFromSessionStorage,
+  saveStateToSessionStorage,
+} from '@/utils/sessionStorage'
 import {
   createContext,
   ReactNode,
@@ -40,6 +43,7 @@ interface TranscriptionFormsContextType {
     step: T,
     data: FormStepsState[T]
   ) => void
+  handleSaveState: () => void
 
   // AI Processing
   aiProcessing: UseAIProcessingReturn
@@ -77,6 +81,15 @@ export function TranscriptionFormsProvider({
     [DASHBOARD_TABS.RESULTS]: false,
   })
 
+  const handleSaveState = useCallback(() => {
+    saveStateToSessionStorage(TRANSCRIPTION_FORMS_STORAGE_KEY, {
+      transcript: formStepsState[DASHBOARD_TABS.TRANSCRIPT] || '',
+      url: formStepsState[DASHBOARD_TABS.YOUTUBE] || '',
+      activeTab,
+      stepCompleted,
+    })
+  }, [formStepsState, activeTab, stepCompleted])
+
   useEffect(() => {
     try {
       const savedState = getStateFromSessionStorage(
@@ -104,7 +117,6 @@ export function TranscriptionFormsProvider({
     }
   }, [])
 
-  // Handlers
   const handleFormStepUpdate = useCallback(
     <T extends keyof FormStepsState>(step: T, data: FormStepsState[T]) => {
       setFormStepsState((prev) => ({
@@ -188,6 +200,7 @@ export function TranscriptionFormsProvider({
     handleLoadingStateChange,
     handleTranscriptUpdate,
     handleFormStepUpdate,
+    handleSaveState,
     aiProcessing: {
       isLoading: aiLoading,
       isSuccess: aiSuccess,

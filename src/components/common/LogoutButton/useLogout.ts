@@ -1,5 +1,7 @@
 'use client'
 
+import { TRANSCRIPTION_FORMS_STORAGE_KEY } from '@/components/dashboard/Dashboard.helpers'
+import { clearStateFromSessionStorage } from '@/utils/sessionStorage'
 import { signOut } from 'next-auth/react'
 import { useState } from 'react'
 
@@ -13,6 +15,8 @@ export function useLogout() {
         callbackUrl: '/',
         redirect: true,
       })
+
+      clearStateFromSessionStorage(TRANSCRIPTION_FORMS_STORAGE_KEY)
     } catch (error) {
       console.error('Error signing out:', error)
       setIsLoading(false)

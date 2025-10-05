@@ -18,6 +18,23 @@ export function saveStateToSessionStorage<T>(key: string, state: T): void {
   }
 }
 
+export function clearStateFromSessionStorage(key: string): void {
+  try {
+    if (typeof window === 'undefined') {
+      console.warn(
+        'sessionStorage is not available on the server. State was not cleared.'
+      )
+      return
+    }
+    window.sessionStorage.removeItem(key)
+  } catch (error) {
+    console.error(
+      `Error clearing state from sessionStorage with key "${key}":`,
+      error
+    )
+  }
+}
+
 export function getStateFromSessionStorage<T>(key: string): T | null {
   if (typeof window === 'undefined') {
     console.warn(

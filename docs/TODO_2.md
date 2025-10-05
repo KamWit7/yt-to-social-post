@@ -19,4 +19,10 @@ BIG
 CORE
 -------
 [ ] modele od gemini -> zmiana tylko dla BYOK (domyślnie flesh)
+    [+] poprawić wygląda blokady 
+    [ ] przetestować free/byok
+    [ ] sprawdzisć seeting oraz profile
 [ ] dodanie temperatury -> tam samo zmiana tylko dla BYOK (pokazywać domyślną)
+[ ] poprawa wizualna dla osobny przekraczającej linik darmowego konta CEL oraz profil
+[ ] poprawka dla osoby która nie jest zalgowana wizualnie CEL
+[ ] test dla zapisywanie w LS kiedy user się zaloguje przedzie propces skopiuje dane z LS i wkleji jak nie jest zalogowany oczekiwany rezulata - endpoint z transkrypcją wali błąd 

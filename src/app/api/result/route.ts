@@ -1,8 +1,13 @@
 import { handleApiError } from '@/app/api/result/errors/api-error-handler'
+import { isModelAvailable } from '@/components/dashboard/TranscriptionForms/forms/PurposeForm/PurposeForm.helpers'
 import { getUserApiKey } from '@/lib/actions/usage'
+import { authOptions } from '@/lib/auth'
+import { getUserUsage } from '@/lib/db/usage'
 import { serverEnv } from '@/lib/env/server'
 import { decrypt } from '@/utils/encryption/encryption'
 import { GoogleGenAI } from '@google/genai'
+import { AccountTier } from '@prisma/client'
+import { getServerSession } from 'next-auth'
 import { ProcessTranscriptRequestSchema } from './ai.validations'
 import { PromptLoader } from './prompts'
 
@@ -15,6 +20,31 @@ export async function POST(request: Request) {
 
     if (!transcript) {
       return new Response('Transcript is required', { status: 400 })
+    }
+
+    // Sprawdzenie sesji użytkownika i uprawnień do modelu
+    const session = await getServerSession(authOptions)
+
+    if (!session?.user?.id) {
+      return new Response('Unauthorized', { status: 401 })
+    }
+
+    // Pobranie accountTier użytkownika
+    const userUsage = await getUserUsage(session.user.id)
+    const accountTier = userUsage?.accountTier || AccountTier.free
+
+    // Walidacja uprawnień do wybranego modelu
+    if (!isModelAvailable(model, accountTier)) {
+      return new Response(
+        JSON.stringify({
+          error: 'Model not allowed',
+          message: `Model ${model} jest dostępny tylko dla użytkowników z kontem BYOK. Zmień typ konta w ustawieniach.`,
+        }),
+        {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
     }
 
     const { apiKey, success } = await getUserApiKey()

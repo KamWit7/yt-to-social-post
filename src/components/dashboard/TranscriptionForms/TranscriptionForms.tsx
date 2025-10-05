@@ -1,12 +1,12 @@
 'use client'
 
 import { DASHBOARD_TABS, type DashboardTab } from '../Dashboard.helpers'
-import { AuthGate } from './forms/AuthGate/AuthGate'
+import { AuthGate } from './gates/AuthGate/AuthGate'
 
 import { PurposeForm } from './forms/PurposeForm/PurposeForm'
 import { TranscriptForm } from './forms/TranscriptForm/TranscriptForm'
-import { UsageGate } from './forms/UsageGate/UsageGate'
 import { YouTubeForm } from './forms/YouTubeForm/YouTubeForm'
+import { UsageGate } from './gates/UsageGate/UsageGate'
 
 interface TranscriptionFormProps {
   stepKey: DashboardTab
