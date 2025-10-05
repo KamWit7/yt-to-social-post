@@ -2,11 +2,6 @@ import { API_BASE_URL } from './config'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
-export type ApiError = {
-  status: number
-  message: string
-}
-
 type ApiFetchOptions<TBody> = {
   method?: HttpMethod
   headers?: Record<string, string>

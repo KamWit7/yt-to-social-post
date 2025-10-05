@@ -3,12 +3,10 @@
 import { AnimatedSection } from '@/components/animation'
 import { ControlledSelect, SubmitButton } from '@/components/common'
 import SectionHeader from '@/components/ui/SectionHeader'
-import { AIModels, DEFAULT_AI_MODEL, DEFAULT_LANGUAGE } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Sparkles } from 'lucide-react'
 import { FormProvider, useForm } from 'react-hook-form'
 
-import { Dictionary, DictionaryDisplay } from '@/app/api/dictionaries'
 import { ProcessTranscriptRequest } from '@/app/api/result/ai.validations'
 import { DASHBOARD_TABS } from '../../../Dashboard.helpers'
 import {
@@ -20,10 +18,16 @@ import {
   FORM_FIELD_NAMES,
 } from '../../constants/formConstants'
 import { useTranscriptionForms } from '../../context'
-import type { PurposeOnlyFormData } from '../../types/formTypes'
+import {
+  AIModels,
+  DEFAULT_AI_MODEL,
+  DEFAULT_LANGUAGE,
+  Dictionary,
+  DictionaryDisplay,
+} from '../Form.constants'
 import { ConditionalOptions } from './ConditionalOptions'
 import { getPurposeDefaultValues } from './PurposeForm.helpers'
-import { purposeSchema } from './purposeSchema'
+import { purposeSchema, type PurposeOnlyFormData } from './purposeSchema'
 
 export function PurposeForm() {
   const {
@@ -72,7 +76,7 @@ export function PurposeForm() {
       customPrompt: data.customPrompt || '',
       model: data.model || DEFAULT_AI_MODEL,
     }
-    
+
     reset()
 
     const fetchData = async () => {

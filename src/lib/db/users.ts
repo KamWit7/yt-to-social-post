@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma'
 import { User, UserUsage } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
-export type UserWithUsage = User & {
+type UserWithUsage = User & {
   usage?: UserUsage | null
   password?: string | null
 }
@@ -36,15 +36,6 @@ export async function createUser(data: {
   return user
 }
 
-export async function findUserById(id: string): Promise<UserWithUsage | null> {
-  return await prisma.user.findUnique({
-    where: { id },
-    include: {
-      usage: true,
-    },
-  })
-}
-
 export async function findUserByEmail(
   email: string
 ): Promise<UserWithUsage | null> {
@@ -54,24 +45,4 @@ export async function findUserByEmail(
       usage: true,
     },
   })
-}
-
-export async function updateUser(
-  id: string,
-  data: Partial<Pick<User, 'name' | 'email' | 'image' | 'emailVerified'>>
-): Promise<User> {
-  return await prisma.user.update({
-    where: { id },
-    data,
-  })
-}
-
-export async function deleteUser(id: string): Promise<User> {
-  return await prisma.user.delete({
-    where: { id },
-  })
-}
-
-export async function getUserCount(): Promise<number> {
-  return await prisma.user.count()
 }

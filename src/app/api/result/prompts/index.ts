@@ -1,4 +1,7 @@
-import { Dictionary, PurposeValue } from '../../dictionaries'
+import {
+  Dictionary,
+  PurposeValue,
+} from '@/components/dashboard/TranscriptionForms/forms/Form.constants'
 import { getPrompt as getCustomOutputPrompt } from './custom-output.prompt'
 import { getPrompt as getSocialPostPrompt } from './social-post.prompt'
 import { getPrompt as getSummaryPrompt } from './summary.prompt'

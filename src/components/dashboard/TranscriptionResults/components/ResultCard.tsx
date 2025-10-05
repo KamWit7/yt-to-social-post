@@ -1,14 +1,17 @@
 import {
-  AIProcessingV2Error,
-  AIProcessingV2Loading,
+  AIProcessingError,
+  AIProcessingLoading,
 } from '@/api/hooks/useAIProcessingV2'
-import { Dictionary, PurposeValue } from '@/app/api/dictionaries'
 import { TextShimmer } from '@/components/animation'
 import { CopyButton } from '@/components/common'
 import { MarkdownParser } from '@/components/MarkdownParser'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { LucideIcon } from 'lucide-react'
+import {
+  Dictionary,
+  PurposeValue,
+} from '../../TranscriptionForms/forms/Form.constants'
 import { ErrorSectionHandler } from './ErrorSectionHandler'
 
 interface PurposeData {
@@ -22,11 +25,11 @@ interface ResultCardProps {
   content: string
   icon: LucideIcon
   purpose: PurposeValue
-  aiErrors?: AIProcessingV2Error
+  aiErrors?: AIProcessingError
   ariaLabel: string
   purposeData?: PurposeData
   className?: string
-  aiLoading?: AIProcessingV2Loading
+  aiLoading?: AIProcessingLoading
 }
 
 function shouldShowSection(

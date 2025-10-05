@@ -1,8 +1,8 @@
 'use client'
 
 import {
-  useAIProcessingV2,
-  UseAIProcessingV2Return,
+  useAIProcessing,
+  UseAIProcessingReturn,
 } from '@/api/hooks/useAIProcessingV2'
 import { getStateFromSessionStorage } from '@/utils/sessionStorage'
 import {
@@ -22,7 +22,7 @@ import {
   TRANSCRIPTION_FORMS_STORAGE_KEY,
 } from '../../Dashboard.helpers'
 
-export interface TranscriptionFormsContextType {
+interface TranscriptionFormsContextType {
   // State
   formStepsState: FormStepsState
   activeTab: DashboardTab
@@ -42,14 +42,14 @@ export interface TranscriptionFormsContextType {
   ) => void
 
   // AI Processing
-  aiProcessing: UseAIProcessingV2Return
+  aiProcessing: UseAIProcessingReturn
 }
 
 const TranscriptionFormsContext = createContext<
   TranscriptionFormsContextType | undefined
 >(undefined)
 
-export interface TranscriptionFormsProviderProps {
+interface TranscriptionFormsProviderProps {
   children: ReactNode
 }
 
@@ -174,7 +174,7 @@ export function TranscriptionFormsProvider({
     error: aiError,
     reset,
     resetByPurpose,
-  } = useAIProcessingV2()
+  } = useAIProcessing()
 
   const contextValue: TranscriptionFormsContextType = {
     formStepsState,

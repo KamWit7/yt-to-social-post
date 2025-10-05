@@ -22,7 +22,7 @@ interface MarkdownParserProps {
   className?: string
 }
 
-export const getMarkdownComponents = (): Components => {
+const getMarkdownComponents = (): Components => {
   return {
     p: ({ children }) => (
       <p className='text-sm leading-relaxed text-foreground/90 mb-4 last:mb-0 transition-all duration-300 animate-in fade-in hover:text-foreground'>
@@ -142,5 +142,3 @@ export function MarkdownParser({ text, className }: MarkdownParserProps) {
     </div>
   )
 }
-
-export type { MarkdownParserProps }

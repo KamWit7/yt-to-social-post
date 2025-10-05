@@ -36,5 +36,3 @@ export function SubmitButton({
     </Button>
   )
 }
-
-export default SubmitButton

@@ -1,6 +1,6 @@
 import { FieldPath, FieldValues } from 'react-hook-form'
 
-export interface BaseFormFieldProps<T extends FieldValues> {
+interface BaseFormFieldProps<T extends FieldValues> {
   name: FieldPath<T>
   label?: string
   placeholder?: string
@@ -28,5 +28,3 @@ export interface TextareaProps<T extends FieldValues>
   textareaClassName?: string
   onChange?: (value: string) => void
 }
-
-export type CheckboxProps<T extends FieldValues> = BaseFormFieldProps<T>

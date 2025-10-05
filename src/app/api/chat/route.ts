@@ -1,5 +1,5 @@
 import { handleApiError } from '@/app/api/result/errors/api-error-handler'
-import { AIModels } from '@/types'
+import { AIModels } from '@/components/dashboard/TranscriptionForms/forms/Form.constants'
 import { GoogleGenAI } from '@google/genai'
 import z from 'zod'
 

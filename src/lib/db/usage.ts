@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma'
 import { AccountTier, UserUsage } from '@prisma/client'
 
 // Usage Tracking Operations
-export async function createUserUsage(userId: string): Promise<UserUsage> {
+async function createUserUsage(userId: string): Promise<UserUsage> {
   return await prisma.userUsage.create({
     data: {
       userId,
@@ -66,6 +66,7 @@ export async function checkUsageLimit(
   }
 }
 
+// TODO: Add usage reset
 export async function resetUsage(userId: string): Promise<UserUsage> {
   return await prisma.userUsage.update({
     where: { userId },
@@ -75,6 +76,7 @@ export async function resetUsage(userId: string): Promise<UserUsage> {
     },
   })
 }
+
 
 export async function getUsageStats(): Promise<{
   totalUsers: number
@@ -99,3 +101,4 @@ export async function getUsageStats(): Promise<{
     averageUsage: usageStats._avg.summaryCount || 0,
   }
 }
+

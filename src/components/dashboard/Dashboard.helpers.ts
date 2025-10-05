@@ -1,10 +1,10 @@
 import {
-  AIProcessingV2Error,
-  AIProcessingV2Response,
+  AIProcessingError,
+  AIProcessingResponse,
 } from '@/api/hooks/useAIProcessingV2'
 import { ApiResponse } from '@/types'
 import z from 'zod'
-import { PurposeOnlyFormData } from './TranscriptionForms/types/formTypes'
+import { PurposeOnlyFormData } from './TranscriptionForms/forms/PurposeForm/purposeSchema'
 
 export const TRANSCRIPTION_FORMS_STORAGE_KEY = 'transcriptionForms'
 
@@ -29,8 +29,8 @@ export interface FormStepsState {
   [DASHBOARD_TABS.TRANSCRIPT]?: string
   [DASHBOARD_TABS.PURPOSE]?: PurposeOnlyFormData
   [DASHBOARD_TABS.RESULTS]?: ApiResponse<
-    AIProcessingV2Response,
-    AIProcessingV2Error
+    AIProcessingResponse,
+    AIProcessingError
   >
 }
 

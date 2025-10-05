@@ -3,13 +3,6 @@ import { AccountTier } from '@prisma/client'
 
 export const DEFAULT_USAGE_LIMIT = 10 // Free tier limit
 
-export function isUsageLimitExceeded(
-  current: number,
-  limit: number = DEFAULT_USAGE_LIMIT
-): boolean {
-  return current >= limit
-}
-
 export function getUsageWarningLevel(
   current: number,
   limit: number = DEFAULT_USAGE_LIMIT,

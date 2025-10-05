@@ -40,7 +40,7 @@ if (!serverEnvResult.success) {
 export const serverEnv = serverEnvResult.data
 
 // Helper function to check if Google OAuth is configured
-export function isGoogleOAuthConfigured(): boolean {
+function isGoogleOAuthConfigured(): boolean {
   return !!(serverEnv.GOOGLE_CLIENT_ID && serverEnv.GOOGLE_CLIENT_SECRET)
 }
 

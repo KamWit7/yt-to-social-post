@@ -5,8 +5,8 @@ import {
   DictionaryDisplay,
   LanguageValue,
   PurposeValue,
-} from '@/app/api/dictionaries'
-import { AIModels, DEFAULT_AI_MODEL } from '@/types'
+} from '@/components/dashboard/TranscriptionForms/forms/Form.constants'
+import { AIModels, DEFAULT_AI_MODEL } from '@/components/dashboard/TranscriptionForms/forms/Form.constants'
 import { useState } from 'react'
 
 export default function DemoPage() {
@@ -29,8 +29,6 @@ export default function DemoPage() {
     }))
     setError('')
   }
-
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -169,11 +167,13 @@ export default function DemoPage() {
                 onChange={(e) => handleInputChange('purpose', e.target.value)}
                 className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                 required>
-                {DictionaryDisplay.Purpose.map((item) => (
-                  <option key={item.code} value={item.code}>
-                    {item.label}
-                  </option>
-                ))}
+                {DictionaryDisplay.Purpose.map(
+                  (item: { code: string; label: string }) => (
+                    <option key={item.code} value={item.code}>
+                      {item.label}
+                    </option>
+                  )
+                )}
               </select>
             </div>
 
@@ -211,11 +211,13 @@ export default function DemoPage() {
                 value={formData.language}
                 onChange={(e) => handleInputChange('language', e.target.value)}
                 className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'>
-                {DictionaryDisplay.Language.map((item) => (
-                  <option key={item.code} value={item.code}>
-                    {item.label}
-                  </option>
-                ))}
+                {DictionaryDisplay.Language.map(
+                  (item: { code: string; label: string }) => (
+                    <option key={item.code} value={item.code}>
+                      {item.label}
+                    </option>
+                  )
+                )}
               </select>
             </div>
 
@@ -231,11 +233,13 @@ export default function DemoPage() {
                 value={formData.model}
                 onChange={(e) => handleInputChange('model', e.target.value)}
                 className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'>
-                {Object.entries(AIModels).map(([key, value]) => (
-                  <option key={value} value={value}>
-                    {key} ({value})
-                  </option>
-                ))}
+                {Object.entries(AIModels).map(
+                  ([key, value]: [string, string]) => (
+                    <option key={value as string} value={value as string}>
+                      {key} ({value})
+                    </option>
+                  )
+                )}
               </select>
             </div>
 

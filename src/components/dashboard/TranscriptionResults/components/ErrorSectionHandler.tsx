@@ -1,8 +1,11 @@
 'use client'
 
-import { PurposeValue } from '@/app/api/dictionaries'
+import {
+  DEFAULT_AI_MODEL,
+  DEFAULT_LANGUAGE,
+  PurposeValue,
+} from '@/components/dashboard/TranscriptionForms/forms/Form.constants'
 import { Card, CardContent } from '@/components/ui/card'
-import { DEFAULT_AI_MODEL, DEFAULT_LANGUAGE } from '@/types'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
 import { ReactNode, useCallback, useState } from 'react'
 import { DASHBOARD_TABS } from '../../Dashboard.helpers'

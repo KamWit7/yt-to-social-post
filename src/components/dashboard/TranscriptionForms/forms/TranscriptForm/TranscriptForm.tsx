@@ -20,9 +20,11 @@ import {
 } from '../../components/Section.helpers'
 import { FORM_FIELD_NAMES } from '../../constants/formConstants'
 import { useTranscriptionForms } from '../../context'
-import type { TranscriptOnlyFormData } from '../../types/formTypes'
 import { getTranscriptDefaultValues } from './TranscriptForm.helpers'
-import { transcriptSchema } from './transcriptSchema'
+import {
+  transcriptSchema,
+  type TranscriptOnlyFormData,
+} from './transcriptSchema'
 
 export function TranscriptForm() {
   const {

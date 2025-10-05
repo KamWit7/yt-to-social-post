@@ -1,10 +1,9 @@
-import { Dictionary } from '@/app/api/dictionaries'
-import { AIModels, DEFAULT_AI_MODEL } from '@/types'
 import { z } from 'zod'
 import {
   DEFAULT_PURPOSE,
   FORM_FIELD_NAMES,
 } from '../../constants/formConstants'
+import { AIModels, DEFAULT_AI_MODEL, Dictionary } from '../Form.constants'
 
 export const purposeSchema = z
   .object({
@@ -37,3 +36,5 @@ export const purposeSchema = z
       })
     }
   })
+
+export type PurposeOnlyFormData = z.input<typeof purposeSchema>

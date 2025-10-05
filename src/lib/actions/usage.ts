@@ -13,12 +13,12 @@ import { serverEnv } from '../env/server'
 import { prisma } from '../prisma'
 import { DEFAULT_USAGE_LIMIT } from '../usage'
 
-export type UsageBaseResponse = {
+type UsageBaseResponse = {
   success: boolean
   error?: string
 }
 
-export type UsageResponse = UsageBaseResponse & {
+type UsageResponse = UsageBaseResponse & {
   usage: {
     current: number
     limit: number
@@ -123,7 +123,7 @@ export async function getUserUsageStats(): Promise<UsageStats> {
   }
 }
 
-export type SaveApiKeyAndUpgradeTierResponse = UsageBaseResponse & {
+type SaveApiKeyAndUpgradeTierResponse = UsageBaseResponse & {
   usage: UserUsage | null
 }
 
@@ -180,7 +180,7 @@ export async function saveApiKeyAndUpgradeTier(
   }
 }
 
-export type GetUserApiKeyResponse = UsageBaseResponse & {
+type GetUserApiKeyResponse = UsageBaseResponse & {
   apiKey: UserUsage['apiKey']
 }
 

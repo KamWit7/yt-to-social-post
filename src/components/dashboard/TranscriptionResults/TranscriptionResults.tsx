@@ -1,11 +1,10 @@
 'use client'
 
 import {
-  AIProcessingV2Response,
+  AIProcessingResponse,
   isAllPurposeSuccess,
   isAnyPurposeLoading,
 } from '@/api/hooks/useAIProcessingV2'
-import { Dictionary } from '@/app/api/dictionaries'
 import { AILoadingAnimation } from '@/components/animation'
 import { useUsage } from '@/context'
 import { trackUserUsage } from '@/lib/actions/usage'
@@ -14,10 +13,11 @@ import { FileText, Hash, MessageSquare } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
 import { DASHBOARD_TABS } from '../Dashboard.helpers'
 import { useTranscriptionForms } from '../TranscriptionForms/context'
+import { Dictionary } from '../TranscriptionForms/forms/Form.constants'
 import { ResultCard } from './components'
 
-// Helper function to extract data from AIProcessingV2Response record
-function extractDataFromResponse(response?: AIProcessingV2Response) {
+// Helper function to extract data from AIProcessingResponse record
+function extractDataFromResponse(response?: AIProcessingResponse) {
   const result: {
     summary?: string
     topics?: string

@@ -4,7 +4,7 @@ import { MarkdownParser } from '@/components/MarkdownParser'
 import { cn } from '@/lib/utils'
 import { Bot, User } from 'lucide-react'
 
-interface Message {
+export interface Message {
   id: string
   role: 'user' | 'assistant'
   content: string
@@ -68,4 +68,3 @@ export function MessageBubble({
   )
 }
 
-export type { Message, MessageBubbleProps }

@@ -26,7 +26,3 @@ export const FORM_STYLES = {
 export const getInputClasses = (hasIcon: boolean = false) => {
   return hasIcon ? FORM_STYLES.input.withIcon : FORM_STYLES.input.withoutIcon
 }
-
-export const getTextareaClasses = () => {
-  return FORM_STYLES.textarea.base
-}

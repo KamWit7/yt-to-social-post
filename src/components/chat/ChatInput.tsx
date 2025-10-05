@@ -75,5 +75,3 @@ export function ChatInput({
     </Card>
   )
 }
-
-export type { ChatInputProps }

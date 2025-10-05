@@ -1,4 +1,3 @@
-import { Dictionary } from '@/app/api/dictionaries'
 import InitialTransition from '@/components/animation/InitialTransition'
 import Footer from '@/components/common/Footer'
 import Header from '@/components/common/Header'
@@ -11,6 +10,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { headers } from 'next/headers'
 import './globals.css'
+import { Dictionary } from '@/components/dashboard/TranscriptionForms/forms/Form.constants'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

@@ -1,20 +1,20 @@
-import { PurposeValue } from '@/app/api/dictionaries'
 import { ProcessTranscriptRequest } from '@/app/api/result/ai.validations'
+import { PurposeValue } from '@/components/dashboard/TranscriptionForms/forms/Form.constants'
 import { useState } from 'react'
 
-export type AIProcessingV2Response = Record<PurposeValue, string | undefined>
+export type AIProcessingResponse = Record<PurposeValue, string | undefined>
 
-export type AIProcessingV2Error = Record<PurposeValue, string>
-export type AIProcessingV2Success = Record<PurposeValue, boolean> | null
-export type AIProcessingV2Loading = Record<PurposeValue, boolean | undefined>
+export type AIProcessingError = Record<PurposeValue, string>
+type AIProcessingSuccess = Record<PurposeValue, boolean> | null
+export type AIProcessingLoading = Record<PurposeValue, boolean | undefined>
 
 // Helper function to check if any purpose is loading
-export function isAnyPurposeLoading(loadingState?: AIProcessingV2Loading) {
+export function isAnyPurposeLoading(loadingState?: AIProcessingLoading) {
   if (!loadingState) return false
   return Object.values(loadingState).some((loading) => loading === true)
 }
 
-export function isAllPurposeSuccess(successState?: AIProcessingV2Success) {
+export function isAllPurposeSuccess(successState?: AIProcessingSuccess) {
   if (!successState) {
     return false
   }
@@ -22,48 +22,48 @@ export function isAllPurposeSuccess(successState?: AIProcessingV2Success) {
   return Object.values(successState).every((success) => success === true)
 }
 
-export interface UseAIProcessingV2Return {
-  isLoading: AIProcessingV2Loading | undefined
-  response: AIProcessingV2Response | undefined
-  error: AIProcessingV2Error | undefined
+export interface UseAIProcessingReturn {
+  isLoading: AIProcessingLoading | undefined
+  response: AIProcessingResponse | undefined
+  error: AIProcessingError | undefined
   processTranscript: (
     purpose: PurposeValue,
     data: ProcessTranscriptRequest
   ) => Promise<void>
-  isSuccess: AIProcessingV2Success
+  isSuccess: AIProcessingSuccess
   reset: () => void
   resetByPurpose: (purpose: PurposeValue) => void
 }
 
-export function useAIProcessingV2(): UseAIProcessingV2Return {
-  const [isLoading, setIsLoading] = useState<AIProcessingV2Loading>()
-  const [response, setResponse] = useState<AIProcessingV2Response>()
-  const [error, setError] = useState<AIProcessingV2Error>()
-  const [isSuccess, setIsSuccess] = useState<AIProcessingV2Success>(null)
+export function useAIProcessing(): UseAIProcessingReturn {
+  const [isLoading, setIsLoading] = useState<AIProcessingLoading>()
+  const [response, setResponse] = useState<AIProcessingResponse>()
+  const [error, setError] = useState<AIProcessingError>()
+  const [isSuccess, setIsSuccess] = useState<AIProcessingSuccess>(null)
 
   const setErrorForPurpose = (purpose: PurposeValue, errorMessage: string) => {
     setError(
-      (error) => ({ ...error, [purpose]: errorMessage } as AIProcessingV2Error)
+      (error) => ({ ...error, [purpose]: errorMessage } as AIProcessingError)
     )
   }
 
   const setSuccessForPurpose = (purpose: PurposeValue, success: boolean) => {
     setIsSuccess(
       (successState) =>
-        ({ ...successState, [purpose]: success } as AIProcessingV2Success)
+        ({ ...successState, [purpose]: success } as AIProcessingSuccess)
     )
   }
 
   const clearErrorForPurpose = (purpose: PurposeValue) => {
     setError(
-      (error) => ({ ...error, [purpose]: undefined } as AIProcessingV2Error)
+      (error) => ({ ...error, [purpose]: undefined } as AIProcessingError)
     )
   }
 
   const setLoadingForPurpose = (purpose: PurposeValue, loading: boolean) => {
     setIsLoading(
       (loadingState) =>
-        ({ ...loadingState, [purpose]: loading } as AIProcessingV2Loading)
+        ({ ...loadingState, [purpose]: loading } as AIProcessingLoading)
     )
   }
 
@@ -146,7 +146,7 @@ export function useAIProcessingV2(): UseAIProcessingV2Return {
 
               setResponse((currentResponse) => {
                 if (!currentResponse) {
-                  return { [purpose]: parsed.text } as AIProcessingV2Response
+                  return { [purpose]: parsed.text } as AIProcessingResponse
                 }
 
                 return {
@@ -187,11 +187,11 @@ export function useAIProcessingV2(): UseAIProcessingV2Return {
       if (!response) {
         return response
       }
-      return { ...response, [purpose]: undefined } as AIProcessingV2Response
+      return { ...response, [purpose]: undefined } as AIProcessingResponse
     })
 
     setError(
-      (error) => ({ ...error, [purpose]: undefined } as AIProcessingV2Error)
+      (error) => ({ ...error, [purpose]: undefined } as AIProcessingError)
     )
   }
 

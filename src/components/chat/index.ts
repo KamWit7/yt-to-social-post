@@ -1,5 +1,4 @@
 export { ChatInput } from './ChatInput'
-export type { ChatInputProps } from './ChatInput'
 export { MessageBubble } from './MessageBubble'
-export type { Message, MessageBubbleProps } from './MessageBubble'
+export type { Message } from './MessageBubble'
 export { WelcomeMessage } from './WelcomeMessage'

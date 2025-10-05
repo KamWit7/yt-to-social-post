@@ -18,10 +18,9 @@ import {
   LOADING_MESSAGES,
 } from '../../constants/formConstants'
 import { useTranscriptionForms } from '../../context'
-import type { YouTubeFormData } from '../../types/formTypes'
 import { YouTubeErrorDisplay } from './YouTubeErrorDisplay'
 import { getYouTubeDefaultValues } from './YouTubeForm.helpers'
-import { youtubeSchema } from './youtubeSchema'
+import { youtubeSchema, type YouTubeFormData } from './youtubeSchema'
 
 export function YouTubeForm() {
   const {

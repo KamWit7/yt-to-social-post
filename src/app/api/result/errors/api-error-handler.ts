@@ -5,13 +5,13 @@
  * with proper separation of concerns and maintainable error mapping.
  */
 
-export interface ApiErrorResponse {
+interface ApiErrorResponse {
   error: string
   code: number
   type: string
 }
 
-export interface ErrorMapping {
+interface ErrorMapping {
   statusCode: number
   message: string
   type: string
@@ -117,26 +117,5 @@ export function handleApiError(error: unknown, context = 'API'): Response {
   } catch (processingError) {
     console.error('Error processing failed:', processingError)
     return createErrorResponse(DEFAULT_ERROR)
-  }
-}
-
-/**
- * Type guard to check if an error is a known API error type
- */
-export function isApiError(error: unknown): error is Error {
-  return error instanceof Error && extractErrorMessage(error) !== null
-}
-
-/**
- * Utility to create custom API errors with proper typing
- */
-export class ApiError extends Error {
-  constructor(
-    message: string,
-    public readonly statusCode: number = 500,
-    public readonly type: string = 'internal_error'
-  ) {
-    super(message)
-    this.name = 'ApiError'
   }
 }

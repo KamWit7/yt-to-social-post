@@ -1,3 +1,13 @@
+export const AIModels = {
+  Gemini25Pro: 'gemini-2.5-pro',
+  Gemini25Flash: 'gemini-2.5-flash',
+  Gemini25FlashLite: 'gemini-2.5-flash-lite',
+} as const
+
+type AIModelName = (typeof AIModels)[keyof typeof AIModels]
+
+export const DEFAULT_AI_MODEL: AIModelName = AIModels.Gemini25Flash
+
 const Purpose = {
   SocialMedia: 'social_media',
   Custom: 'custom',
@@ -18,7 +28,7 @@ export const Dictionary = {
   Language,
 }
 
-export type DictionaryItem = {
+type DictionaryItem = {
   code: string
   label: string
 }
@@ -38,3 +48,5 @@ export const DictionaryDisplay = {
   Purpose: PurposeItems,
   Language: LanguageItems,
 }
+
+export const DEFAULT_LANGUAGE = Dictionary.Language.Polish
