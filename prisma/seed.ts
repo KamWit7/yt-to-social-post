@@ -10,7 +10,7 @@ async function main() {
   await prisma.user.deleteMany({
     where: {
       email: {
-        in: ['demo@example.com', 'test@example.com'],
+        in: ['demo@example.com', 'demo2@example.com', 'test@example.com'],
       },
     },
   })

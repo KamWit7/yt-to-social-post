@@ -78,7 +78,6 @@ export async function UsageStats({ className }: { className?: string }) {
   const status = getUsageStatus(stats.usage.current)
   const StatusIcon = status.icon
   const tierInfo = getAccountTierInfo(stats.usage.accountTier)
-  const TierIcon = tierInfo.icon
 
   return (
     <Card className={className}>
@@ -114,7 +113,7 @@ export async function UsageStats({ className }: { className?: string }) {
                   <Badge
                     variant={
                       status.level === UsageLevel.DANGER
-                        ? 'destructive'
+                        ? 'outline'
                         : status.level === UsageLevel.WARNING
                         ? 'secondary'
                         : 'default'
@@ -123,7 +122,7 @@ export async function UsageStats({ className }: { className?: string }) {
                   </Badge>
                 </div>
 
-                <Progress value={stats.usage.percentage} className='h-3' />
+                <Progress value={stats.usage.percentage} className='h-2' />
               </div>
             )}
 
@@ -136,13 +135,6 @@ export async function UsageStats({ className }: { className?: string }) {
               )}>
               <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-3'>
-                  <div
-                    className={cn(
-                      'p-2 rounded-full bg-gradient-to-r',
-                      tierInfo.gradient
-                    )}>
-                    <TierIcon className='w-5 h-5 text-white' />
-                  </div>
                   <div>
                     <p className='font-semibold text-foreground'>
                       Plan: {tierInfo.label}
@@ -153,10 +145,10 @@ export async function UsageStats({ className }: { className?: string }) {
                   </div>
                 </div>
                 {isFreeAccount && (
-                  <Link href={ROUTES.SETTINGS}>
-                    <Button
-                      size='sm'
-                      className='group bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105'>
+                  <Link
+                    href={ROUTES.SETTINGS}
+                    className='w-1/2 flex justify-end'>
+                    <Button className='group bg-gradient-to-r from-red-500 to-purple-600 hover:from-red-600 hover:to-purple-700 '>
                       <Crown className='w-4 h-4 mr-2 transition-transform duration-300 group-hover:scale-110' />
                       Ulepsz
                     </Button>
@@ -166,7 +158,7 @@ export async function UsageStats({ className }: { className?: string }) {
             </div>
 
             <div className='flex flex-col md:flex-row gap-4'>
-              <div className='flex-1 text-center p-4 border rounded-lg hover:shadow-md transition-all duration-300 hover:scale-[1.02]'>
+              <div className='flex-1 text-center p-4 border rounded-lg hover:shadow-md transition-all duration-300'>
                 <div className='space-y-2'>
                   <p className='text-sm font-medium text-muted-foreground'>
                     {isFreeAccount ? 'Użyte w tym miesiącu' : 'Łącznie użyte'}
@@ -176,7 +168,7 @@ export async function UsageStats({ className }: { className?: string }) {
                   </p>
                 </div>
               </div>
-              <div className='flex-1 text-center p-4 border rounded-lg hover:shadow-md transition-all duration-300 hover:scale-[1.02]'>
+              <div className='flex-1 text-center p-4 border rounded-lg hover:shadow-md transition-all duration-300'>
                 <div className='space-y-2'>
                   <p className='text-sm font-medium text-muted-foreground'>
                     {isFreeAccount ? 'Miesięczny limit' : 'Nieograniczone'}
@@ -189,10 +181,10 @@ export async function UsageStats({ className }: { className?: string }) {
             </div>
 
             {/* Status Message */}
-            <div className='flex items-start justify-center gap-3 border-t pt-4'>
+            <div className='flex items-center justify-center gap-3 border-t pt-2'>
               <StatusIcon
                 className={cn(
-                  'my-auto',
+                  'my-auto w-16',
                   !isFreeAccount
                     ? 'text-green-500'
                     : status.level === UsageLevel.DANGER
