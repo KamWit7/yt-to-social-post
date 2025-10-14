@@ -2,8 +2,13 @@ import { AccountTier } from '@prisma/client'
 import {
   DEFAULT_PURPOSE,
   FORM_FIELD_NAMES,
-} from '../../constants/formConstants'
-import { AIModels, DEFAULT_AI_MODEL, DEFAULT_LANGUAGE } from '../Form.constants'
+} from '../../TasncriptionForms.constants'
+import {
+  AIModels,
+  DEFAULT_AI_MODEL,
+  DEFAULT_LANGUAGE,
+  DEFAULT_TEMPERATURE_MODE,
+} from '../Form.constants'
 import type { PurposeOnlyFormData } from './purposeSchema'
 
 export const getPurposeDefaultValues = (
@@ -17,14 +22,11 @@ export const getPurposeDefaultValues = (
     existingData?.[FORM_FIELD_NAMES.CUSTOM_PROMPT] ?? '',
   [FORM_FIELD_NAMES.MODEL]:
     existingData?.[FORM_FIELD_NAMES.MODEL] ?? DEFAULT_AI_MODEL,
+  [FORM_FIELD_NAMES.TEMPERATURE_MODE]:
+    existingData?.[FORM_FIELD_NAMES.TEMPERATURE_MODE] ??
+    DEFAULT_TEMPERATURE_MODE,
 })
 
-/**
- * Determines if a specific AI model is available for the user based on their account tier
- * @param model - The AI model to check
- * @param accountTier - The user's account tier
- * @returns true if the model is available, false otherwise
- */
 export const isModelAvailable = (
   model: string,
   accountTier: AccountTier

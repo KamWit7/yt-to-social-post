@@ -23,7 +23,7 @@ BIG
 [+] sprawdzisć seeting oraz profile
 [+] poprawić profil aby pasował do gate przekroczony limit
 
-[ ] dodanie temperatury -> tam samo zmiana tylko dla BYOK (pokazywać domyślną)
+[+] dodanie temperatury -> tam samo zmiana tylko dla BYOK (pokazywać domyślną)
 
 [?] poprawa wizualna dla osobny przekraczającej limit darmowego konta CEL oraz profil (przeglądnąć)
 
@@ -31,6 +31,6 @@ BIG
 
 [ ] Form Purpose -> krótki stan ładowania skacze ekran -> UsageGate
 
-[ ] dodać zapisywanie po udanym fetchu AI
+[in_porgess] dodać zapisywanie po udanym fetchu AI
 
 [ ] test dla zapisywanie w LS kiedy user się zaloguje przedzie propces skopiuje dane z LS i wkleji jak nie jest zalogowany oczekiwany rezulata - endpoint z transkrypcją wali błąd

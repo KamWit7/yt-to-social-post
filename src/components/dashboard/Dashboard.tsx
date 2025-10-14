@@ -9,8 +9,8 @@ import { TranscriptionForm } from '.'
 import { TextShimmer } from '../animation'
 import { DashboardTabTrigger } from './components'
 import { DASHBOARD_TABS } from './Dashboard.helpers'
-import { useTranscriptionForms } from './TranscriptionForms/context'
 import TranscriptionResults from './TranscriptionResults/TranscriptionResults'
+import { useTranscriptionForms } from './TranscriptionForms/TranscriptionFormsContext'
 
 function DashboardContent() {
   const { activeTab, stepCompleted, isLoading, handleTabChange } =

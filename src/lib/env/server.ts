@@ -25,6 +25,9 @@ const serverEnvSchema = z.object({
   NODE_ENV: z
     .enum(['development', 'production', 'test'])
     .default('development'),
+
+  // Gemini API Key
+  GEMINI_API_KEY: z.string().min(1, 'GEMINI_API_KEY is required'),
 })
 
 // Walidacja zmiennych serwerowych

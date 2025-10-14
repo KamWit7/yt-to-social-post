@@ -1,6 +1,6 @@
 'use client'
 
-import { DEFAULT_USAGE_STATS } from '@/components/dashboard/TranscriptionForms/gates/UsageGate/UsageGate'
+import { DEFAULT_USAGE_STATS } from '@/components/dashboard/TranscriptionForms/gates/UsageGate'
 import { Button } from '@/components/ui/button'
 import {
   Popover,

@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranscriptionForms } from '@/components/dashboard/TranscriptionForms/context'
+import { useTranscriptionForms } from '@/components/dashboard/TranscriptionForms/TranscriptionFormsContext'
 import {
   Popover,
   PopoverContent,
@@ -12,15 +12,19 @@ import { ArrowRight, Lock } from 'lucide-react'
 import Link from 'next/link'
 import { useState, type ReactNode } from 'react'
 
-interface PremiumModelTooltipProps {
+interface PremiumFeatureTooltipProps {
   children: ReactNode
   isByokUser: boolean
+  title: string
+  description: string
 }
 
-export function PremiumModelTooltip({
+export function PremiumFeatureTooltip({
   children,
   isByokUser,
-}: PremiumModelTooltipProps) {
+  title,
+  description,
+}: PremiumFeatureTooltipProps) {
   const [isOpen, setIsOpen] = useState(false)
   const { handleSaveState } = useTranscriptionForms()
 
@@ -62,9 +66,7 @@ export function PremiumModelTooltip({
         side='bottom'
         className='max-w-xs p-4 border border-primary/20 bg-white/20 backdrop-blur-md'>
         <div className='space-y-2'>
-          <p className='font-medium text-foreground'>
-            Odblokuj wszystkie modele AI
-          </p>
+          <p className='font-medium text-foreground'>{title}</p>
 
           <Link href={ROUTES.SETTINGS} onClick={handleSaveState}>
             <p className='text-sm text-muted-foreground leading-relaxed flex items-center gap-2 group hover:text-primary'>
@@ -74,7 +76,7 @@ export function PremiumModelTooltip({
           </Link>
 
           <span className='text-xs text-muted-foreground'>
-            🔒 Modele wymagają konta BYOK.
+            🔒 {description}
           </span>
         </div>
       </PopoverContent>

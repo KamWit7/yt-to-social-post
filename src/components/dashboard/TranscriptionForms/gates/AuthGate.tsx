@@ -7,7 +7,7 @@ import { Lock } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React from 'react'
-import { useTranscriptionForms } from '../../context'
+import { useTranscriptionForms } from '../TranscriptionFormsContext'
 
 interface AuthGateProps {
   children: React.ReactNode

@@ -4,7 +4,7 @@ import { AnimatedSection } from '@/components/animation'
 import { ControlledInput } from '@/components/common/form'
 import { Sparkles } from 'lucide-react'
 import { ANIMATION_DELAYS } from '../../components/Section.helpers'
-import { FORM_FIELD_NAMES } from '../../constants/formConstants'
+import { FORM_FIELD_NAMES } from '../../TasncriptionForms.constants'
 
 interface ConditionalOptionsProps {
   purpose?: string

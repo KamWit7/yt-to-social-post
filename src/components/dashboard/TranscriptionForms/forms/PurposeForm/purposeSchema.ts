@@ -1,9 +1,15 @@
+import { TemperatureMode } from '@/utils/modelTemperature'
 import { z } from 'zod'
 import {
   DEFAULT_PURPOSE,
   FORM_FIELD_NAMES,
-} from '../../constants/formConstants'
-import { AIModels, DEFAULT_AI_MODEL, Dictionary } from '../Form.constants'
+} from '../../TasncriptionForms.constants'
+import {
+  AIModels,
+  DEFAULT_AI_MODEL,
+  DEFAULT_TEMPERATURE_MODE,
+  Dictionary,
+} from '../Form.constants'
 
 export const purposeSchema = z
   .object({
@@ -24,6 +30,13 @@ export const purposeSchema = z
         AIModels.Gemini25FlashLite,
       ])
       .default(DEFAULT_AI_MODEL),
+    [FORM_FIELD_NAMES.TEMPERATURE_MODE]: z
+      .enum([
+        TemperatureMode.PRECISE,
+        TemperatureMode.BALANCED,
+        TemperatureMode.CREATIVE,
+      ] as const)
+      .default(DEFAULT_TEMPERATURE_MODE),
   })
   .superRefine((data, ctx) => {
     const isCustomPurpose = data[FORM_FIELD_NAMES.PURPOSE] === DEFAULT_PURPOSE

@@ -18,8 +18,8 @@ import {
   ANIMATION_DELAYS,
   BUTTON_STYLES,
 } from '../../components/Section.helpers'
-import { FORM_FIELD_NAMES } from '../../constants/formConstants'
-import { useTranscriptionForms } from '../../context'
+import { FORM_FIELD_NAMES } from '../../TasncriptionForms.constants'
+import { useTranscriptionForms } from '../../TranscriptionFormsContext'
 import { getTranscriptDefaultValues } from './TranscriptForm.helpers'
 import {
   transcriptSchema,

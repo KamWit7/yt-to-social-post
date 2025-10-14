@@ -16,15 +16,17 @@ import {
 import {
   DEFAULT_PURPOSE,
   FORM_FIELD_NAMES,
-} from '../../constants/formConstants'
-import { useTranscriptionForms } from '../../context'
+} from '../../TasncriptionForms.constants'
+import { useTranscriptionForms } from '../../TranscriptionFormsContext'
 import {
   DEFAULT_AI_MODEL,
   DEFAULT_LANGUAGE,
+  DEFAULT_TEMPERATURE_MODE,
   Dictionary,
   DictionaryDisplay,
 } from '../Form.constants'
 import { AIModelSelect } from './components/AIModelSelect/AIModelSelect'
+import { TemperatureModeSelect } from './components/TemperatureModeSelect/TemperatureModeSelect'
 import { ConditionalOptions } from './ConditionalOptions'
 import { getPurposeDefaultValues } from './PurposeForm.helpers'
 import { purposeSchema, type PurposeOnlyFormData } from './purposeSchema'
@@ -36,6 +38,7 @@ export function PurposeForm() {
     handleTabChange,
     handleFormStepUpdate,
     aiProcessing,
+    handleSaveState,
   } = useTranscriptionForms()
 
   const existingPurposeData = formStepsState[DASHBOARD_TABS.PURPOSE]
@@ -67,7 +70,8 @@ export function PurposeForm() {
     handleStepComplete(DASHBOARD_TABS.RESULTS)
     handleTabChange(DASHBOARD_TABS.RESULTS)
 
-    const { processTranscript, reset } = aiProcessing
+    const { processTranscript, reset, response, error, isSuccess } =
+      aiProcessing
 
     const completeData: ProcessTranscriptRequest = {
       transcript: formStepsState[DASHBOARD_TABS.TRANSCRIPT] || '',
@@ -75,6 +79,7 @@ export function PurposeForm() {
       language: data.language || DEFAULT_LANGUAGE,
       customPrompt: data.customPrompt || '',
       model: data.model || DEFAULT_AI_MODEL,
+      temperatureMode: data.temperatureMode || DEFAULT_TEMPERATURE_MODE,
     }
 
     reset()
@@ -91,7 +96,14 @@ export function PurposeForm() {
       }
     }
 
-    await fetchData()
+    await fetchData().then(() => {
+      handleFormStepUpdate(DASHBOARD_TABS.RESULTS, {
+        success: !!isSuccess,
+        data: response,
+        error,
+      })
+      handleSaveState()
+    })
   }
 
   return (
@@ -121,7 +133,7 @@ export function PurposeForm() {
                   </p>
                 </div>
 
-                <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+                <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
                   <div className='space-y-2'>
                     <ControlledSelect
                       name={FORM_FIELD_NAMES.PURPOSE}
@@ -153,6 +165,19 @@ export function PurposeForm() {
                       placeholder='Wybierz model...'
                       className='w-full'
                     />
+                  </div>
+
+                  <div className='space-y-2'>
+                    <TemperatureModeSelect
+                      name={FORM_FIELD_NAMES.TEMPERATURE_MODE}
+                      label='🌡️ Tryb temperatury'
+                      placeholder='Wybierz tryb...'
+                      className='w-full'
+                    />
+                    <p className='text-xs text-gray-500 dark:text-gray-400 mt-1 pl-1'>
+                      Kontroluje kreatywność AI: niższa temperatura = bardziej
+                      przewidywalne odpowiedzi
+                    </p>
                   </div>
                 </div>
               </div>

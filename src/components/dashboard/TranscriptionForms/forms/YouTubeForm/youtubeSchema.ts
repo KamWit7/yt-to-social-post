@@ -1,6 +1,6 @@
 import { YOUTUBE_URL_PATTERNS } from '@/utils/constants'
 import { z } from 'zod'
-import { FORM_FIELD_NAMES } from '../../constants/formConstants'
+import { FORM_FIELD_NAMES } from '../../TasncriptionForms.constants'
 
 export const youtubeSchema = z.object({
   [FORM_FIELD_NAMES.URL]: z

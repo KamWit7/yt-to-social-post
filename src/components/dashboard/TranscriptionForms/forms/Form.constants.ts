@@ -1,3 +1,5 @@
+import { TemperatureMode } from '@/utils/modelTemperature'
+
 export const AIModels = {
   Gemini25Pro: 'gemini-2.5-pro',
   Gemini25Flash: 'gemini-2.5-flash',
@@ -8,7 +10,7 @@ type AIModelName = (typeof AIModels)[keyof typeof AIModels]
 
 export const DEFAULT_AI_MODEL: AIModelName = AIModels.Gemini25Flash
 
-const Purpose = {
+export const Purpose = {
   SocialMedia: 'social_media',
   Custom: 'custom',
   Summary: 'summary',
@@ -44,9 +46,17 @@ const LanguageItems: DictionaryItem[] = [
   { code: Language.English, label: 'English' },
 ]
 
+const TemperatureModeItems: DictionaryItem[] = [
+  { code: TemperatureMode.PRECISE, label: 'Precyzyjny' },
+  { code: TemperatureMode.BALANCED, label: 'Zrównoważony' },
+  { code: TemperatureMode.CREATIVE, label: 'Kreatywny' },
+]
+
 export const DictionaryDisplay = {
   Purpose: PurposeItems,
   Language: LanguageItems,
+  TemperatureMode: TemperatureModeItems,
 }
 
 export const DEFAULT_LANGUAGE = Dictionary.Language.Polish
+export const DEFAULT_TEMPERATURE_MODE = TemperatureMode.BALANCED

@@ -1,10 +1,11 @@
-import { handleApiError } from '@/app/api/result/errors/api-error-handler'
+import { handleApiError } from '@/app/api/result/errors/handler'
 import { isModelAvailable } from '@/components/dashboard/TranscriptionForms/forms/PurposeForm/PurposeForm.helpers'
 import { getUserApiKey } from '@/lib/actions/usage'
 import { authOptions } from '@/lib/auth'
 import { getUserUsage } from '@/lib/db/usage'
 import { serverEnv } from '@/lib/env/server'
 import { decrypt } from '@/utils/encryption/encryption'
+import { getModelTemperature } from '@/utils/modelTemperature'
 import { GoogleGenAI } from '@google/genai'
 import { AccountTier } from '@prisma/client'
 import { getServerSession } from 'next-auth'
@@ -13,15 +14,6 @@ import { PromptLoader } from './prompts'
 
 export async function POST(request: Request) {
   try {
-    const requestData = await request.json()
-    const body = ProcessTranscriptRequestSchema.parse(requestData)
-
-    const { transcript, purpose, language, customPrompt, model } = body
-
-    if (!transcript) {
-      return new Response('Transcript is required', { status: 400 })
-    }
-
     // Sprawdzenie sesji użytkownika i uprawnień do modelu
     const session = await getServerSession(authOptions)
 
@@ -31,7 +23,26 @@ export async function POST(request: Request) {
 
     // Pobranie accountTier użytkownika
     const userUsage = await getUserUsage(session.user.id)
-    const accountTier = userUsage?.accountTier || AccountTier.free
+
+    const requestData = await request.json()
+    const body = ProcessTranscriptRequestSchema.parse({
+      ...requestData,
+      accountTier: userUsage?.accountTier || AccountTier.free,
+    })
+
+    const {
+      transcript,
+      purpose,
+      language,
+      customPrompt,
+      model,
+      temperatureMode,
+      accountTier,
+    } = body
+
+    if (!transcript) {
+      return new Response('Transcript is required', { status: 400 })
+    }
 
     // Walidacja uprawnień do wybranego modelu
     if (!isModelAvailable(model, accountTier)) {
@@ -49,11 +60,23 @@ export async function POST(request: Request) {
 
     const { apiKey, success } = await getUserApiKey()
 
-    if (!success) {
+    if (!success && !apiKey && accountTier === AccountTier.BYOK) {
       return new Response('API key is required', { status: 400 })
     }
 
-    const decryptedApiKey = decrypt(apiKey ?? '', serverEnv.API_ENCRYPTION_KEY)
+    const decryptedApiKey =
+      accountTier === AccountTier.BYOK
+        ? decrypt(apiKey ?? '', serverEnv.API_ENCRYPTION_KEY)
+        : serverEnv.GEMINI_API_KEY
+
+    const ai = new GoogleGenAI({
+      apiKey: decryptedApiKey,
+    })
+
+    const temperature = await getModelTemperature(
+      temperatureMode,
+      decryptedApiKey
+    )
 
     const prompt = PromptLoader.loadPrompt(purpose, {
       transcript,
@@ -61,13 +84,12 @@ export async function POST(request: Request) {
       customPrompt,
     })
 
-    const ai = new GoogleGenAI({
-      apiKey: decryptedApiKey || process.env.GEMINI_API_KEY,
-    })
-
     const stream = await ai.models.generateContentStream({
       model: model,
       contents: prompt,
+      config: {
+        temperature: temperature,
+      },
     })
 
     // string -> strumień bajtów (Unit8Array)

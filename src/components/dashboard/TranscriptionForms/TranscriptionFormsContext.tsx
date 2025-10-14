@@ -23,7 +23,7 @@ import {
   FormStepsState,
   StepCompleted,
   TRANSCRIPTION_FORMS_STORAGE_KEY,
-} from '../../Dashboard.helpers'
+} from '../Dashboard.helpers'
 
 interface TranscriptionFormsContextType {
   // State
@@ -85,6 +85,8 @@ export function TranscriptionFormsProvider({
     saveStateToSessionStorage(TRANSCRIPTION_FORMS_STORAGE_KEY, {
       transcript: formStepsState[DASHBOARD_TABS.TRANSCRIPT] || '',
       url: formStepsState[DASHBOARD_TABS.YOUTUBE] || '',
+      purpose: formStepsState[DASHBOARD_TABS.PURPOSE] || '',
+      results: formStepsState[DASHBOARD_TABS.RESULTS] || '',
       activeTab,
       stepCompleted,
     })
@@ -106,8 +108,9 @@ export function TranscriptionFormsProvider({
         setFormStepsState({
           [DASHBOARD_TABS.YOUTUBE]: parsedState.url,
           [DASHBOARD_TABS.TRANSCRIPT]: parsedState.transcript,
-          [DASHBOARD_TABS.PURPOSE]: undefined,
-          [DASHBOARD_TABS.RESULTS]: undefined,
+          // TODO: finish this localstorage save state for purpose and result (test it for logout user with bad initenions)
+          // [DASHBOARD_TABS.PURPOSE]: parsedState.purpose,
+          // [DASHBOARD_TABS.RESULTS]: parsedState.results,
         })
         setActiveTab(parsedState.activeTab)
         setStepCompleted(parsedState.stepCompleted)
@@ -211,6 +214,7 @@ export function TranscriptionFormsProvider({
       resetByPurpose,
     },
   }
+  console.log('formStepsState', formStepsState)
 
   return (
     <TranscriptionFormsContext.Provider value={contextValue}>

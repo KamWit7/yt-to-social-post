@@ -4,7 +4,11 @@ import {
 } from '@/api/hooks/useAIProcessingV2'
 import { ApiResponse } from '@/types'
 import z from 'zod'
-import { PurposeOnlyFormData } from './TranscriptionForms/forms/PurposeForm/purposeSchema'
+import { Purpose } from './TranscriptionForms/forms/Form.constants'
+import {
+  PurposeOnlyFormData,
+  purposeSchema,
+} from './TranscriptionForms/forms/PurposeForm/purposeSchema'
 
 export const TRANSCRIPTION_FORMS_STORAGE_KEY = 'transcriptionForms'
 
@@ -44,6 +48,13 @@ export interface StepCompleted {
 export const dashboardStateSchema = z.object({
   transcript: z.string(),
   url: z.string(),
+  purpose: z.object(purposeSchema),
+  results: z.object({
+    [Purpose.Summary]: z.string().optional(),
+    [Purpose.Topics]: z.string().optional(),
+    [Purpose.SocialMedia]: z.string().optional(),
+    [Purpose.Custom]: z.string().optional(),
+  }),
   activeTab: z.enum(Object.values(DASHBOARD_TABS)),
   stepCompleted: z.record(z.enum(Object.values(DASHBOARD_TABS)), z.boolean()),
 })

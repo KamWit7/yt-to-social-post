@@ -1,6 +1,6 @@
 'use client'
 
-import { MarkdownParser } from '@/components/MarkdownParser'
+import { MarkdownParser } from '@/components/parser'
 import { cn } from '@/lib/utils'
 import { Bot, User } from 'lucide-react'
 
@@ -67,4 +67,3 @@ export function MessageBubble({
     </div>
   )
 }
-

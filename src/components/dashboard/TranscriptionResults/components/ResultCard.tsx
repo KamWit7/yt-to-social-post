@@ -4,7 +4,6 @@ import {
 } from '@/api/hooks/useAIProcessingV2'
 import { TextShimmer } from '@/components/animation'
 import { CopyButton } from '@/components/common'
-import { MarkdownParser } from '@/components/MarkdownParser'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { LucideIcon } from 'lucide-react'
@@ -13,6 +12,7 @@ import {
   PurposeValue,
 } from '../../TranscriptionForms/forms/Form.constants'
 import { ErrorSectionHandler } from './ErrorSectionHandler'
+import { MarkdownParser } from '@/components/parser/MarkdownParser'
 
 interface PurposeData {
   purpose?: string

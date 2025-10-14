@@ -13,11 +13,11 @@ import {
   ANIMATION_DELAYS,
   BUTTON_STYLES,
 } from '../../components/Section.helpers'
+import { useTranscriptionForms } from '../../TranscriptionFormsContext'
 import {
   FORM_FIELD_NAMES,
   LOADING_MESSAGES,
-} from '../../constants/formConstants'
-import { useTranscriptionForms } from '../../context'
+} from '../../TasncriptionForms.constants'
 import { YouTubeErrorDisplay } from './YouTubeErrorDisplay'
 import { getYouTubeDefaultValues } from './YouTubeForm.helpers'
 import { youtubeSchema, type YouTubeFormData } from './youtubeSchema'
@@ -77,7 +77,7 @@ export function YouTubeForm() {
     handleStepComplete(DASHBOARD_TABS.YOUTUBE)
     handleTabChange(DASHBOARD_TABS.TRANSCRIPT)
     handleSaveState()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     transcriptData,
     handleTranscriptChange,

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { FORM_FIELD_NAMES } from '../../constants/formConstants'
+import { FORM_FIELD_NAMES } from '../../TasncriptionForms.constants'
 
 export const transcriptSchema = z.object({
   [FORM_FIELD_NAMES.TRANSCRIPT]: z

@@ -7,6 +7,7 @@ export const FORM_FIELD_NAMES = {
   LANGUAGE: 'language',
   CUSTOM_PROMPT: 'customPrompt',
   MODEL: 'model',
+  TEMPERATURE_MODE: 'temperatureMode',
 } as const
 
 export const LOADING_MESSAGES = {

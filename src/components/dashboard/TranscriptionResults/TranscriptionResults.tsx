@@ -10,11 +10,11 @@ import { useUsage } from '@/context'
 import { trackUserUsage } from '@/lib/actions/usage'
 import { MindMapData } from '@/types'
 import { FileText, Hash, MessageSquare } from 'lucide-react'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo } from 'react'
 import { DASHBOARD_TABS } from '../Dashboard.helpers'
-import { useTranscriptionForms } from '../TranscriptionForms/context'
 import { Dictionary } from '../TranscriptionForms/forms/Form.constants'
-import { ResultCard } from './components'
+import { useTranscriptionForms } from '../TranscriptionForms/TranscriptionFormsContext'
+import ResultCard from './components/ResultCard'
 
 // Helper function to extract data from AIProcessingResponse record
 function extractDataFromResponse(response?: AIProcessingResponse) {
@@ -70,19 +70,9 @@ export default function TranscriptionResults() {
     error: aiError,
   } = aiProcessing
 
-  const count = useRef(0)
-
-  console.log('aiSuccess', aiSuccess, aiLoading)
   useEffect(() => {
     // If all purposes are successful and not loading, track usage
     if (!isAnyPurposeLoading(aiLoading) && isAllPurposeSuccess(aiSuccess)) {
-      count.current++
-      console.log(
-        'trackUserUsage',
-        count.current,
-        isAnyPurposeLoading(aiLoading),
-        aiLoading
-      )
       trackUserUsage()
       refreshUsage()
     }

@@ -3,13 +3,14 @@
 import {
   DEFAULT_AI_MODEL,
   DEFAULT_LANGUAGE,
+  DEFAULT_TEMPERATURE_MODE,
   PurposeValue,
 } from '@/components/dashboard/TranscriptionForms/forms/Form.constants'
 import { Card, CardContent } from '@/components/ui/card'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
 import { ReactNode, useCallback, useState } from 'react'
 import { DASHBOARD_TABS } from '../../Dashboard.helpers'
-import { useTranscriptionForms } from '../../TranscriptionForms/context'
+import { useTranscriptionForms } from '../../TranscriptionForms/TranscriptionFormsContext'
 
 interface ErrorSectionHandlerProps {
   children: ReactNode
@@ -44,6 +45,9 @@ export function ErrorSectionHandler({
           formStepsState[DASHBOARD_TABS.PURPOSE]?.model || DEFAULT_AI_MODEL,
         customPrompt:
           formStepsState[DASHBOARD_TABS.PURPOSE]?.customPrompt || '',
+        temperatureMode:
+          formStepsState[DASHBOARD_TABS.PURPOSE]?.temperatureMode ||
+          DEFAULT_TEMPERATURE_MODE,
       })
     } finally {
       setIsRetrying(false)
