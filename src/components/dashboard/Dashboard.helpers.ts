@@ -4,7 +4,10 @@ import {
 } from '@/api/hooks/useAIProcessingV2'
 import { ApiResponse } from '@/types'
 import z from 'zod'
-import { Purpose } from './TranscriptionForms/forms/Form.constants'
+import {
+  Purpose,
+  PurposeValue,
+} from './TranscriptionForms/forms/Form.constants'
 import {
   PurposeOnlyFormData,
   purposeSchema,
@@ -45,16 +48,30 @@ export interface StepCompleted {
   [DASHBOARD_TABS.RESULTS]: boolean
 }
 
-export const dashboardStateSchema = z.object({
-  transcript: z.string(),
-  url: z.string(),
-  purpose: z.object(purposeSchema),
-  results: z.object({
-    [Purpose.Summary]: z.string().optional(),
-    [Purpose.Topics]: z.string().optional(),
-    [Purpose.SocialMedia]: z.string().optional(),
-    [Purpose.Custom]: z.string().optional(),
-  }),
-  activeTab: z.enum(Object.values(DASHBOARD_TABS)),
-  stepCompleted: z.record(z.enum(Object.values(DASHBOARD_TABS)), z.boolean()),
-})
+const getResultSchemaRequired = Object.values(Purpose).reduce(
+  (acc, purpose) => {
+    acc[purpose] = z.union([z.string(), z.undefined()])
+
+    return acc
+  },
+  {} as Record<PurposeValue, z.ZodUnion<[z.ZodString, z.ZodUndefined]>>
+)
+
+export const dashboardStateSchema = z
+  .object({
+    transcript: z.string().optional(),
+    url: z.string().optional(),
+    purpose: purposeSchema.optional(),
+    results: z
+      .object({
+        data: z.object({ ...getResultSchemaRequired }),
+        error: z.object({ ...getResultSchemaRequired }),
+        success: z.boolean().optional(),
+      })
+      .optional(),
+    activeTab: z.enum(Object.values(DASHBOARD_TABS)).optional(),
+    stepCompleted: z
+      .record(z.enum(Object.values(DASHBOARD_TABS)), z.boolean())
+      .optional(),
+  })
+  .optional()

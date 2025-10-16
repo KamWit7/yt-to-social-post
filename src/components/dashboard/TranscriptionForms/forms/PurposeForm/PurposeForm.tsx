@@ -8,7 +8,11 @@ import { Sparkles } from 'lucide-react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { ProcessTranscriptRequest } from '@/app/api/result/ai.validations'
-import { DASHBOARD_TABS } from '../../../Dashboard.helpers'
+import { getStateFromSessionStorage } from '@/utils/sessionStorage'
+import {
+  DASHBOARD_TABS,
+  TRANSCRIPTION_FORMS_STORAGE_KEY,
+} from '../../../Dashboard.helpers'
 import {
   ANIMATION_DELAYS,
   BUTTON_STYLES,
@@ -38,7 +42,6 @@ export function PurposeForm() {
     handleTabChange,
     handleFormStepUpdate,
     aiProcessing,
-    handleSaveState,
   } = useTranscriptionForms()
 
   const existingPurposeData = formStepsState[DASHBOARD_TABS.PURPOSE]
@@ -64,14 +67,15 @@ export function PurposeForm() {
   const purpose = watch(FORM_FIELD_NAMES.PURPOSE)
 
   const onFormSubmit = async (data: PurposeOnlyFormData) => {
+    // Save purpose data first
     handleFormStepUpdate(DASHBOARD_TABS.PURPOSE, data)
 
+    // Mark steps as complete and switch to results tab
     handleStepComplete(DASHBOARD_TABS.PURPOSE)
     handleStepComplete(DASHBOARD_TABS.RESULTS)
     handleTabChange(DASHBOARD_TABS.RESULTS)
 
-    const { processTranscript, reset, response, error, isSuccess } =
-      aiProcessing
+    const { processTranscript, reset } = aiProcessing
 
     const completeData: ProcessTranscriptRequest = {
       transcript: formStepsState[DASHBOARD_TABS.TRANSCRIPT] || '',
@@ -82,27 +86,26 @@ export function PurposeForm() {
       temperatureMode: data.temperatureMode || DEFAULT_TEMPERATURE_MODE,
     }
 
+    // Reset AI state before starting new processing
     reset()
 
-    const fetchData = async () => {
-      try {
-        await Promise.all([
-          processTranscript(completeData.purpose, completeData),
-          processTranscript(Dictionary.Purpose.Summary, completeData),
-          processTranscript(Dictionary.Purpose.Topics, completeData),
-        ])
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
+    // Process all three purposes in parallel
+    try {
+      await Promise.all([
+        processTranscript(completeData.purpose, completeData),
+        processTranscript(Dictionary.Purpose.Summary, completeData),
+        processTranscript(Dictionary.Purpose.Topics, completeData),
+      ])
+    } catch (error) {
+      console.error('Error fetching data:', error)
     }
 
-    await fetchData().then(() => {
-      handleFormStepUpdate(DASHBOARD_TABS.RESULTS, {
-        success: !!isSuccess,
-        data: response,
-        error,
-      })
-      handleSaveState()
+
+    // Update results state - note: aiProcessing state should be updated by now
+    handleFormStepUpdate(DASHBOARD_TABS.RESULTS, {
+      success: !!aiProcessing.isSuccess,
+      data: aiProcessing.response,
+      error: aiProcessing.error,
     })
   }
 

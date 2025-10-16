@@ -53,8 +53,12 @@ function extractDataFromResponse(response?: AIProcessingResponse) {
 }
 
 export default function TranscriptionResults() {
-  const { formStepsState, handleLoadingStateChange, aiProcessing } =
-    useTranscriptionForms()
+  const {
+    formStepsState,
+    handleLoadingStateChange,
+    aiProcessing,
+    handleFormStepUpdate,
+  } = useTranscriptionForms()
 
   const { refreshUsage } = useUsage()
 
@@ -63,20 +67,47 @@ export default function TranscriptionResults() {
     [formStepsState]
   )
 
-  const {
-    isLoading: aiLoading,
-    isSuccess: aiSuccess,
-    response: aiResponse,
-    error: aiError,
-  } = aiProcessing
+  const resultsData = useMemo(
+    () => formStepsState[DASHBOARD_TABS.RESULTS],
+    [formStepsState]
+  )
+
+  const { aiLoading, aiSuccess, aiResponse, aiError } = useMemo(() => {
+    if (!aiProcessing.isLoading) {
+      return {
+        aiError: resultsData?.error,
+        aiResponse: resultsData?.data,
+      }
+    }
+
+    return {
+      aiLoading: aiProcessing.isLoading,
+      aiSuccess: aiProcessing.isSuccess,
+      aiResponse: aiProcessing.response,
+      aiError: aiProcessing.error,
+    }
+  }, [aiProcessing, resultsData])
 
   useEffect(() => {
     // If all purposes are successful and not loading, track usage
     if (!isAnyPurposeLoading(aiLoading) && isAllPurposeSuccess(aiSuccess)) {
       trackUserUsage()
       refreshUsage()
+
+      handleFormStepUpdate(DASHBOARD_TABS.RESULTS, {
+        success: !!aiSuccess,
+        data: aiResponse,
+        error: aiError,
+      })
     }
-  }, [aiSuccess, aiLoading, refreshUsage])
+  }, [
+    aiSuccess,
+    aiLoading,
+    refreshUsage,
+    handleFormStepUpdate,
+    aiResponse,
+    aiError,
+  ])
 
   useEffect(() => {
     handleLoadingStateChange(isAnyPurposeLoading(aiLoading))

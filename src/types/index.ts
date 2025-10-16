@@ -10,7 +10,7 @@ interface MindMapNodeData {
 }
 
 export interface ApiResponse<T, E = string> {
-  success: boolean
+  success?: boolean
   data?: T
   error?: E
   details?: string

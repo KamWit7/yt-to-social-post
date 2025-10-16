@@ -82,15 +82,33 @@ export function TranscriptionFormsProvider({
   })
 
   const handleSaveState = useCallback(() => {
+    console.log(
+      '-------> saveStateToSessionStorage',
+      formStepsState,
+      activeTab,
+      stepCompleted
+    )
+    if (
+      Object.values(formStepsState).every((value) => value === undefined) &&
+      Object.values(stepCompleted).every((value) => value === false) &&
+      activeTab === DASHBOARD_TABS.YOUTUBE
+    ) {
+      return
+    }
     saveStateToSessionStorage(TRANSCRIPTION_FORMS_STORAGE_KEY, {
-      transcript: formStepsState[DASHBOARD_TABS.TRANSCRIPT] || '',
-      url: formStepsState[DASHBOARD_TABS.YOUTUBE] || '',
-      purpose: formStepsState[DASHBOARD_TABS.PURPOSE] || '',
-      results: formStepsState[DASHBOARD_TABS.RESULTS] || '',
+      transcript: formStepsState[DASHBOARD_TABS.TRANSCRIPT],
+      url: formStepsState[DASHBOARD_TABS.YOUTUBE],
+      purpose: formStepsState[DASHBOARD_TABS.PURPOSE],
+      results: formStepsState[DASHBOARD_TABS.RESULTS],
       activeTab,
       stepCompleted,
     })
   }, [formStepsState, activeTab, stepCompleted])
+
+  // Auto-save whenever state changes
+  useEffect(() => {
+    handleSaveState()
+  }, [handleSaveState])
 
   useEffect(() => {
     try {
@@ -104,16 +122,17 @@ export function TranscriptionFormsProvider({
 
       const parsedState = dashboardStateSchema.parse(savedState)
 
+      console.log('parsedState INIT', parsedState)
+
       if (parsedState) {
         setFormStepsState({
           [DASHBOARD_TABS.YOUTUBE]: parsedState.url,
           [DASHBOARD_TABS.TRANSCRIPT]: parsedState.transcript,
-          // TODO: finish this localstorage save state for purpose and result (test it for logout user with bad initenions)
-          // [DASHBOARD_TABS.PURPOSE]: parsedState.purpose,
-          // [DASHBOARD_TABS.RESULTS]: parsedState.results,
+          [DASHBOARD_TABS.PURPOSE]: parsedState.purpose,
+          [DASHBOARD_TABS.RESULTS]: parsedState.results,
         })
-        setActiveTab(parsedState.activeTab)
-        setStepCompleted(parsedState.stepCompleted)
+        setActiveTab((prevState) => parsedState.activeTab ?? prevState)
+        setStepCompleted((prevState) => parsedState.stepCompleted ?? prevState)
       }
     } catch (error) {
       console.error('Error parsing saved state:', error)
@@ -214,7 +233,6 @@ export function TranscriptionFormsProvider({
       resetByPurpose,
     },
   }
-  console.log('formStepsState', formStepsState)
 
   return (
     <TranscriptionFormsContext.Provider value={contextValue}>

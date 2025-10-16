@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 export type AIProcessingResponse = Record<PurposeValue, string | undefined>
 
-export type AIProcessingError = Record<PurposeValue, string>
+export type AIProcessingError = Record<PurposeValue, string | undefined>
 type AIProcessingSuccess = Record<PurposeValue, boolean> | null
 export type AIProcessingLoading = Record<PurposeValue, boolean | undefined>
 
@@ -139,9 +139,8 @@ export function useAIProcessing(): UseAIProcessingReturn {
             }
             try {
               //check is stream is endpint with data: [DONE]
-              const safeData = data.endsWith('data: [DONE]')
-                ? data.slice(0, -12)
-                : data
+              const isDone = data.endsWith('data: [DONE]')
+              const safeData = isDone ? data.slice(0, -12) : data
               const parsed = JSON.parse(safeData)
 
               setResponse((currentResponse) => {
@@ -154,6 +153,12 @@ export function useAIProcessing(): UseAIProcessingReturn {
                   [purpose]: (currentResponse[purpose] ?? '') + parsed.text,
                 }
               })
+              
+              if (isDone) {
+                setSuccessForPurpose(purpose, true)
+                setLoadingForPurpose(purpose, false)
+                clearErrorForPurpose(purpose)
+              }
             } catch (error) {
               // check if error is parsing error
               // iParsing error: {"text":"Key topics:\n- Lojalność i oddanie w związku\n- Deklaracja głębokich uczuć\n- Obietnica stałości i wsparcia"}data: [DONE]
