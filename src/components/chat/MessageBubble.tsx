@@ -1,6 +1,6 @@
 'use client'
 
-import { MarkdownParser } from '@/components/parser'
+import { MarkdownParser } from '@/components/parser/MarkdownParser'
 import { cn } from '@/lib/utils'
 import { Bot, User } from 'lucide-react'
 
