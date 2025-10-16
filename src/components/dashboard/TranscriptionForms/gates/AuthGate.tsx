@@ -2,20 +2,36 @@
 
 import { AnimatedSection } from '@/components/animation'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { ROUTES } from '@/utils/constants'
 import { Lock } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import React from 'react'
-import { useTranscriptionForms } from '../TranscriptionFormsContext'
+import { useRouter } from 'next/navigation'
+import React, { useState } from 'react'
 
 interface AuthGateProps {
   children: React.ReactNode
 }
 
+type LoadingState = 'login' | 'register' | null
+
 export function AuthGate({ children }: AuthGateProps) {
   const { data: session, status } = useSession()
-  const { handleSaveState } = useTranscriptionForms()
+  const router = useRouter()
+  const [loadingState, setLoadingState] = useState<LoadingState>(null)
+
+  const handleLoginClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    setLoadingState('login')
+    router.push(ROUTES.LOGIN)
+  }
+
+  const handleRegisterClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    setLoadingState('register')
+    router.push(ROUTES.REGISTER)
+  }
 
   // Show loading spinner while checking session
   if (status === 'loading') {
@@ -58,15 +74,28 @@ export function AuthGate({ children }: AuthGateProps) {
 
         {/* Action Buttons */}
         <div className='flex flex-col sm:flex-row gap-3 pt-2 max-w-md mx-auto'>
-          <Button asChild variant='outline' className='flex-1'>
-            <Link href={ROUTES.LOGIN} onClick={handleSaveState}>
+          <Button
+            asChild
+            variant='outline'
+            className={cn(
+              `flex-1 ${
+                loadingState === 'login' ? 'opacity-50 cursor-not-allowed' : ''
+              }`
+            )}>
+            <Link href={ROUTES.LOGIN} onClick={handleLoginClick}>
               Zaloguj się
             </Link>
           </Button>
           <Button
             asChild
-            className='flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'>
-            <Link href={ROUTES.REGISTER} onClick={handleSaveState}>
+            className={cn(
+              `flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ${
+                loadingState === 'register'
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''
+              }`
+            )}>
+            <Link href={ROUTES.REGISTER} onClick={handleRegisterClick}>
               Zarejestruj się
             </Link>
           </Button>
