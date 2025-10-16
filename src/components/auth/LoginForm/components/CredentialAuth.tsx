@@ -55,8 +55,6 @@ export function CredentialAuth({
           redirect: false,
         })
 
-        console.log('result', result)
-
         if (result?.error) {
           setError(LOGIN_AUTH_ERRORS.INVALID_CREDENTIALS)
           return false

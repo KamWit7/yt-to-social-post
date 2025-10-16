@@ -51,7 +51,6 @@ export async function checkUsageLimit(
   limit: number
 }> {
   const usage = await getUserUsage(userId)
-  console.log('usage', usage?.accountTier)
   const currentUsage = usage?.summaryCount || 0
 
   const tierLimit = usage?.accountTier === AccountTier.BYOK ? Infinity : limit
@@ -77,7 +76,6 @@ export async function resetUsage(userId: string): Promise<UserUsage> {
   })
 }
 
-
 export async function getUsageStats(): Promise<{
   totalUsers: number
   totalSummaries: number
@@ -101,4 +99,3 @@ export async function getUsageStats(): Promise<{
     averageUsage: usageStats._avg.summaryCount || 0,
   }
 }
-

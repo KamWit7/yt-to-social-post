@@ -82,19 +82,15 @@ export function TranscriptionFormsProvider({
   })
 
   const handleSaveState = useCallback(() => {
-    console.log(
-      '-------> saveStateToSessionStorage',
-      formStepsState,
-      activeTab,
-      stepCompleted
-    )
-    if (
+    const isEmptyFormState =
       Object.values(formStepsState).every((value) => value === undefined) &&
       Object.values(stepCompleted).every((value) => value === false) &&
       activeTab === DASHBOARD_TABS.YOUTUBE
-    ) {
+
+    if (isEmptyFormState) {
       return
     }
+
     saveStateToSessionStorage(TRANSCRIPTION_FORMS_STORAGE_KEY, {
       transcript: formStepsState[DASHBOARD_TABS.TRANSCRIPT],
       url: formStepsState[DASHBOARD_TABS.YOUTUBE],
@@ -121,8 +117,6 @@ export function TranscriptionFormsProvider({
       }
 
       const parsedState = dashboardStateSchema.parse(savedState)
-
-      console.log('parsedState INIT', parsedState)
 
       if (parsedState) {
         setFormStepsState({
