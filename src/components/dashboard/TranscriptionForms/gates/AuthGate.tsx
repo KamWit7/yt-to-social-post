@@ -33,7 +33,6 @@ export function AuthGate({ children }: AuthGateProps) {
     router.push(ROUTES.REGISTER)
   }
 
-  // Show loading spinner while checking session
   if (status === 'loading') {
     return (
       <div className='flex items-center justify-center py-12'>
@@ -42,7 +41,6 @@ export function AuthGate({ children }: AuthGateProps) {
     )
   }
 
-  // If user is authenticated, render children (PurposeForm)
   if (session?.user) {
     return <>{children}</>
   }
@@ -51,7 +49,6 @@ export function AuthGate({ children }: AuthGateProps) {
   return (
     <AnimatedSection isVisible>
       <div className='text-center space-y-6'>
-        {/* Animated Icon */}
         <div className='flex justify-center'>
           <div className='relative'>
             <div className='absolute inset-0 bg-blue-500/20 rounded-full animate-pulse'></div>
@@ -61,26 +58,23 @@ export function AuthGate({ children }: AuthGateProps) {
           </div>
         </div>
 
-        {/* Title and Description */}
         <div className='space-y-3'>
           <h3 className='text-xl font-semibold text-gray-800 dark:text-gray-100'>
             Dostęp do AI wymaga logowania
           </h3>
           <p className='text-sm text-gray-600 dark:text-gray-400 leading-relaxed'>
-            Aby skorzystać z funkcji przetwarzania AI, musisz się zalogować lub
-            utworzyć konto
+            zaloguj się lub utwórz konto, by korzystać z funkcji przetwarzania
+            AI
           </p>
         </div>
 
-        {/* Action Buttons */}
         <div className='flex flex-col sm:flex-row gap-3 pt-2 max-w-md mx-auto'>
           <Button
             asChild
             variant='outline'
             className={cn(
-              `flex-1 ${
-                loadingState === 'login' ? 'opacity-50 cursor-not-allowed' : ''
-              }`
+              'flex-1',
+              loadingState === 'login' && 'opacity-50 cursor-not-allowed'
             )}>
             <Link href={ROUTES.LOGIN} onClick={handleLoginClick}>
               Zaloguj się
@@ -89,11 +83,8 @@ export function AuthGate({ children }: AuthGateProps) {
           <Button
             asChild
             className={cn(
-              `flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ${
-                loadingState === 'register'
-                  ? 'opacity-50 cursor-not-allowed'
-                  : ''
-              }`
+              'flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700',
+              loadingState === 'register' && 'opacity-50 cursor-not-allowed'
             )}>
             <Link href={ROUTES.REGISTER} onClick={handleRegisterClick}>
               Zarejestruj się

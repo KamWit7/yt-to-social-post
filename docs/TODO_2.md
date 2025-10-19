@@ -22,12 +22,14 @@ BIG
 
 [?] poprawa wizualna dla osobny przekraczającej limit darmowego konta CEL oraz profil (przeglądnąć)
 
-[+] poprawka dla osoby która nie jest zalgowana [wizualnie FROM Purpose]
+[+] poprawka dla osoby która nie jest zalgowana [wizualnie FROM Purpose]password
 
-[ ] Form Purpose -> krótki stan ładowania skacze ekran -> UsageGate
+[+] Form Purpose -> krótki stan ładowania skacze ekran -> UsageGate
 
 [+] dodać zapisywanie po udanym fetchu AI
 
-[ ] wyczyść nie potrzebne handleSaveState
+[+] wyczyść nie potrzebne handleSaveState
+
+[ ] sprawdzić fonty czy się zgadzaja
 
 [ ] test dla zapisywanie w LS kiedy user się zaloguje przedzie propces skopiuje dane z LS i wkleji jak nie jest zalogowany oczekiwany rezulata - endpoint z transkrypcją wali błąd

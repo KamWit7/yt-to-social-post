@@ -30,7 +30,7 @@ export async function UserProfile({ className }: { className?: string }) {
       <CardHeader>
         <CardTitle>Profil użytkownika</CardTitle>
         <CardDescription>
-          Informacje o Twoim koncie i ustawienia
+          informacje o Twoim koncie i ustawienia
         </CardDescription>
       </CardHeader>
 

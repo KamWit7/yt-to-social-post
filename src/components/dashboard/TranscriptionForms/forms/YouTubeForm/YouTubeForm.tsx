@@ -33,7 +33,6 @@ export function YouTubeForm() {
   } = useTranscriptionForms()
 
   const contextUrl = formStepsState[DASHBOARD_TABS.YOUTUBE] || ''
-  const contextTranscript = formStepsState[DASHBOARD_TABS.TRANSCRIPT] || ''
 
   const methods = useForm<YouTubeFormData>({
     resolver: zodResolver(youtubeSchema),
@@ -49,7 +48,6 @@ export function YouTubeForm() {
     data: transcriptData,
     isLoading: isTranscriptLoading,
     isFetching: isTranscriptFetching,
-    isSuccess: isTranscriptSuccess,
     error: transcriptError,
     refetch: refetchTranscript,
   } = useTranscript(url, {
@@ -58,40 +56,19 @@ export function YouTubeForm() {
   })
 
   useEffect(() => {
-    // when use go back from transcrip it prevent to change active tab to transcript
-    const hasChanges = transcriptData?.data?.transcript !== contextTranscript
-
-    if (
-      !(
-        transcriptData?.success &&
-        transcriptData.data?.transcript &&
-        hasChanges &&
-        isTranscriptSuccess
-      )
-    ) {
-      return
-    }
-
-    handleTranscriptChange(transcriptData.data.transcript)
-    handleStepComplete(DASHBOARD_TABS.YOUTUBE)
-    handleTabChange(DASHBOARD_TABS.TRANSCRIPT)
-  }, [
-    transcriptData,
-    handleTranscriptChange,
-    handleStepComplete,
-    handleTabChange,
-    isTranscriptSuccess,
-    contextTranscript,
-  ])
-
-  useEffect(() => {
     handleLoadingStateChange(isTranscriptFetching)
   }, [isTranscriptFetching, handleLoadingStateChange])
 
   const onSubmitForm = async () => {
     handleUrlChange(url)
 
-    await refetchTranscript()
+    const { isSuccess, data: transcriptData } = await refetchTranscript()
+
+    if (isSuccess && transcriptData?.data?.transcript) {
+      handleTranscriptChange(transcriptData.data.transcript)
+      handleStepComplete(DASHBOARD_TABS.YOUTUBE)
+      handleTabChange(DASHBOARD_TABS.TRANSCRIPT)
+    }
   }
 
   return (
@@ -105,7 +82,7 @@ export function YouTubeForm() {
             <SectionHeader
               icon={<Youtube className='w-6 h-6 text-white' />}
               title='Podaj Link z YouTube'
-              subtitle='Wklej link do filmu YouTube lub zostaw puste, aby wkleić transkrypcję ręcznie'
+              subtitle='wklej link do filmu YouTube, aby wygenerować transkrypcję'
               iconBgColor='bg-gradient-to-r from-red-500 to-red-600'
             />
 
@@ -128,8 +105,7 @@ export function YouTubeForm() {
                 className={BUTTON_STYLES.youtubeFullWidth}
               />
 
-              {(transcriptError ||
-                (transcriptData && !transcriptData.success)) && (
+              {(transcriptError || transcriptData?.error) && (
                 <YouTubeErrorDisplay
                   error={transcriptError}
                   errorMessage={

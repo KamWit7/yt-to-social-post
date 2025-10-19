@@ -34,10 +34,10 @@ Jasne, oto lista zadań (to-do list) w formacie Markdown, podsumowująca nasze u
 - [+] **Baza Danych:** Zaktualizować model `User`, dodając pole na zaszyfrowany klucz API (np. `encryptedApiKey`).
 - [+] **Szyfrowanie:** Zaimplementować na backendzie logikę do szyfrowania kluczy API przed zapisaniem ich w bazie i deszyfrowania przed użyciem.
 - [ ] **Aktualizacja API Route:** Zmodyfikować logikę `/api/summarize`, aby:
-  - [ ] Sprawdzała, czy zalogowany użytkownik ma zapisany własny klucz.
-  - [ ] Jeśli tak – używała klucza użytkownika.
-  - [ ] Jeśli nie – używała domyślnego klucza aplikacji i sprawdzała limity darmowego planu.
-- [ ] **Obsługa Błędów:** Rozbudować system obsługi błędów, aby informował użytkownika, jeśli jego własny klucz API jest nieprawidłowy lub przekroczył limit.
+  - [+] Sprawdzała, czy zalogowany użytkownik ma zapisany własny klucz.
+  - [+] Jeśli tak – używała klucza użytkownika.
+  - [+] Jeśli nie – używała domyślnego klucza aplikacji i sprawdzała limity darmowego planu.
+- [+] **Obsługa Błędów:** Rozbudować system obsługi błędów, aby informował użytkownika, jeśli jego własny klucz API jest nieprawidłowy lub przekroczył limit.
 
 Jasne, bazując na Twoich wymaganiach z to-do listy i wybranych przez Ciebie Next.js oraz PostgreSQL, oto rekomendowany, nowoczesny i spójny stack technologiczny, który świetnie sprawdzi się w Twoim projekcie.
 

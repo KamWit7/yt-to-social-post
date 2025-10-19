@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranscriptionForms } from '@/components/dashboard/TranscriptionForms/TranscriptionFormsContext'
 import {
   Popover,
   PopoverContent,
@@ -26,7 +25,6 @@ export function PremiumFeatureTooltip({
   description,
 }: PremiumFeatureTooltipProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const { handleSaveState } = useTranscriptionForms()
 
   if (isByokUser) {
     return children
@@ -68,7 +66,7 @@ export function PremiumFeatureTooltip({
         <div className='space-y-2'>
           <p className='font-medium text-foreground'>{title}</p>
 
-          <Link href={ROUTES.SETTINGS} onClick={handleSaveState}>
+          <Link href={ROUTES.SETTINGS}>
             <p className='text-sm text-muted-foreground leading-relaxed flex items-center gap-2 group hover:text-primary'>
               Dodaj swój klucz API w ustawieniach
               <ArrowRight className='w-[17px] h-6 transition-transform duration-200 group-hover:translate-x-1' />

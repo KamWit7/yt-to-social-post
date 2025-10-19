@@ -10,7 +10,7 @@ function getPageConfig(pathname: string | null) {
   if (pathname === ROUTES.PROFILE) {
     return {
       title: 'Twój profil',
-      description: 'Zarządzaj informacjami o swoim koncie i monitoruj użycie',
+      description: 'zarządzaj informacjami o swoim koncie i monitoruj użycie',
       icon: User,
       features: [],
     }
@@ -19,7 +19,7 @@ function getPageConfig(pathname: string | null) {
   if (pathname === ROUTES.SETTINGS) {
     return {
       title: 'Ustawienia',
-      description: 'Zarządzaj ustawieniami konta',
+      description: 'zarządzaj ustawieniami konta',
       icon: Settings,
       features: [],
     }
@@ -27,7 +27,7 @@ function getPageConfig(pathname: string | null) {
 
   return {
     title: 'Panel główny',
-    description: 'Zarządzaj swoim kontem i użyciem',
+    description: 'zarządzaj swoim kontem i użyciem',
     icon: User,
     features: [],
   }

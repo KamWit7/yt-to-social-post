@@ -121,7 +121,7 @@ export function ApiKeyForm({ currentTier, hasApiKey }: ApiKeyFormProps) {
             </div>
 
             <p className='text-sm text-muted-foreground'>
-              Wprowadź swój klucz API Google Gemini, aby włączyć nieograniczone
+              wprowadź swój klucz API Google Gemini, aby włączyć nieograniczone
               przetwarzanie
             </p>
 
@@ -169,10 +169,10 @@ export function ApiKeyForm({ currentTier, hasApiKey }: ApiKeyFormProps) {
                   Korzyści z poziomu BYOK:
                 </h4>
                 <ul className='text-sm text-blue-700 dark:text-blue-300 space-y-1'>
-                  <li>• Nieograniczone przetwarzanie AI</li>
-                  <li>• Brak dziennych limitów użycia</li>
-                  <li>• Użyj własnej kwoty Google Gemini API</li>
-                  <li>• Priorytetowe przetwarzanie</li>
+                  <li>• nieograniczone przetwarzanie AI</li>
+                  <li>• brak dziennych limitów użycia</li>
+                  <li>• użyj własnej kwoty Google Gemini API</li>
+                  <li>• priorytetowe przetwarzanie</li>
                 </ul>
               </div>
             )}

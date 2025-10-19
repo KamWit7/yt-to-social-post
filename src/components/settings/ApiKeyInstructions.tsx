@@ -37,7 +37,7 @@ export function ApiKeyInstructions({ className }: { className?: string }) {
       <CardHeader>
         <CardTitle>Jak uzyskać klucz API Google Gemini</CardTitle>
         <CardDescription>
-          Wykonaj te kroki, aby uzyskać klucz API Google Gemini do
+          wykonaj te kroki, aby uzyskać klucz API Google Gemini do
           nieograniczonego przetwarzania
         </CardDescription>
       </CardHeader>
@@ -77,7 +77,7 @@ export function ApiKeyInstructions({ className }: { className?: string }) {
                 <InstructionStep
                   number={1}
                   title='Odwiedź Google AI Studio'
-                  description='Przejdź do Google AI Studio, aby utworzyć swój klucz API'
+                  description='przejdź do Google AI Studio, aby utworzyć swój klucz API'
                   action={
                     <Button variant='outline' size='sm' asChild>
                       <a
@@ -94,21 +94,21 @@ export function ApiKeyInstructions({ className }: { className?: string }) {
                 <InstructionStep
                   number={2}
                   title='Zaloguj się kontem Google'
-                  description='Użyj swojego konta Google, aby uzyskać dostęp do AI Studio. Jeśli go nie masz, najpierw utwórz bezpłatne konto Google.'
+                  description='użyj swojego konta Google, aby uzyskać dostęp do AI Studio. Jeśli go nie masz, najpierw utwórz bezpłatne konto Google.'
                 />
 
                 {/* Step 3 */}
                 <InstructionStep
                   number={3}
                   title='Utwórz klucz API'
-                  description='Kliknij przycisk "Utwórz klucz API" i wybierz swój projekt Google Cloud (lub utwórz nowy, jeśli potrzeba).'
+                  description='kliknij przycisk "Utwórz klucz API" i wybierz swój projekt Google Cloud (lub utwórz nowy, jeśli potrzeba).'
                 />
 
                 {/* Step 4 */}
                 <InstructionStep
                   number={4}
                   title='Skopiuj swój klucz API'
-                  description='Po utworzeniu skopiuj klucz API. Powinien zaczynać się od "AIza" i mieć 39 znaków.'
+                  description='po utworzeniu skopiuj klucz API. Powinien zaczynać się od "AIza" i mieć 39 znaków.'
                   copyText='AIzaSyC...'
                   onCopy={() => copyToClipboard('AIzaSyC...', 4)}
                   copied={copiedStep === 4}
@@ -118,7 +118,7 @@ export function ApiKeyInstructions({ className }: { className?: string }) {
                 <InstructionStep
                   number={5}
                   title='Wklej w ustawieniach'
-                  description='Wróć na tę stronę i wklej swój klucz API w formularzu powyżej, aby przejść na poziom BYOK.'
+                  description='wróć na tę stronę i wklej swój klucz API w formularzu powyżej, aby przejść na poziom BYOK.'
                 />
               </div>
             </div>

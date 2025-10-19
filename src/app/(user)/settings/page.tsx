@@ -33,7 +33,7 @@ export default async function SettingsPage() {
         <CardHeader>
           <CardTitle>Użyj Własnego Klucza (BYOK)</CardTitle>
           <CardDescription>
-            Użyj własnego klucza API Google Gemini do nieograniczonego
+            użyj własnego klucza API Google Gemini do nieograniczonego
             przetwarzania
           </CardDescription>
         </CardHeader>
