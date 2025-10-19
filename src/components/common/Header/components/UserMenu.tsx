@@ -9,10 +9,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ChevronDown, LogOut, User } from 'lucide-react'
+import { ROUTES } from '@/utils/constants'
+import { ChevronDown, Home, LogOut, Settings, User } from 'lucide-react'
 import Link from 'next/link'
-import { USER_MENU_ITEMS } from './constants'
-import type { UserMenuProps } from './types'
+
+export const USER_MENU_ITEMS = [
+  { href: ROUTES.DASHBOARD, label: 'Panel główny', icon: Home },
+  { href: ROUTES.PROFILE, label: 'Profil', icon: User },
+  { href: ROUTES.SETTINGS, label: 'Ustawienia', icon: Settings },
+] as const
+
+type UserMenuProps = {
+  user: {
+    name?: string | null
+    email?: string | null
+  }
+}
 
 export function UserMenu({ user }: UserMenuProps) {
   const displayName = user.name || user.email

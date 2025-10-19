@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
-import { AuthSection, Logo } from './header'
+import { AuthSection } from './components/AuthSection'
+import { Logo } from './components/Logo'
 
 export default function Header() {
   return (

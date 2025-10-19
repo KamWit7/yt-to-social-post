@@ -17,7 +17,6 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
-import { USAGE_COUNTER_CONSTANTS } from '../constants'
 import { UsageCounterLoader } from './components/UsageCounterLoader'
 
 type UserCounterStats = UsageStats['usage']
@@ -106,12 +105,10 @@ export function UsageCounter() {
         side='bottom'
         className='max-w-xs p-4 border border-primary/20 bg-white/20 backdrop-blur-md'>
         <div className='space-y-2'>
-          <p className='font-medium text-foreground'>
-            {USAGE_COUNTER_CONSTANTS.TOOLTIP_TITLE}
-          </p>
+          <p className='font-medium text-foreground'>Limit zapytań</p>
           <Link href={ROUTES.PROFILE}>
             <p className='text-sm text-muted-foreground leading-relaxed flex items-center gap-2 group hover:text-primary'>
-              {USAGE_COUNTER_CONSTANTS.TOOLTIP_DESCRIPTION}
+              Kliknij aby dowiedzieć się więcej o swoich limitach.
               <ArrowRight className='w-6 h-6 transition-transform duration-200 group-hover:translate-x-1' />
             </p>
           </Link>

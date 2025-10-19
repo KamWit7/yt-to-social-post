@@ -121,7 +121,7 @@ export default function ResultCard({
             <ContentSkeleton lines={skeletonLines} />
           ) : (
             <div className='max-w-fit'>
-              <MarkdownParser text={content || ''} />
+              <MarkdownParser text={content} />
             </div>
           )}
         </CardContent>

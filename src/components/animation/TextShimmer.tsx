@@ -23,9 +23,12 @@ export default function TextShimmer({
   return (
     <MotionComponent
       key={pathname}
-      className={`relative overflow-hidden inline-block font-bold text-gray-800 dark:text-white ${className}`}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      className={cn(
+        'relative overflow-hidden inline-block font-bold text-gray-80',
+        className
+      )}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{
         duration: 0.8,
         ease: 'easeOut',
