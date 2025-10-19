@@ -1,6 +1,10 @@
 'use client'
 
-import { ControlledInput, SubmitButton } from '@/components/common'
+import {
+  ControlledInput,
+  FormServerError,
+  SubmitButton,
+} from '@/components/common'
 import { saveApiKeyAndUpgradeTier } from '@/lib/actions/usage'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AccountTier } from '@prisma/client'
@@ -126,13 +130,7 @@ export function ApiKeyForm({ currentTier, hasApiKey }: ApiKeyFormProps) {
             </p>
 
             {/* Error Message */}
-            {errors.root?.serverError && (
-              <div className='p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg'>
-                <p className='text-sm text-red-800 dark:text-red-200'>
-                  {errors.root.serverError.message}
-                </p>
-              </div>
-            )}
+            <FormServerError error={errors.root?.serverError} />
 
             {/* Success Message */}
             {isSubmitSuccessful && !errors.root?.serverError && (

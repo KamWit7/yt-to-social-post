@@ -1,11 +1,15 @@
 'use client'
 
-import { ControlledInput, SubmitButton } from '@/components/common'
+import {
+  ControlledInput,
+  FormServerError,
+  SubmitButton,
+} from '@/components/common'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Lock, LogIn, Mail } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import React, { useCallback, useState } from 'react'
+import React from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { ROUTES } from '@/utils/constants'
@@ -25,7 +29,6 @@ export function CredentialAuth({
   onLoadingChange,
   isDisabled = false,
 }: CredentialAuthProps) {
-  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
   const methods = useForm<LoginFormData>({
@@ -36,7 +39,8 @@ export function CredentialAuth({
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
+    setError,
   } = methods
 
   // Notify parent component about loading state changes
@@ -44,38 +48,33 @@ export function CredentialAuth({
     onLoadingChange?.(isSubmitting)
   }, [isSubmitting, onLoadingChange])
 
-  const signInWithCredentials = useCallback(
-    async (data: LoginFormData): Promise<boolean> => {
-      setError(null)
-
-      try {
-        const result = await signIn('credentials', {
-          email: data.email,
-          password: data.password,
-          redirect: false,
-        })
-
-        if (result?.error) {
-          setError(LOGIN_AUTH_ERRORS.INVALID_CREDENTIALS)
-          return false
-        } else {
-          // Successful authentication - navigate to dashboard
-          router.push(ROUTES.DASHBOARD)
-          router.refresh()
-
-          return true
-        }
-      } catch (networkError) {
-        console.error('Network error during authentication:', networkError)
-        setError(LOGIN_AUTH_ERRORS.NETWORK_ERROR)
-        return false
-      }
-    },
-    [router]
-  )
-
   const onFormSubmit = async (data: LoginFormData) => {
-    await signInWithCredentials(data)
+    try {
+      const result = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      })
+
+      if (result?.error) {
+        setError('root.serverError', {
+          type: 'server',
+          message: LOGIN_AUTH_ERRORS.INVALID_CREDENTIALS,
+        })
+        return false
+      } else {
+        // Successful authentication - navigate to dashboard
+        router.push(ROUTES.DASHBOARD)
+        router.refresh()
+      }
+    } catch (networkError) {
+      console.error('Network error during authentication:', networkError)
+
+      setError('root.serverError', {
+        type: 'server',
+        message: LOGIN_AUTH_ERRORS.NETWORK_ERROR,
+      })
+    }
   }
 
   return (
@@ -105,11 +104,7 @@ export function CredentialAuth({
           />
         </div>
 
-        {error && (
-          <div className='text-sm text-destructive bg-destructive/10 p-3 rounded-md'>
-            {error}
-          </div>
-        )}
+        <FormServerError error={errors.root?.serverError} />
 
         <SubmitButton
           isLoading={isSubmitting}

@@ -5,7 +5,7 @@ import { ROUTES } from '@/utils/constants'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import bcrypt from 'bcryptjs'
 import { NextAuthOptions } from 'next-auth'
-import CredentialsProvider from 'next-auth/providers/credentials'
+import { default as CredentialsProvider } from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 
 export const authOptions: NextAuthOptions = {
@@ -24,12 +24,13 @@ export const authOptions: NextAuthOptions = {
 
         const user = await findUserByEmail(credentials.email)
 
-        if (
-          credentials.email === user?.email &&
-          user?.password &&
-          // TODO: check if compare is even needed
-          (await bcrypt.compare(credentials.password, user.password))
-        ) {
+        const isEmailValid = credentials.email === user?.email
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user?.password || ''
+        )
+
+        if (isEmailValid && isPasswordValid) {
           return {
             id: user.id,
             email: user.email,

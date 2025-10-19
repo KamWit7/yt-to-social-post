@@ -30,6 +30,18 @@ BIG
 
 [+] wyczyść nie potrzebne handleSaveState
 
-[ ] sprawdzić fonty czy się zgadzaja
+[+] sprawdzić fonty czy się zgadzaja
+
+[ ] rozwiązać TODO
+
+[ ] poprawa aniamcja stan ładowania komponetów
+
+[ ] resetowanie hasła 
+
+[ ] dodanie środowiska developmentu
+
+[ ] stworzyć ikone dla strony
+
+[ ] co z cookies?
 
 [ ] test dla zapisywanie w LS kiedy user się zaloguje przedzie propces skopiuje dane z LS i wkleji jak nie jest zalogowany oczekiwany rezulata - endpoint z transkrypcją wali błąd

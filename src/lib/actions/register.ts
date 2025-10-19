@@ -4,29 +4,40 @@ import {
   RegisterFormData,
   registerSchema,
 } from '@/components/auth/RegisterForm'
+import { FORM_FIELD_NAMES } from '@/components/auth/RegisterForm/RegisterForm.helpers'
 import { createUser, findUserByEmail } from '../db/users'
 
-type RegisterUserActionReturn = {
-  success: boolean
-  message: string
-  user?: {
-    id: string
-    email: string
-    name: string | null
-  }
-}
+type RegisterUserActionReturn =
+  | {
+      message: string
+      error?: never
+      user?: {
+        id: string
+        email: string
+        name: string | null
+      }
+    }
+  | {
+      message?: never
+      error?: {
+        [key in
+          | (typeof FORM_FIELD_NAMES)[keyof typeof FORM_FIELD_NAMES]
+          | 'other']?: string
+      }
+      user?: never
+    }
 
 export async function registerUser(
   formData: RegisterFormData
 ): Promise<RegisterUserActionReturn> {
   try {
     const validatedData = registerSchema.parse(formData)
-
     const user = await findUserByEmail(validatedData.email)
     if (user) {
       return {
-        message: 'User with this email already exists',
-        success: false,
+        error: {
+          [FORM_FIELD_NAMES.EMAIL]: 'użytkownik o tym emailu już istnieje',
+        },
       }
     }
 
@@ -37,8 +48,7 @@ export async function registerUser(
     })
 
     return {
-      success: true,
-      message: 'User registered successfully',
+      message: 'użytkownik został zarejestrowany pomyślnie',
       user: {
         email: newUser.email,
         id: newUser.id,
@@ -46,18 +56,15 @@ export async function registerUser(
       },
     }
   } catch (error) {
-    console.error('Registration error:', error)
-
-    if (error instanceof Error) {
-      return {
-        success: false,
-        message: error.message,
-      }
-    }
+    console.error(
+      'Registration error:',
+      error instanceof Error ? error.message : 'Unknown error'
+    )
 
     return {
-      success: false,
-      message: 'An unexpected error occurred during registration',
+      error: {
+        other: 'wystąpił nieoczekiwany błąd podczas rejestracji',
+      },
     }
   }
 }

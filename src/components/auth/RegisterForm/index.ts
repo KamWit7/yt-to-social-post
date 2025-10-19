@@ -1,2 +1,5 @@
 export { RegisterForm } from './RegisterForm'
-export { registerSchema, type RegisterFormData } from './registerSchema'
+export {
+  registerSchema,
+  type RegisterFormData,
+} from './RegisterForm.validation'

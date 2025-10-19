@@ -1,5 +1,6 @@
 'use client'
 
+import { FormServerError } from '@/components/common'
 import { Button } from '@/components/ui/button'
 import { signIn } from 'next-auth/react'
 import React, { useCallback, useState } from 'react'
@@ -50,11 +51,10 @@ export function GoogleAuth({
         </div>
       </div>
 
-      {error && (
-        <div className='text-sm text-destructive bg-destructive/10 p-3 rounded-md mt-4'>
-          {error}
-        </div>
-      )}
+      <FormServerError
+        error={error ? { message: error } : undefined}
+        className='mt-4'
+      />
 
       <Button
         variant='outline'

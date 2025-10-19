@@ -1,4 +1,4 @@
-import type { RegisterFormData } from './registerSchema'
+import type { RegisterFormData } from './RegisterForm.validation'
 
 export const RegisterDefaultValues: RegisterFormData = {
   name: '',
@@ -8,8 +8,12 @@ export const RegisterDefaultValues: RegisterFormData = {
 }
 
 export const FORM_FIELD_NAMES = {
-  NAME: 'name' as const,
-  EMAIL: 'email' as const,
-  PASSWORD: 'password' as const,
-  CONFIRM_PASSWORD: 'confirmPassword' as const,
+  NAME: 'name',
+  EMAIL: 'email',
+  PASSWORD: 'password',
+  CONFIRM_PASSWORD: 'confirmPassword',
 } as const
+
+export const FORM_FIELD_ERRORS = {
+  BACKEND_ERROR: 'other',
+}

@@ -6,10 +6,7 @@ export const registerSchema = z
       .string()
       .min(1, 'Imię i nazwisko jest wymagane')
       .min(2, 'Imię i nazwisko musi mieć co najmniej 2 znaki'),
-    email: z
-      .string()
-      .min(1, 'Email jest wymagany')
-      .email('Wprowadź poprawny adres email'),
+    email: z.email({ message: 'Wprowadź poprawny adres email' }),
     password: z
       .string()
       .min(1, 'Hasło jest wymagane')
