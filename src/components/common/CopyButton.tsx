@@ -53,26 +53,26 @@ function CopyButton({
       disabled={disabled}
       className={cn(
         'relative p-2 rounded-lg transition-all duration-200 ease-out',
-        'hover:bg-gray-100 dark:hover:bg-gray-800',
-        'hover:scale-110 active:scale-95',
-        isCopied
+        disabled
+          ? undefined
+          : isCopied
           ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20'
           : 'text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400',
-        disabled && 'opacity-50 cursor-not-allowed',
+        disabled
+          ? 'opacity-50 cursor-not-allowed'
+          : 'hover:bg-gray-100 dark:hover:bg-gray-800  hover:scale-110 active:scale-95',
         className
       )}
       title={isCopied ? 'Skopiowane!' : 'Kopiuj do schowka'}
       aria-label={ariaLabel || (isCopied ? 'Skopiowane' : 'Kopiuj do schowka')}>
       <div className='relative w-4 h-4'>
         <Copy
-          className={`
-            absolute inset-0 w-4 h-4 transition-all duration-300 ease-out transform
-            ${
-              isCopied
-                ? 'opacity-0 rotate-90 scale-50'
-                : 'opacity-100 rotate-0 scale-100'
-            }
-          `}
+          className={cn(
+            'absolute inset-0 w-4 h-4 transition-all duration-300 ease-out transform',
+            isCopied
+              ? 'opacity-0 rotate-90 scale-50'
+              : 'opacity-100 rotate-0 scale-100'
+          )}
         />
         <Check
           className={cn(

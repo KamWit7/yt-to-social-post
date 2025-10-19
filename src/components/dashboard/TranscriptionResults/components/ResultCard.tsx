@@ -4,6 +4,7 @@ import {
 } from '@/api/hooks/useAIProcessingV2'
 import { TextShimmer } from '@/components/animation'
 import { CopyButton } from '@/components/common'
+import { MarkdownParser } from '@/components/parser/MarkdownParser'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { LucideIcon } from 'lucide-react'
@@ -12,7 +13,6 @@ import {
   PurposeValue,
 } from '../../TranscriptionForms/forms/Form.constants'
 import { ErrorSectionHandler } from './ErrorSectionHandler'
-import { MarkdownParser } from '@/components/parser/MarkdownParser'
 
 interface PurposeData {
   purpose?: string
@@ -71,10 +71,8 @@ export default function ResultCard({
   className,
   aiLoading,
 }: ResultCardProps) {
-  // Check if section should be visible
   const isVisible = shouldShowSection(purpose, purposeData)
 
-  // Don't render if not visible
   if (!isVisible) {
     return null
   }
@@ -111,6 +109,7 @@ export default function ResultCard({
             <CopyButton
               text={content || ''}
               className='shrink-0'
+              disabled={isLoading}
               aria-label={ariaLabel}
             />
           </div>
