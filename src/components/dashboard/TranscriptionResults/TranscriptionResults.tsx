@@ -133,6 +133,7 @@ export default function TranscriptionResults() {
           purposeData={purposeData}
           aiLoading={aiLoading}
           className='flex-0 min-h-[400px]'
+          skeletonLines={11}
         />
         <ResultCard
           sectionName='Streszczenie'
@@ -159,6 +160,7 @@ export default function TranscriptionResults() {
         purposeData={purposeData}
         aiLoading={aiLoading}
         className='max-h-[500px] w-lg'
+        skeletonLines={21}
       />
 
       <ResultCard
@@ -172,6 +174,7 @@ export default function TranscriptionResults() {
         purposeData={purposeData}
         aiLoading={aiLoading}
         className='max-h-[900px]'
+        skeletonLines={21}
       />
     </div>
   )

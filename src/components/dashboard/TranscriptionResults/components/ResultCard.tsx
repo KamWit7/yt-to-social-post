@@ -12,6 +12,7 @@ import {
   Dictionary,
   PurposeValue,
 } from '../../TranscriptionForms/forms/Form.constants'
+import { ContentSkeleton } from './ContentSkeleton'
 import { ErrorSectionHandler } from './ErrorSectionHandler'
 
 interface PurposeData {
@@ -30,6 +31,7 @@ interface ResultCardProps {
   purposeData?: PurposeData
   className?: string
   aiLoading?: AIProcessingLoading
+  skeletonLines?: number
 }
 
 function shouldShowSection(
@@ -70,6 +72,7 @@ export default function ResultCard({
   purposeData,
   className,
   aiLoading,
+  skeletonLines = 6,
 }: ResultCardProps) {
   const isVisible = shouldShowSection(purpose, purposeData)
 
@@ -88,9 +91,8 @@ export default function ResultCard({
       purpose={purpose}>
       <Card
         className={cn(
-          `relative border border-border/60 shadow-sm hover:shadow-md transition-shadow flex-1 overflow-x-auto pt-0 gap-0 ${
-            className || ''
-          }`
+          'relative border border-border/60 shadow-sm hover:shadow-md transition-shadow flex-1 overflow-x-auto pt-0 gap-0',
+          className
         )}>
         <CardHeader
           className={cn(
@@ -115,9 +117,13 @@ export default function ResultCard({
           </div>
         </CardHeader>
         <CardContent>
-          <div className='max-w-fit'>
-            <MarkdownParser text={content || ''} />
-          </div>
+          {isLoading && !content ? (
+            <ContentSkeleton lines={skeletonLines} />
+          ) : (
+            <div className='max-w-fit'>
+              <MarkdownParser text={content || ''} />
+            </div>
+          )}
         </CardContent>
       </Card>
     </ErrorSectionHandler>
