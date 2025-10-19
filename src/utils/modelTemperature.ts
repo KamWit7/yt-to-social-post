@@ -7,7 +7,7 @@ export const TemperatureMode = {
 export type TemperatureMode =
   (typeof TemperatureMode)[keyof typeof TemperatureMode]
 
-export interface GeminiModel {
+interface GeminiModel {
   name: string
   version: string
   displayName: string
@@ -22,7 +22,7 @@ export interface GeminiModel {
   thinking?: boolean
 }
 
-export interface GeminiModelsResponse {
+interface GeminiModelsResponse {
   models: GeminiModel[]
 }
 

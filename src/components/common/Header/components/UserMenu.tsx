@@ -13,7 +13,7 @@ import { ROUTES } from '@/utils/constants'
 import { ChevronDown, Home, LogOut, Settings, User } from 'lucide-react'
 import Link from 'next/link'
 
-export const USER_MENU_ITEMS = [
+const USER_MENU_ITEMS = [
   { href: ROUTES.DASHBOARD, label: 'Panel główny', icon: Home },
   { href: ROUTES.PROFILE, label: 'Profil', icon: User },
   { href: ROUTES.SETTINGS, label: 'Ustawienia', icon: Settings },

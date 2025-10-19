@@ -5,7 +5,7 @@ import {
   TranscriptResponse,
 } from '../services/transcriptService'
 
-export const getTranscriptQueryKey = (url?: string) =>
+const getTranscriptQueryKey = (url?: string) =>
   url ? ['transcript', url] : ['transcript']
 
 export function useTranscript(

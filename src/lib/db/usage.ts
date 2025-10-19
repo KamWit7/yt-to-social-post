@@ -75,27 +75,3 @@ export async function resetUsage(userId: string): Promise<UserUsage> {
     },
   })
 }
-
-export async function getUsageStats(): Promise<{
-  totalUsers: number
-  totalSummaries: number
-  averageUsage: number
-}> {
-  const [totalUsers, usageStats] = await Promise.all([
-    prisma.user.count(),
-    prisma.userUsage.aggregate({
-      _sum: {
-        summaryCount: true,
-      },
-      _avg: {
-        summaryCount: true,
-      },
-    }),
-  ])
-
-  return {
-    totalUsers,
-    totalSummaries: usageStats._sum.summaryCount || 0,
-    averageUsage: usageStats._avg.summaryCount || 0,
-  }
-}

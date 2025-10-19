@@ -2,7 +2,7 @@ import { AccountTier } from '@prisma/client'
 import { AIModels } from '../../../Form.constants'
 import { isModelAvailable } from '../../PurposeForm.helpers'
 
-export interface ModelOption {
+interface ModelOption {
   label: string
   value: string
   disabled: boolean

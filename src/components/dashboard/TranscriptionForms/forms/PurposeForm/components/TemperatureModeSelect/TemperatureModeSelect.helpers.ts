@@ -1,7 +1,7 @@
 import { TemperatureMode } from '@/utils/modelTemperature'
 import { AccountTier } from '@prisma/client'
 
-export interface TemperatureModeOption {
+interface TemperatureModeOption {
   label: string
   value: string
   disabled: boolean
