@@ -2,7 +2,7 @@ import { FieldPath, FieldValues } from 'react-hook-form'
 
 interface BaseFormFieldProps<T extends FieldValues> {
   name: FieldPath<T>
-  label?: string
+  label?: string | React.ReactNode
   placeholder?: string
   disabled?: boolean
   required?: boolean

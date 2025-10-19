@@ -28,7 +28,7 @@ export function AIModelSelect({
       <PremiumFeatureTooltip
         isByokUser={isByokUser}
         title='Odblokuj wszystkie modele AI'
-        description='Modele wymagają konta BYOK.'>
+        description='modele wymagają konta BYOK.'>
         <ControlledSelect
           name={name}
           label={label}

@@ -9,19 +9,16 @@ export default function Footer({ className }: { className?: string }) {
       )}>
       <div className='max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8'>
         <div className='flex flex-col sm:flex-row justify-between items-center gap-4'>
-          {/* Copyright Section */}
           <p className='text-sm text-gray-600 dark:text-gray-400 font-medium'>
             &copy; {new Date().getFullYear()} YT Scribe. Wszelkie prawa
             zastrzeżone.
           </p>
 
-          {/* Social Links Section */}
           <div className='flex items-center gap-3'>
             <span className='text-sm text-gray-500 dark:text-gray-500 hidden sm:inline'>
-              Stworzony przez:
+              stworzony przez:
             </span>
             <div className='flex items-center gap-2'>
-              {/* GitHub Link */}
               <a
                 href='https://github.com/KamWit7'
                 target='_blank'
@@ -37,7 +34,6 @@ export default function Footer({ className }: { className?: string }) {
                 <span className='hidden sm:inline'>GitHub</span>
               </a>
 
-              {/* LinkedIn Link */}
               <a
                 href='https://www.linkedin.com/in/kw-frontend-developer/'
                 target='_blank'

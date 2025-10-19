@@ -4,20 +4,20 @@ export const registerSchema = z
   .object({
     name: z
       .string()
-      .min(1, 'Name is required')
-      .min(2, 'Name must be at least 2 characters'),
+      .min(1, 'Imię i nazwisko jest wymagane')
+      .min(2, 'Imię i nazwisko musi mieć co najmniej 2 znaki'),
     email: z
       .string()
-      .min(1, 'Email is required')
-      .email('Please enter a valid email address'),
+      .min(1, 'Email jest wymagany')
+      .email('Wprowadź poprawny adres email'),
     password: z
       .string()
-      .min(1, 'Password is required')
-      .min(8, 'Password must be at least 8 characters'),
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
+      .min(1, 'Hasło jest wymagane')
+      .min(8, 'Hasło musi mieć co najmniej 8 znaków'),
+    confirmPassword: z.string().min(1, 'Potwierdź swoje hasło'),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: 'Hasła nie pasują do siebie',
     path: ['confirmPassword'],
   })
 

@@ -8,7 +8,7 @@ import { Suspense } from 'react'
 export const metadata: Metadata = {
   title: 'Profil | YT Scribe',
   description:
-    'Zarządzaj ustawieniami konta, wyświetl informacje o profilu i monitoruj statystyki użycia',
+    'zarządzaj ustawieniami konta, wyświetl informacje o profilu i monitoruj statystyki użycia',
 }
 
 export default async function ProfilePage() {

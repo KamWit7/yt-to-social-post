@@ -31,7 +31,7 @@ export default async function SettingsPage() {
 
       <Card className='max-w-md'>
         <CardHeader>
-          <CardTitle>Użyj Własnego Klucza (BYOK)</CardTitle>
+          <CardTitle>Użyj własnego klucza (BYOK)</CardTitle>
           <CardDescription>
             użyj własnego klucza API Google Gemini do nieograniczonego
             przetwarzania

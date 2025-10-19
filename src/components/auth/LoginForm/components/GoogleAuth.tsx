@@ -45,7 +45,7 @@ export function GoogleAuth({
         </div>
         <div className='relative flex justify-center text-xs uppercase'>
           <span className='bg-card px-2 text-muted-foreground'>
-            Or continue with
+            lub kontynuuj z
           </span>
         </div>
       </div>
@@ -79,7 +79,7 @@ export function GoogleAuth({
             fill='#EA4335'
           />
         </svg>
-        Continue with Google
+        Kontynuuj z Google
       </Button>
     </div>
   )

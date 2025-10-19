@@ -45,7 +45,7 @@ export function ConditionalOptions({ purpose }: ConditionalOptionsProps) {
           </h3>
           <ControlledInput
             name={FORM_FIELD_NAMES.CUSTOM_PROMPT}
-            label='Twoje polecenie'
+            label='twoje polecenie'
             placeholder='Wpisz własne polecenie dla AI...'
           />
         </div>

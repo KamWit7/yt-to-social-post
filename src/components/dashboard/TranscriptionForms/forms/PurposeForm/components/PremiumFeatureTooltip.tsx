@@ -34,7 +34,6 @@ export function PremiumFeatureTooltip({
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <div className='relative group'>
-          {/* Premium visual hint on hover */}
           <div
             className={cn(
               'relative rounded-lg overflow-hidden transition-all duration-300 ',
@@ -42,7 +41,6 @@ export function PremiumFeatureTooltip({
             )}>
             <div className='pointer-events-none'>{children}</div>
 
-            {/* Premium badge */}
             <div className='absolute top-2 right-2 pointer-events-none'>
               <div
                 className={`bg-slate-700/90 backdrop-blur-sm px-2 py-1 rounded-full shadow-lg transition-opacity duration-300 ${

@@ -36,10 +36,13 @@ This document outlines the text writing conventions, CSS styling patterns, and s
 #### **Labels and Small Text**
 
 - Use lowercase for labels when they are not standalone
+- **Form field labels**: Always use lowercase
 - Examples:
   - ✅ `użyte w tym miesiącu`
   - ✅ `miesięczny limit`
   - ✅ `łącznie użyte`
+  - ✅ `label='imię i nazwisko'`
+  - ❌ `label='Imię i nazwisko'`
 
 #### **Status Messages**
 

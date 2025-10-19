@@ -24,7 +24,7 @@ export function LoginForm() {
       <CardHeader>
         <CardTitle>Zaloguj się</CardTitle>
         <CardDescription>
-          Wprowadź swój email i hasło, aby uzyskać dostęp do konta
+          wprowadź swój email i hasło, aby uzyskać dostęp do konta
         </CardDescription>
       </CardHeader>
       <CardContent>

@@ -47,7 +47,7 @@ export function ControlledTextarea<T extends FieldValues>({
           maxLength={maxLength}
           placeholder={placeholder}
           disabled={disabled}
-          aria-label={label}
+          aria-label={typeof label === 'string' ? label : ''}
           aria-invalid={!!error}
           className={cn(textareaClassName, icon && 'pl-10')}
         />

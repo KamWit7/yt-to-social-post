@@ -72,7 +72,7 @@ export function RegisterForm() {
         message:
           error instanceof Error
             ? error?.message
-            : 'An error occurred during registration',
+            : 'Wystąpił błąd podczas rejestracji',
       })
     }
   }
@@ -99,7 +99,7 @@ export function RegisterForm() {
                 Rejestracja zakończona pomyślnie!
               </h3>
               <p className='text-sm text-muted-foreground'>
-                Twoje konto zostało utworzone pomyślnie
+                twoje konto zostało utworzone pomyślnie
               </p>
             </div>
 
@@ -149,7 +149,7 @@ export function RegisterForm() {
       <CardHeader>
         <CardTitle>Utwórz konto</CardTitle>
         <CardDescription>
-          Wprowadź swoje dane, aby utworzyć nowe konto
+          wprowadź swoje dane, aby utworzyć nowe konto
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -158,7 +158,7 @@ export function RegisterForm() {
             <div className='space-y-4'>
               <ControlledInput
                 name={FORM_FIELD_NAMES.NAME}
-                label='Imię i nazwisko'
+                label='imię i nazwisko'
                 type='text'
                 placeholder='Wprowadź swoje imię i nazwisko'
                 required
@@ -169,7 +169,7 @@ export function RegisterForm() {
 
               <ControlledInput
                 name={FORM_FIELD_NAMES.EMAIL}
-                label='Email'
+                label='email'
                 type='email'
                 placeholder='Wprowadź swój email'
                 required
@@ -180,7 +180,7 @@ export function RegisterForm() {
 
               <ControlledInput
                 name={FORM_FIELD_NAMES.PASSWORD}
-                label='Hasło'
+                label='hasło'
                 type='password'
                 placeholder='Utwórz hasło'
                 required
@@ -191,7 +191,7 @@ export function RegisterForm() {
 
               <ControlledInput
                 name={FORM_FIELD_NAMES.CONFIRM_PASSWORD}
-                label='Potwierdź hasło'
+                label='potwierdź hasło'
                 type='password'
                 placeholder='Potwierdź swoje hasło'
                 required

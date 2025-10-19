@@ -63,7 +63,7 @@ export function ApiKeyForm({ currentTier, hasApiKey }: ApiKeyFormProps) {
         message:
           err instanceof Error
             ? err.message
-            : 'Failed to save API key. Please try again.',
+            : 'Nie udało się zapisać klucza API. Spróbuj ponownie.',
       })
     }
   }
@@ -92,9 +92,9 @@ export function ApiKeyForm({ currentTier, hasApiKey }: ApiKeyFormProps) {
             <div className='relative'>
               <ControlledInput
                 name={API_KEY_FORM_FIELD_NAMES.API_KEY}
-                label={`Klucz API Google Gemini${
+                label={`klucz API Google Gemini${
                   currentTier === AccountTier.BYOK && hasApiKey
-                    ? ' (Aktualizuj)'
+                    ? ' (aktualizuj)'
                     : ''
                 }`}
                 type={showApiKey ? 'text' : 'password'}

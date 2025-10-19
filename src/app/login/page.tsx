@@ -6,7 +6,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Logowanie | YT Scribe',
   description:
-    'Zaloguj się do swojego konta, aby uzyskać dostęp do transkrypcji i podsumowań',
+    'zaloguj się do swojego konta, aby uzyskać dostęp do transkrypcji i podsumowań',
 }
 
 export default function LoginPage() {
@@ -16,7 +16,7 @@ export default function LoginPage() {
         <div className='text-center space-y-2'>
           <h1 className='text-3xl font-bold'>Witaj ponownie</h1>
           <p className='text-muted-foreground'>
-            Zaloguj się, aby uzyskać dostęp do swojego konta i kontynuować
+            zaloguj się, aby uzyskać dostęp do swojego konta i kontynuować
             transkrypcję
           </p>
         </div>

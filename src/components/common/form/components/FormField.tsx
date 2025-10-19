@@ -6,7 +6,7 @@ import { FORM_STYLES } from '../constants/formStyles'
 
 interface FormFieldProps {
   name?: string
-  label?: string
+  label?: string | React.ReactNode
   required?: boolean
   error?: ReactNode
   children: ReactNode

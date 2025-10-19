@@ -8,11 +8,7 @@ import { Sparkles } from 'lucide-react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { ProcessTranscriptRequest } from '@/app/api/result/ai.validations'
-import { getStateFromSessionStorage } from '@/utils/sessionStorage'
-import {
-  DASHBOARD_TABS,
-  TRANSCRIPTION_FORMS_STORAGE_KEY,
-} from '../../../Dashboard.helpers'
+import { DASHBOARD_TABS } from '../../../Dashboard.helpers'
 import {
   ANIMATION_DELAYS,
   BUTTON_STYLES,
@@ -100,7 +96,6 @@ export function PurposeForm() {
       console.error('Error fetching data:', error)
     }
 
-
     // Update results state - note: aiProcessing state should be updated by now
     handleFormStepUpdate(DASHBOARD_TABS.RESULTS, {
       success: !!aiProcessing.isSuccess,
@@ -120,7 +115,7 @@ export function PurposeForm() {
             <SectionHeader
               icon={<Sparkles className='w-6 h-6 text-white' />}
               title='W jakim celu przetwarzasz transkrypcję?'
-              subtitle='Wybierz cel przetwarzania i dostosuj opcje do swoich potrzeb'
+              subtitle='wybierz cel przetwarzania i dostosuj opcje do swoich potrzeb'
               iconBgColor='bg-gradient-to-r from-purple-500 to-purple-600'
             />
 
@@ -132,56 +127,42 @@ export function PurposeForm() {
                     Ustawienia przetwarzania
                   </h3>
                   <p className='text-sm text-gray-600 dark:text-gray-400'>
-                    Dostosuj parametry do swoich potrzeb
+                    dostosuj parametry do swoich potrzeb
                   </p>
                 </div>
 
-                <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-                  <div className='space-y-2'>
-                    <ControlledSelect
-                      name={FORM_FIELD_NAMES.PURPOSE}
-                      label='📝 Typ treści'
-                      placeholder='Wybierz cel...'
-                      disabled={false}
-                      required
-                      options={purposeOptions}
-                      className='w-full'
-                    />
-                  </div>
+                <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 py-2'>
+                  <ControlledSelect
+                    name={FORM_FIELD_NAMES.PURPOSE}
+                    label='typ treści'
+                    placeholder='Wybierz cel...'
+                    required
+                    options={purposeOptions}
+                    className='w-full'
+                  />
 
-                  <div className='space-y-2'>
-                    <ControlledSelect
-                      name={FORM_FIELD_NAMES.LANGUAGE}
-                      label='🌍 Język'
-                      placeholder='Wybierz język...'
-                      disabled={false}
-                      required
-                      options={languageOptions}
-                      className='w-full'
-                    />
-                  </div>
+                  <ControlledSelect
+                    name={FORM_FIELD_NAMES.LANGUAGE}
+                    label='język'
+                    placeholder='Wybierz język...'
+                    required
+                    options={languageOptions}
+                    className='w-full'
+                  />
 
-                  <div className='space-y-2'>
-                    <AIModelSelect
-                      name={FORM_FIELD_NAMES.MODEL}
-                      label='🤖 Model AI'
-                      placeholder='Wybierz model...'
-                      className='w-full'
-                    />
-                  </div>
+                  <AIModelSelect
+                    name={FORM_FIELD_NAMES.MODEL}
+                    label='model AI'
+                    placeholder='Wybierz model...'
+                    className='w-full'
+                  />
 
-                  <div className='space-y-2'>
-                    <TemperatureModeSelect
-                      name={FORM_FIELD_NAMES.TEMPERATURE_MODE}
-                      label='🌡️ Tryb temperatury'
-                      placeholder='Wybierz tryb...'
-                      className='w-full'
-                    />
-                    <p className='text-xs text-gray-500 dark:text-gray-400 mt-1 pl-1'>
-                      Kontroluje kreatywność AI: niższa temperatura = bardziej
-                      przewidywalne odpowiedzi
-                    </p>
-                  </div>
+                  <TemperatureModeSelect
+                    name={FORM_FIELD_NAMES.TEMPERATURE_MODE}
+                    label='tryb temperatury'
+                    placeholder='Wybierz tryb...'
+                    className='w-full'
+                  />
                 </div>
               </div>
 

@@ -39,7 +39,7 @@ export default function AILoadingAnimation() {
         Przetwarzam transkrypcję z AI...
       </p>
       <p className='text-sm text-gray-500 dark:text-gray-500'>
-        To może potrwać kilka minut
+        to może potrwać kilka minut
       </p>
     </div>
   )

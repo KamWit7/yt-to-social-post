@@ -45,7 +45,7 @@ export default function UserLayout({
     <div className='space-y-4'>
       <GenericHeader {...config} />
 
-      <div className='flex gap-8 justify-center'>{children}</div>
+      <div className='flex gap-4 justify-center'>{children}</div>
     </div>
   )
 }

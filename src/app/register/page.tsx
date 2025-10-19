@@ -4,9 +4,9 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Utwórz Konto | YT Scribe',
+  title: 'Utwórz konto | YT Scribe',
   description:
-    'Utwórz nowe konto, aby rozpocząć transkrypcję i podsumowywanie filmów YouTube',
+    'utwórz nowe konto, aby rozpocząć transkrypcję i podsumowywanie filmów YouTube',
 }
 
 export default function RegisterPage() {
@@ -16,7 +16,7 @@ export default function RegisterPage() {
         <div className='text-center space-y-2'>
           <h1 className='text-3xl font-bold'>Utwórz konto</h1>
           <p className='text-muted-foreground'>
-            Dołącz do YT Scribe, aby rozpocząć transkrypcję filmów YouTube z AI
+            dołącz do YT Scribe, aby rozpocząć transkrypcję filmów YouTube z AI
           </p>
         </div>
 

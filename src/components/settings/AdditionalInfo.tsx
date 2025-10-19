@@ -13,7 +13,7 @@ export function AdditionalInfo() {
             publicznie
           </li>
           <li>
-            • google Gemini API ma własne ceny - sprawdź stronę cenową Google
+            • Google Gemini API ma własne ceny - sprawdź stronę cenową Google
           </li>
           <li>• możesz monitorować swoje użycie w Google Cloud Console</li>
           <li>

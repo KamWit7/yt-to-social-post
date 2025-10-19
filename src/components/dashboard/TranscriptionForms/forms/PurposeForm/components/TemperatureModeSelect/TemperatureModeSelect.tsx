@@ -28,7 +28,7 @@ export function TemperatureModeSelect({
       <PremiumFeatureTooltip
         isByokUser={isByokUser}
         title='Odblokuj wszystkie temperture'
-        description='Tryby temperatury wymagają konta BYOK.'>
+        description='tryby temperatury wymagają konta BYOK.'>
         <ControlledSelect
           name={name}
           label={label}

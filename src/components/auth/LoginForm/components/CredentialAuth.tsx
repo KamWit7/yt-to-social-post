@@ -84,7 +84,7 @@ export function CredentialAuth({
         <div className='space-y-4'>
           <ControlledInput
             name={FORM_FIELD_NAMES.EMAIL}
-            label='Email'
+            label='email'
             type='email'
             placeholder='Wprowadź swój email'
             required
@@ -95,7 +95,7 @@ export function CredentialAuth({
 
           <ControlledInput
             name={FORM_FIELD_NAMES.PASSWORD}
-            label='Hasło'
+            label='hasło'
             type='password'
             placeholder='Wprowadź swoje hasło'
             required

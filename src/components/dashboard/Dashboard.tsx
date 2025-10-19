@@ -9,8 +9,8 @@ import { TranscriptionForm } from '.'
 import { TextShimmer } from '../animation'
 import { DashboardTabTrigger } from './components'
 import { DASHBOARD_TABS } from './Dashboard.helpers'
-import TranscriptionResults from './TranscriptionResults/TranscriptionResults'
 import { useTranscriptionForms } from './TranscriptionForms/TranscriptionFormsContext'
+import TranscriptionResults from './TranscriptionResults/TranscriptionResults'
 
 function DashboardContent() {
   const { activeTab, stepCompleted, isLoading, handleTabChange } =
@@ -85,7 +85,7 @@ export default function Dashboard() {
 
   return (
     <motion.div
-      className={`mx-auto`}
+      className='mx-auto'
       initial={{
         maxWidth: '56rem', // equivalent to max-w-4xl (896px)
       }}
@@ -99,12 +99,12 @@ export default function Dashboard() {
       }}>
       <div className='text-center my-10 md:my-12'>
         <TextShimmer
-          className='text-4xl md:text-6xl font-bold mb-4 text-gray-800 dark:text-white'
+          className='text-4xl md:text-6xl font-bold mb-4 text-gray-800 '
           isLoading={isLoading}>
           Analiza wideo z AI.
         </TextShimmer>
-        <p className='max-w-2xl mx-auto text-lg md:text-xl text-gray-600 dark:text-gray-400'>
-          Wklej link do filmu z YouTube, aby uzyskać automatyczną transkrypcję,
+        <p className='max-w-2xl mx-auto text-lg md:text-xl text-gray-600'>
+          wklej link do filmu z YouTube, aby uzyskać automatyczną transkrypcję,
           streszczenie i listę poruszanych tematów.
         </p>
       </div>

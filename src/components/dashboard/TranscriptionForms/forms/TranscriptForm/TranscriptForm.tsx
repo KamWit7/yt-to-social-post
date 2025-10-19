@@ -109,33 +109,33 @@ export function TranscriptForm() {
             />
 
             <div>
-              <div className='flex items-center justify-between mb-2'>
-                <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>
-                  transkrypcja
-                  <span className='text-red-500 ml-1'>*</span>
-                </label>
-
-                {hasTranscript && (
-                  <CopyButton
-                    text={currentTranscriptValue}
-                    aria-label='Kopiuj transkrypcję'
-                  />
-                )}
-              </div>
-
               <ControlledTextarea
                 name={FORM_FIELD_NAMES.TRANSCRIPT}
                 placeholder='Wklej tutaj transkrypcję z filmu YouTube lub pobierz ją z linku powyżej...'
-                required
+                label={
+                  <div className='flex items-center justify-between w-full'>
+                    <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>
+                      transkrypcja
+                      <span className='text-red-500 ml-1'>*</span>
+                    </label>
+
+                    {hasTranscript && (
+                      <CopyButton
+                        text={currentTranscriptValue}
+                        aria-label='Kopiuj transkrypcję'
+                      />
+                    )}
+                  </div>
+                }
                 rows={8}
-                textareaClassName='max-h-[342px] overflow-y-auto mb-6'
+                textareaClassName='max-h-[342px] overflow-y-auto'
                 onChange={handleTextareaChange}
               />
 
               <AnimatedSection
                 isVisible={hasUnsavedChanges}
                 delay={ANIMATION_DELAYS.content}>
-                <div className='flex items-center bg-gradient-to-r p-4 from-slate-50 to-blue-50 rounded-xl border border-slate-200 shadow-sm'>
+                <div className='flex items-center bg-gradient-to-r p-4 from-slate-50 to-blue-50 rounded-xl border border-slate-200 shadow-sm mt-6'>
                   <div className='flex-1'>
                     <p className='text-sm text-slate-700 dark:text-slate-300 font-medium'>
                       Masz niezapisane zmiany w transkrypcji
