@@ -23,7 +23,6 @@ const Language = {
 } as const
 
 export type PurposeValue = (typeof Purpose)[keyof typeof Purpose]
-type LanguageValue = (typeof Language)[keyof typeof Language]
 
 export const Dictionary = {
   Purpose,

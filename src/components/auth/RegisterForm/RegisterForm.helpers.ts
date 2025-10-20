@@ -13,7 +13,3 @@ export const FORM_FIELD_NAMES = {
   PASSWORD: 'password',
   CONFIRM_PASSWORD: 'confirmPassword',
 } as const
-
-export const FORM_FIELD_ERRORS = {
-  BACKEND_ERROR: 'other',
-}
