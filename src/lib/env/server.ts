@@ -30,20 +30,10 @@ const serverEnvSchema = z.object({
   GEMINI_API_KEY: z.string().min(1, 'GEMINI_API_KEY is required'),
 
   // Cron Secret
-  CRON_SECRET: z.string().min(1, 'CRON_SECRET is required'),
+  CRON_SECRET: z.string().min(1, 'CRON_SECRET is required').optional(),
 })
 
-// Walidacja zmiennych serwerowych
-const serverEnvResult = serverEnvSchema.safeParse(process.env)
-
-if (!serverEnvResult.success) {
-  console.error('❌ Invalid server environment variables:')
-  console.error(serverEnvResult.error.issues)
-  throw new Error('Invalid server environment variables')
-}
-
-// Eksportowane, walidowane zmienne środowiskowe serwerowe
-export const serverEnv = serverEnvResult.data
+export const serverEnv = serverEnvSchema.parse(process.env)
 
 // Helper function to check if Google OAuth is configured
 function isGoogleOAuthConfigured(): boolean {
