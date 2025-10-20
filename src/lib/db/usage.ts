@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { AccountTier, UserUsage } from '@prisma/client'
+import { AccountTier, Prisma, UserUsage } from '@prisma/client'
 
 // Usage Tracking Operations
 async function createUserUsage(userId: string): Promise<UserUsage> {
@@ -65,13 +65,13 @@ export async function checkUsageLimit(
   }
 }
 
-// TODO: Add usage reset
-export async function resetUsage(userId: string): Promise<UserUsage> {
-  return await prisma.userUsage.update({
-    where: { userId },
+export async function resetAllFreeTierUsage(): Promise<Prisma.BatchPayload> {
+  return await prisma.userUsage.updateMany({
+    where: { accountTier: AccountTier.free },
     data: {
       summaryCount: 0,
       lastUsed: new Date(),
+      updatedAt: new Date(),
     },
   })
 }

@@ -2,7 +2,7 @@
 
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Brain, FileText, Sparkles, Youtube } from 'lucide-react'
 import { useMemo } from 'react'
 import { TranscriptionForm } from '.'
@@ -62,17 +62,15 @@ function DashboardContent() {
           ))}
         </TabsList>
 
-        <AnimatePresence mode='wait'>
-          {tabConfigs.map((tab) => (
-            <TabsContent key={tab.value} value={tab.value}>
-              <TranscriptionForm stepKey={tab.value} />
-            </TabsContent>
-          ))}
-
-          <TabsContent value={DASHBOARD_TABS.RESULTS}>
-            <TranscriptionResults />
+        {tabConfigs.map((tab) => (
+          <TabsContent key={tab.value} value={tab.value}>
+            <TranscriptionForm stepKey={tab.value} />
           </TabsContent>
-        </AnimatePresence>
+        ))}
+
+        <TabsContent value={DASHBOARD_TABS.RESULTS}>
+          <TranscriptionResults />
+        </TabsContent>
       </Tabs>
     </Card>
   )

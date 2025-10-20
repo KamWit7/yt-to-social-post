@@ -32,9 +32,11 @@ BIG
 
 [+] sprawdzić fonty czy się zgadzaja
 
-[ ] rozwiązać TODO
+[+] rozwiązać TODO
 
-[ ] poprawa aniamcja stan ładowania komponetów
+[ ] resetowanie użyca po miesiąciu (ostanie TODO)
+
+[+] poprawa aniamcja stan ładowania komponetów
 
 [ ] resetowanie hasła 
 

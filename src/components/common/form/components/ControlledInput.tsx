@@ -39,7 +39,7 @@ export function ControlledInput<T extends FieldValues>({
           placeholder={placeholder}
           disabled={disabled}
           autoComplete={autoComplete}
-          aria-label={label}
+          aria-label={typeof label === 'string' ? label : undefined}
           aria-invalid={!!error}
           className={cn(getInputClasses(!!icon))}
         />
