@@ -30,7 +30,7 @@ const serverEnvSchema = z.object({
   GEMINI_API_KEY: z.string().min(1, 'GEMINI_API_KEY is required'),
 
   // Cron Secret
-  CRON_SECRET: z.string().min(1, 'CRON_SECRET is required').optional(),
+  CRON_SECRET: z.string().min(1, 'CRON_SECRET is required'),
 })
 
 export const serverEnv = serverEnvSchema.parse(process.env)

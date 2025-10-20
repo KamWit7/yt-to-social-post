@@ -4,9 +4,11 @@ import type { NextRequest } from 'next/server'
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization')
-  console.warn('authHeader', authHeader, `Bearer ${serverEnv.CRON_SECRET}`)
 
-  if (authHeader !== `Bearer ${serverEnv.CRON_SECRET}`) {
+  if (
+    serverEnv.NODE_ENV !== 'development' &&
+    authHeader !== `Bearer ${serverEnv.CRON_SECRET}`
+  ) {
     return new Response('Unauthorized', {
       status: 401,
     })
