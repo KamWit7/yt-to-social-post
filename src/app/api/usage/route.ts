@@ -1,13 +1,13 @@
 import { resetAllFreeTierUsage } from '@/lib/db/usage'
-import { serverEnv } from '@/lib/env/server'
+import { safeEnv } from '@/lib/env/validate-env'
 import type { NextRequest } from 'next/server'
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization')
 
   if (
-    serverEnv.NODE_ENV !== 'development' &&
-    authHeader !== `Bearer ${serverEnv.CRON_SECRET}`
+    safeEnv.NODE_ENV !== 'development' &&
+    authHeader !== `Bearer ${safeEnv.CRON_SECRET}`
   ) {
     return new Response('Unauthorized', {
       status: 401,

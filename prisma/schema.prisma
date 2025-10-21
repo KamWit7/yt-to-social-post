@@ -52,6 +52,9 @@ model User {
   accounts Account[]
   sessions Session[]
   usage    UserUsage?
+
+  resetToken       String?  @unique
+  resetTokenExpiry DateTime?
 }
 
 model VerificationToken {

@@ -1,4 +1,4 @@
-import { API_BASE_URL } from './config'
+import { safeEnv } from '@/lib/env/validate-env'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
@@ -15,7 +15,9 @@ export async function apiFetch<TResponse, TBody = unknown>(
 ): Promise<TResponse> {
   const { method = 'GET', headers, body, signal } = options
 
-  const url = path.startsWith('http') ? path : `${API_BASE_URL}${path}`
+  const url = path.startsWith('http')
+    ? path
+    : `${safeEnv.NEXT_PUBLIC_API_URL}${path}`
 
   const response = await fetch(url, {
     method,

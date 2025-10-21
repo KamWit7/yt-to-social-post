@@ -23,13 +23,24 @@ export default function LoginPage() {
 
         <LoginForm />
 
-        <div className='text-center text-sm'>
-          <span className='text-muted-foreground'>Nie masz konta? </span>
-          <Link
-            href={ROUTES.REGISTER}
-            className='text-primary hover:underline font-medium'>
-            Utwórz je tutaj
-          </Link>
+        <div className='text-center text-sm space-y-2'>
+          <div>
+            <span className='text-muted-foreground'>Nie masz konta? </span>
+            <Link
+              href={ROUTES.REGISTER}
+              className='text-primary hover:underline font-medium'>
+              Utwórz je tutaj
+            </Link>
+          </div>
+
+          <div>
+            <span className='text-muted-foreground'>Zapomniałeś hasła? </span>
+            <Link
+              href={ROUTES.RESET_PASSWORD}
+              className='text-primary hover:underline font-medium'>
+              Resetuj hasło
+            </Link>
+          </div>
         </div>
       </div>
     </div>

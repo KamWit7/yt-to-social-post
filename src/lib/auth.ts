@@ -1,5 +1,5 @@
 import { findUserByEmail } from '@/lib/db/users'
-import { getGoogleOAuthCredentials, serverEnv } from '@/lib/env/server'
+import { getGoogleOAuthCredentials, safeEnv } from '@/lib/env/validate-env'
 import { prisma } from '@/lib/prisma'
 import { ROUTES } from '@/utils/constants'
 import { PrismaAdapter } from '@auth/prisma-adapter'
@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions = {
     signIn: ROUTES.LOGIN,
     error: ROUTES.LOGIN,
   },
-  debug: serverEnv.NODE_ENV === 'development',
+  debug: safeEnv.NODE_ENV === 'development',
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -70,5 +70,5 @@ export const authOptions: NextAuthOptions = {
       return session
     },
   },
-  secret: serverEnv.NEXTAUTH_SECRET,
+  secret: safeEnv.NEXTAUTH_SECRET,
 }
