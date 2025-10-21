@@ -19,5 +19,6 @@ export const ROUTES = {
   DASHBOARD: '/',
   PROFILE: '/profile',
   SETTINGS: '/settings',
-  CHAT: '/chat',
+  RESET_PASSWORD: '/reset-password',
+  NEW_RESET_PASSWORD: '/reset-password/new',
 } as const
