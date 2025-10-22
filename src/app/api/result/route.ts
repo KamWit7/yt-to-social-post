@@ -3,7 +3,7 @@ import { isModelAvailable } from '@/components/dashboard/TranscriptionForms/form
 import { getUserApiKey } from '@/lib/actions/usage'
 import { authOptions } from '@/lib/auth'
 import { getUserUsage } from '@/lib/db/usage'
-import { safeEnv } from '@/lib/env/validate-env'
+import { serverEnv } from '@/lib/env/server-env'
 import { decrypt } from '@/utils/encryption/encryption'
 import { getModelTemperature } from '@/utils/modelTemperature'
 import { GoogleGenAI } from '@google/genai'
@@ -66,8 +66,8 @@ export async function POST(request: Request) {
 
     const decryptedApiKey =
       accountTier === AccountTier.BYOK
-        ? decrypt(apiKey ?? '', safeEnv.API_ENCRYPTION_KEY)
-        : safeEnv.GEMINI_API_KEY
+        ? decrypt(apiKey ?? '', serverEnv.API_ENCRYPTION_KEY)
+        : serverEnv.GEMINI_API_KEY
 
     const ai = new GoogleGenAI({
       apiKey: decryptedApiKey,

@@ -16,10 +16,9 @@ import {
 import { ROUTES } from '@/utils/constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckCircle2, KeyRound, Lock } from 'lucide-react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-
 import {
   newPasswordSchema,
   type NewPasswordFormData,
@@ -35,11 +34,9 @@ const NewPasswordDefaultValues: NewPasswordFormData = {
   confirmPassword: '',
 }
 
-export default function NewPasswordForm() {
-  const [isSuccess, setIsSuccess] = useState(false)
-  const searchParams = useSearchParams()
+export default function NewPasswordForm({ token }: { token: string | null }) {
   const router = useRouter()
-  const token = searchParams.get('token')
+  const [isSuccess, setIsSuccess] = useState(false)
 
   const methods = useForm<NewPasswordFormData>({
     resolver: zodResolver(newPasswordSchema),
@@ -130,7 +127,9 @@ export default function NewPasswordForm() {
             </div>
 
             <Button
-              onClick={() => router.push(ROUTES.LOGIN)}
+              onClick={() => {
+                router.push(ROUTES.LOGIN)
+              }}
               className='w-full'>
               Przejdź do logowania
             </Button>

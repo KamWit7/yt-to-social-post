@@ -1,4 +1,4 @@
-import { safeEnv } from '@/lib/env/validate-env'
+import { serverEnv } from '@/lib/env/server-env'
 import nodemailer from 'nodemailer'
 
 const resetPasswordEmailTemplate = (resetUrl: string) => `
@@ -29,11 +29,11 @@ export async function sendResetPasswordEmial({
     {
       service: 'gmail',
       auth: {
-        user: safeEnv.EMAIL_USER,
-        pass: safeEnv.EMAIL_PASSWORD,
+        user: serverEnv.EMAIL_USER,
+        pass: serverEnv.EMAIL_PASSWORD,
       },
       tls: {
-        rejectUnauthorized: safeEnv.NODE_ENV === 'production' ? true : false,
+        rejectUnauthorized: serverEnv.NODE_ENV === 'production' ? true : false,
       },
     },
     {
@@ -43,7 +43,7 @@ export async function sendResetPasswordEmial({
 
   try {
     await transporter.sendMail({
-      from: safeEnv.EMAIL_USER,
+      from: serverEnv.EMAIL_USER,
       to: email,
       subject: 'Reset hasła',
       html,

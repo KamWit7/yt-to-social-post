@@ -9,7 +9,7 @@ import console from 'console'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth'
 import { checkUsageLimit, getUserUsage, incrementUsage } from '../db/usage'
-import { safeEnv } from '../env/validate-env'
+import { serverEnv } from '../env/server-env'
 import { prisma } from '../prisma'
 import { DEFAULT_USAGE_LIMIT } from '../usage'
 
@@ -155,7 +155,7 @@ export async function saveApiKeyAndUpgradeTier(
       }
     }
 
-    const encryptedApiKey = encrypt(apiKey, safeEnv.API_ENCRYPTION_KEY)
+    const encryptedApiKey = encrypt(apiKey, serverEnv.API_ENCRYPTION_KEY)
 
     const updatedUsage = await prisma.userUsage.update({
       where: { userId: session.user.id },
