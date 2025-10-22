@@ -1,17 +1,16 @@
 import { findUserByEmail } from '@/lib/db/users'
-import { safeEnv } from '@/lib/env/validate-env'
+import { serverEnv } from '@/lib/env/server-env'
 import { prisma } from '@/lib/prisma'
 import { ROUTES } from '@/utils/constants'
 import { NextRequest } from 'next/server'
 import crypto from 'node:crypto'
 import z from 'zod'
-import { sendResetPasswordEmial } from './email/reset-password'
+import { sendResetPasswordEmial } from './reset.emial'
+import { EXPIRATION_TIME_ONE_HOUR } from './reset.constatns'
 
 const requestResetSchema = z.object({
   email: z.email({ message: 'Wprowadź poprawny adres email' }),
 })
-
-export const EXPIRATION_TIME_ONE_HOUR = 1 * 60 * 60 * 1000
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,7 +36,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    const resetUrl = `${safeEnv.NEXTAUTH_URL}${ROUTES.NEW_RESET_PASSWORD}?token=${resetToken}`
+    const resetUrl = `${serverEnv.NEXTAUTH_URL}${ROUTES.NEW_RESET_PASSWORD}?token=${resetToken}`
 
     await sendResetPasswordEmial({ email: user.email, resetUrl })
 

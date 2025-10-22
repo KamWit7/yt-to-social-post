@@ -5,11 +5,8 @@ import { Dictionary } from '@/components/dashboard/TranscriptionForms/forms/Form
 import { QueryProvider } from '@/components/provider/QueryProvider'
 import { SessionProvider } from '@/components/provider/SessionProvider'
 import { UsageProvider } from '@/context'
-import { HEADERS_PATH_KEY } from '@/middleware'
-import { ROUTES } from '@/utils/constants'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import { headers } from 'next/headers'
 import './globals.css'
 
 const geistSans = Geist({
@@ -33,10 +30,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const headersList = await headers()
-  const pathname = headersList.get(HEADERS_PATH_KEY)
-
-  const isChatPage = pathname === ROUTES.CHAT
   return (
     <html lang={Dictionary.Language.Polish}>
       <body
@@ -44,18 +37,14 @@ export default async function RootLayout({
         <SessionProvider>
           <QueryProvider>
             <UsageProvider>
-              {isChatPage ? (
-                children
-              ) : (
-                <div
-                  className='bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 font-sans
+              <div
+                className='bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 font-sans
               flex flex-col min-h-screen'>
-                  <Header />
+                <Header />
 
-                  <main className='p-4 md:p-8 flex-1'>{children}</main>
-                  <Footer />
-                </div>
-              )}
+                <main className='p-4 md:p-8 flex-1'>{children}</main>
+                <Footer />
+              </div>
               <InitialTransition />
             </UsageProvider>
           </QueryProvider>

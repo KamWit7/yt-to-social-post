@@ -1,13 +1,13 @@
 import { z } from 'zod'
 
-// Schema dla zmiennych środowiskowych serwerowych
-const safeEnvSchema = z.object({
+// Server-side environment variables - this file should only be imported in server components or API routes
+const serverEnvSchema = z.object({
   // Database
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
 
   // NextAuth
   NEXTAUTH_SECRET: z.string().min(1, 'NEXTAUTH_SECRET is required'),
-  NEXTAUTH_URL: z.url().min(1, 'NEXTAUTH_URL is required'),
+  NEXTAUTH_URL: z.string().min(1, 'NEXTAUTH_URL is required'),
 
   // Google OAuth (opcjonalne)
   GOOGLE_CLIENT_ID: z.string().optional(),
@@ -39,15 +39,16 @@ const safeEnvSchema = z.object({
   EMAIL_PASSWORD: z.string().min(1, 'EMAIL_PASSWORD is required'),
 
   // API Base URL
-  NEXT_PUBLIC_API_URL: z.url().min(1, 'NEXT_PUBLIC_API_URL is required'),
+  NEXT_PUBLIC_API_URL: z.string().min(1, 'NEXT_PUBLIC_API_URL is required'),
 })
 
-console.log('ENV',process.env)
-export const safeEnv = safeEnvSchema.parse(process.env)
+export const serverEnv: z.infer<typeof serverEnvSchema> = serverEnvSchema.parse(
+  process.env
+)
 
 // Helper function to check if Google OAuth is configured
 function isGoogleOAuthConfigured(): boolean {
-  return !!(safeEnv.GOOGLE_CLIENT_ID && safeEnv.GOOGLE_CLIENT_SECRET)
+  return !!(serverEnv.GOOGLE_CLIENT_ID && serverEnv.GOOGLE_CLIENT_SECRET)
 }
 
 // Helper function to get Google OAuth credentials
@@ -62,7 +63,7 @@ export function getGoogleOAuthCredentials(): {
   }
 
   return {
-    clientId: safeEnv.GOOGLE_CLIENT_ID!,
-    clientSecret: safeEnv.GOOGLE_CLIENT_SECRET!,
+    clientId: serverEnv.GOOGLE_CLIENT_ID!,
+    clientSecret: serverEnv.GOOGLE_CLIENT_SECRET!,
   }
 }

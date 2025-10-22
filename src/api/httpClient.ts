@@ -1,4 +1,4 @@
-import { safeEnv } from '@/lib/env/validate-env'
+import { clientEnv } from '@/lib/env/client-env'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
@@ -17,7 +17,7 @@ export async function apiFetch<TResponse, TBody = unknown>(
 
   const url = path.startsWith('http')
     ? path
-    : `${safeEnv.NEXT_PUBLIC_API_URL}${path}`
+    : `${clientEnv.NEXT_PUBLIC_API_URL}${path}`
 
   const response = await fetch(url, {
     method,
