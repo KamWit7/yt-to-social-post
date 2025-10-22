@@ -34,11 +34,13 @@ BIG
 
 [+] rozwiązać TODO
 
-[in_progress] resetowanie użyca po miesiąciu (ostanie TODO)
+[+] resetowanie użyca po miesiąciu (ostanie TODO)
 
 [+] poprawa aniamcja stan ładowania komponetów
 
 [in_progress] resetowanie hasła 
+
+[ ] add favicon
 
 [ ] dodanie środowiska developmentu
 
