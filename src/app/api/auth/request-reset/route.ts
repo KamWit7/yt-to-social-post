@@ -5,8 +5,8 @@ import { ROUTES } from '@/utils/constants'
 import { NextRequest } from 'next/server'
 import crypto from 'node:crypto'
 import z from 'zod'
-import { sendResetPasswordEmial } from './reset.emial'
 import { EXPIRATION_TIME_ONE_HOUR } from './reset.constatns'
+import { sendResetPasswordEmial } from './reset.emial'
 
 const requestResetSchema = z.object({
   email: z.email({ message: 'Wprowadź poprawny adres email' }),
