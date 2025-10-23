@@ -34,7 +34,7 @@ BIG
 
 [+] rozwiązać TODO
 
-[+] resetowanie użyca po miesiąciu (ostanie TODO)
+[in_progress] resetowanie użyca po miesiąciu (ostanie TODO)
 
 [+] poprawa aniamcja stan ładowania komponetów
 
