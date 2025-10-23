@@ -39,6 +39,12 @@ BIG
 [+] poprawa aniamcja stan ładowania komponetów
 
 [in_progress] resetowanie hasła 
+  [ ] dodanie migracji w github pipeline dla neon 
+  [ ] czy wsszystko działa na producji 
+
+[ ] dodanie środowiska developmentu
+  [ ] podział bazy danych na lokalny/develop/produkcje
+  [ ] usawienie .env na vercelu w odpowiedni sposób 
 
 [ ] add favicon
 
