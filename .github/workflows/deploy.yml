@@ -1,26 +1,55 @@
 name: Deploy
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: choice
+        options:
+          - Preview
+          - Production
   workflow_run:
     workflows: ["Build"]
     types:
       - completed
     branches:
       - main
+      - develop
   push:
     paths:
       - prisma/migrations/**
     branches:
       - main
+      - develop
 
 jobs:
-  deploy:
+  deploy-preview:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
-    strategy:
-      matrix:
-        environment: [Preview, Production]
-    environment: ${{ matrix.environment }}
+    if: ${{ (github.ref == 'refs/heads/develop' && (github.event.workflow_run.conclusion == 'success' || github.event_name == 'push')) || (github.event_name == 'workflow_dispatch' && inputs.environment == 'Preview') }}
+    environment: Preview
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Apply all pending migrations to the database
+        run: npm run db:migrate:deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  
+  deploy-production:
+    runs-on: ubuntu-latest
+    if: ${{ (github.ref == 'refs/heads/main' && (github.event.workflow_run.conclusion == 'success' || github.event_name == 'push')) || (github.event_name == 'workflow_dispatch' && inputs.environment == 'Production') }}
+    environment: Production
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
