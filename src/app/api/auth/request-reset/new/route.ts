@@ -46,14 +46,10 @@ export async function POST(request: NextRequest) {
 
     return new Response('Hasło zostało zmienione', { status: 200 })
   } catch (error: unknown) {
-    if (error instanceof z.ZodError) {
-      return new Response(error.issues[0].message, {
-        status: 400,
-      })
-    }
     return new Response('Błąd podczas resetowania hasła', {
       status: 400,
-      statusText: error instanceof Error ? error.message : 'Unknown error',
+      statusText:
+        error instanceof Error ? JSON.stringify(error) : 'Unknown error',
     })
   }
 }

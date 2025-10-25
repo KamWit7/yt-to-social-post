@@ -39,8 +39,11 @@ BIG
 [+] poprawa aniamcja stan ładowania komponetów
 
 [in_progress] resetowanie hasła 
-  [ ] dodanie migracji w github pipeline dla neon 
+  [+] dodanie migracji w github pipeline dla neon 
   [ ] czy wsszystko działa na producji 
+  [ ] spujność wizualna (rejestracaj z resete hasła)
+  [ ] mail nie spójny z wyglądem strony 
+  [ ] co się stanie jeżeli gmail user chce zresetować hasło
 
 [ ] dodanie środowiska developmentu
   [ ] podział bazy danych na lokalny/develop/produkcje

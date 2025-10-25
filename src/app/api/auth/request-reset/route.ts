@@ -44,7 +44,8 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     return new Response('Błąd podczas wysyłania emaila', {
       status: 400,
-      statusText: error instanceof Error ? error.message : 'Unknown error',
+      statusText:
+        error instanceof Error ? JSON.stringify(error) : 'Unknown error',
     })
   }
 }
