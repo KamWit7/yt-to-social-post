@@ -45,6 +45,7 @@ export function RegisterForm() {
       if (!result.error) {
         return
       }
+
       if (result.error.other) {
         setFormError('root.serverError', {
           type: 'server',
