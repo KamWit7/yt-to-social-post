@@ -4,6 +4,7 @@ import {
   ControlledInput,
   FormServerError,
   SubmitButton,
+  SuccessCard,
 } from '@/components/common'
 import {
   Card,
@@ -13,10 +14,11 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CheckCircle2, Mail, Send } from 'lucide-react'
+import { Mail, Send } from 'lucide-react'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
+import { AnimatedSection } from '@/components/animation'
 import {
   resetPasswordSchema,
   type ResetPasswordFormData,
@@ -56,54 +58,29 @@ export function ResetPasswordForm() {
       })
 
       if (!response.ok) {
-        const statusText = response.statusText || 'Wystąpił błąd'
-        if (response.status === 404) {
-          setFormError('email', {
-            message: 'Nie znaleziono użytkownika z tym adresem email',
-          })
-          return
-        }
-        setFormError('root.serverError', {
-          type: 'server',
-          message: statusText,
-        })
-        return
+        const error = (await response.json())?.message || 'Wystąpił błąd'
+
+        throw new Error(error)
       }
 
       setIsSuccess(true)
-    } catch {
+    } catch (error: unknown) {
       setFormError('root.serverError', {
         type: 'server',
-        message: 'Wystąpił nieoczekiwany błąd podczas wysyłania emaila',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Wystąpił nieoczekiwany błąd podczas wysyłania emaila',
       })
     }
   }
 
   if (isSuccess) {
     return (
-      <Card className='w-full max-w-md mx-auto'>
-        <CardContent className='pt-6'>
-          <div className='text-center space-y-6'>
-            <div className='relative'>
-              <div className='w-16 h-16 bg-gradient-to-br from-green-100 to-green-50 rounded-full flex items-center justify-center mx-auto shadow-lg'>
-                <CheckCircle2 className='w-8 h-8 text-green-600' />
-              </div>
-              <div className='absolute inset-0 w-16 h-16 bg-green-200 rounded-full mx-auto animate-ping opacity-20'></div>
-            </div>
-
-            <div className='space-y-2'>
-              <h3 className='text-xl font-bold text-green-800'>
-                Email wysłany!
-              </h3>
-              <p className='text-sm text-muted-foreground'>
-                link do resetowania hasła został wysłany na Twój adres email.
-                Sprawdź swoją skrzynkę odbiorczą i postępuj zgodnie z
-                instrukcjami.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <SuccessCard
+        title='Email wysłany!'
+        description='link do resetowania hasła został wysłany na Twój adres email. Sprawdź swoją skrzynkę odbiorczą i postępuj zgodnie z instrukcjami.'
+      />
     )
   }
 
@@ -116,32 +93,34 @@ export function ResetPasswordForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onFormSubmit)} className='space-y-4'>
-            <div className='space-y-4'>
-              <ControlledInput
-                name={FORM_FIELD_NAMES.EMAIL}
-                label='email'
-                type='email'
-                placeholder='Wprowadź swój email'
-                required
-                disabled={isSubmitting}
-                icon={<Mail className='w-4 h-4' />}
-                autoComplete='email'
+        <AnimatedSection isVisible>
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onFormSubmit)} className='space-y-4'>
+              <div className='space-y-4'>
+                <ControlledInput
+                  name={FORM_FIELD_NAMES.EMAIL}
+                  label='email'
+                  type='email'
+                  placeholder='Wprowadź swój email'
+                  required
+                  disabled={isSubmitting}
+                  icon={<Mail className='w-4 h-4' />}
+                  autoComplete='email'
+                />
+              </div>
+
+              <FormServerError error={errors.root?.serverError} />
+
+              <SubmitButton
+                isLoading={isSubmitting}
+                loadingText='Wysyłanie...'
+                normalText='Wyślij link resetujący'
+                icon={Send}
+                className='w-full'
               />
-            </div>
-
-            <FormServerError error={errors.root?.serverError} />
-
-            <SubmitButton
-              isLoading={isSubmitting}
-              loadingText='Wysyłanie...'
-              normalText='Wyślij link resetujący'
-              icon={Send}
-              className='w-full'
-            />
-          </form>
-        </FormProvider>
+            </form>
+          </FormProvider>
+        </AnimatedSection>
       </CardContent>
     </Card>
   )

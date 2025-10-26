@@ -1,12 +1,11 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { AnimatedSection } from '@/components/animation'
+import SuccessCard from '@/components/common/SuccessCard'
 import { Progress } from '@/components/ui/progress'
 import { ROUTES } from '@/utils/constants'
-import { UserPlus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-const COUNT_DOWN_TIME = 5
+const COUNT_DOWN_TIME = 10
 
 export function RegisterSuccessMessage() {
   const [countdown, setCountdown] = useState<number>(COUNT_DOWN_TIME)
@@ -29,64 +28,59 @@ export function RegisterSuccessMessage() {
   const progressPercentage =
     ((COUNT_DOWN_TIME - countdown) / COUNT_DOWN_TIME) * 100
 
+  const handleLoginClick = () => {
+    router.push(ROUTES.LOGIN)
+  }
+
+  const getCountdownLabel = (count: number): string => {
+    if (count === 1) {
+      return 'sekundę'
+    }
+
+    if (count > 1 && count < 5) {
+      return 'sekundy'
+    }
+
+    return 'sekund'
+  }
+
+  const isCountdownActive = countdown !== null
+
   return (
-    <Card className='w-full max-w-md mx-auto'>
-      <CardContent className='pt-6'>
-        <div className='text-center space-y-6'>
-          <div className='relative'>
-            <div className='w-16 h-16 bg-gradient-to-br from-green-100 to-green-50 rounded-full flex items-center justify-center mx-auto shadow-lg'>
-              <UserPlus className='w-8 h-8 text-green-600' />
-            </div>
-            <div className='absolute inset-0 w-16 h-16 bg-green-200 rounded-full mx-auto animate-ping opacity-20'></div>
-          </div>
-
-          <div className='space-y-2'>
-            <h3 className='text-xl font-bold text-green-800'>
-              Rejestracja zakończona pomyślnie!
-            </h3>
-            <p className='text-sm text-muted-foreground'>
-              twoje konto zostało utworzone pomyślnie
-            </p>
-          </div>
-
-          {countdown !== null && (
-            <div className='space-y-4'>
-              <div className='flex items-center justify-center space-x-2'>
-                <span className='text-sm text-muted-foreground'>
-                  przekierowanie do logowania za
-                </span>
-                <div className='flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full'>
-                  <span className='text-sm font-bold text-primary'>
-                    {countdown}
+    <AnimatedSection isVisible className='space-y-4'>
+      <SuccessCard
+        title='Rejestracja zakończona pomyślnie!'
+        description='twoje konto zostało utworzone pomyślnie'
+        buttonText='Przejdź do logowania teraz'
+        onButtonClick={handleLoginClick}
+        isPinging={isCountdownActive}
+        additionalContent={
+          <>
+            {isCountdownActive && (
+              <div className='w-full max-w-md mx-auto space-y-2'>
+                <div className='flex items-center justify-center space-x-2'>
+                  <span className='text-sm text-muted-foreground'>
+                    przekierowanie do logowania za
+                  </span>
+                  <div className='flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full'>
+                    <span className='text-sm font-bold text-primary'>
+                      {countdown}
+                    </span>
+                  </div>
+                  <span className='text-sm text-muted-foreground'>
+                    {getCountdownLabel(countdown)}
                   </span>
                 </div>
-                <span className='text-sm text-muted-foreground'>
-                  {countdown === 1
-                    ? 'sekundę'
-                    : countdown < 5
-                    ? 'sekundy'
-                    : 'sekund'}
-                </span>
+
+                <Progress
+                  value={progressPercentage}
+                  className='w-full h-2 bg-gray-200'
+                />
               </div>
-
-              <Progress
-                value={progressPercentage}
-                className='w-full h-2 bg-gray-200'
-              />
-
-              <Button
-                variant='ghost'
-                size='sm'
-                onClick={() => {
-                  router.push(ROUTES.LOGIN)
-                }}
-                className='text-sm'>
-                Przejdź do logowania teraz
-              </Button>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+            )}
+          </>
+        }
+      />
+    </AnimatedSection>
   )
 }

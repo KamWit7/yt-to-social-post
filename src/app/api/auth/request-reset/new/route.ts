@@ -26,11 +26,29 @@ export async function POST(request: NextRequest) {
     })
 
     if (!user) {
-      return new Response('Nie znaleziono użytkownika', { status: 404 })
+      return new Response(
+        JSON.stringify({
+          message: 'Upewnij się, że link do resetowania hasła jest poprawny',
+        }),
+        {
+          status: 404,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
     }
 
     if (user.resetTokenExpiry && user.resetTokenExpiry < new Date()) {
-      return new Response('Link do resetowania hasła wygasł', { status: 400 })
+      return new Response(
+        JSON.stringify({ message: 'Link do resetowania hasła wygasł' }),
+        {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
     }
 
     const hashedPassword = await bcrypt.hash(body.password, 12)
@@ -44,12 +62,24 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    return new Response('Hasło zostało zmienione', { status: 200 })
+    return new Response(
+      JSON.stringify({ message: 'Hasło zostało zmienione' }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
   } catch (error: unknown) {
-    return new Response('Błąd podczas resetowania hasła', {
-      status: 400,
-      statusText:
-        error instanceof Error ? JSON.stringify(error) : 'Unknown error',
-    })
+    return new Response(
+      JSON.stringify({ message: 'Błąd podczas resetowania hasła' }),
+      {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
   }
 }

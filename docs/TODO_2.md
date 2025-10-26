@@ -40,14 +40,14 @@ BIG
 
 [in_progress] resetowanie hasła 
   [+] dodanie migracji w github pipeline dla neon 
-  [ ] czy wsszystko działa na producji 
-  [ ] spujność wizualna (rejestracaj z resete hasła)
-  [ ] mail nie spójny z wyglądem strony 
+  [+] czy wsszystko działa na producji 
+  [+] spujność wizualna (rejestracaj z resete hasła)
+  [+] mail nie spójny z wyglądem strony 
   [ ] co się stanie jeżeli gmail user chce zresetować hasło
 
-[ ] dodanie środowiska developmentu
-  [ ] podział bazy danych na lokalny/develop/produkcje
-  [ ] usawienie .env na vercelu w odpowiedni sposób 
+[+] dodanie środowiska developmentu
+  [+] podział bazy danych na lokalny/develop/produkcje
+  [+] usawienie .env na github w odpowiedni sposób 
 
 [ ] add favicon
 

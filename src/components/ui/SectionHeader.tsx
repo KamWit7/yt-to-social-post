@@ -1,5 +1,6 @@
 'use client'
 
+import { cn } from '@/lib/utils'
 import { ReactNode } from 'react'
 
 interface SectionHeaderProps {
@@ -18,9 +19,13 @@ export default function SectionHeader({
   className = '',
 }: SectionHeaderProps) {
   return (
-    <div className={`flex items-center gap-4 pb-4 mb-4 ${className}`}>
+    <div className={cn('flex items-center gap-4 pb-4 mb-4', className)}>
       <div
-        className={`min-w-12 min-h-12 w-12 h-12 ${iconBgColor} rounded-full flex items-center justify-center shadow-lg`}>
+        className={cn(
+          'min-w-12 min-h-12 w-12 h-12',
+          iconBgColor,
+          'rounded-full flex items-center justify-center shadow-lg'
+        )}>
         {icon}
       </div>
       <div className='space-y-1'>

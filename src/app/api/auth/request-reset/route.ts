@@ -20,7 +20,15 @@ export async function POST(request: NextRequest) {
     const user = await findUserByEmail(body.email)
 
     if (!user) {
-      return new Response('Nie znaleziono użytkownika', { status: 404 })
+      return new Response(
+        JSON.stringify({ message: 'Podany adres email jest nieprawidłowy' }),
+        {
+          status: 404,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
     }
 
     const resetToken = crypto.randomBytes(32).toString('hex')
@@ -42,10 +50,19 @@ export async function POST(request: NextRequest) {
 
     return new Response('Email został wysłany', { status: 200 })
   } catch (error: unknown) {
-    return new Response('Błąd podczas wysyłania emaila', {
-      status: 400,
-      statusText:
-        error instanceof Error ? JSON.stringify(error) : 'Unknown error',
-    })
+    return new Response(
+      JSON.stringify({
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Błąd podczas wysyłania emaila',
+      }),
+      {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
   }
 }
