@@ -17,50 +17,29 @@ BIG
 [+] przetestować free/byok
 [+] sprawdzisć seeting oraz profile
 [+] poprawić profil aby pasował do gate przekroczony limit
-
 [+] dodanie temperatury -> tam samo zmiana tylko dla BYOK (pokazywać domyślną)
-
-[?] poprawa wizualna dla osobny przekraczającej limit darmowego konta CEL oraz profil (przeglądnąć)
-
+[+] poprawa wizualna dla osobny przekraczającej limit darmowego konta CEL oraz profil (przeglądnąć)
 [+] poprawka dla osoby która nie jest zalgowana [wizualnie FROM Purpose]password
-
 [+] Form Purpose -> krótki stan ładowania skacze ekran -> UsageGate
-
 [+] dodać zapisywanie po udanym fetchu AI
-
 [+] wyczyść nie potrzebne handleSaveState
-
 [+] sprawdzić fonty czy się zgadzaja
-
 [+] rozwiązać TODO
-
 [+] resetowanie użyca po miesiąciu (ostanie TODO)
-
 [+] poprawa aniamcja stan ładowania komponetów
-
 [in_progress] resetowanie hasła 
   [+] dodanie migracji w github pipeline dla neon 
   [+] czy wsszystko działa na producji 
   [+] spujność wizualna (rejestracaj z resete hasła)
   [+] mail nie spójny z wyglądem strony 
-  [ ] co się stanie jeżeli gmail user chce zresetować hasło
-
+  [+] co się stanie jeżeli gmail user chce zresetować hasło
 [+] dodanie środowiska developmentu
   [+] podział bazy danych na lokalny/develop/produkcje
   [+] usawienie .env na github w odpowiedni sposób 
-
-[ ] add favicon
-
-[ ] add favicon
-
-[ ] dodanie środowiska developmentu
-
+[+] add favicon
 [ ] stworzyć ikone dla strony
-
 [ ] co z cookies?
-
 [ ] test dla zapisywanie w LS kiedy user się zaloguje przedzie propces skopiuje dane z LS i wkleji jak nie jest zalogowany oczekiwany rezulata - endpoint z transkrypcją wali błąd
-
 
 FIX THIS :
  GET /api/auth/providers 200 in 53ms

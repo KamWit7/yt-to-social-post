@@ -61,13 +61,13 @@ export function getUsageMessage(
 
   switch (usageLevel) {
     case UsageLevel.DANGER:
-      return 'rozważ upgrade planu i uzyskaj nieograniczone podsumowania z własnym kluczem.'
+      return 'rozważ upgrade planu i uzyskaj nieograniczone podsumowania z własnym kluczem'
     case UsageLevel.WARNING:
-      return 'zbliżasz się do swojego limitu użycia.'
+      return 'zbliżasz się do swojego limitu użycia'
     case UsageLevel.SAFE:
-      return 'jesteś w granicach swoich limitów użycia.'
+      return 'jesteś w granicach swoich limitów użycia'
     default:
-      return 'jesteś w granicach swoich limitów użycia.'
+      return 'jesteś w granicach swoich limitów użycia'
   }
 }
 

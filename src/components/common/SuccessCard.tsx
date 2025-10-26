@@ -23,8 +23,8 @@ export default function SuccessCard({
   isPinging,
 }: SuccessCardProps) {
   return (
-    <Card className='w-full max-w-md mx-auto'>
-      <AnimatedSection isVisible>
+    <AnimatedSection isVisible>
+      <Card className='w-full max-w-md mx-auto my-2'>
         <CardContent>
           <div className='text-center space-y-6'>
             <div className='relative'>
@@ -32,7 +32,7 @@ export default function SuccessCard({
                 <CheckCircle2 className='w-6 h-6 text-green-600' />
               </div>
               {isPinging && (
-                <div className='absolute inset-0 w-12 h-12 bg-green-200 rounded-full mx-auto animate-ping opacity-20' />
+                <div className='absolute inset-0 w-12 h-12 bg-green-200 rounded-full mx-auto animate-ping opacity-20 z-100' />
               )}
             </div>
 
@@ -49,7 +49,7 @@ export default function SuccessCard({
             )}
           </div>
         </CardContent>
-      </AnimatedSection>
-    </Card>
+      </Card>
+    </AnimatedSection>
   )
 }

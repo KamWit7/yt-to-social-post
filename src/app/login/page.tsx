@@ -1,4 +1,5 @@
 import { LoginForm } from '@/components/auth/LoginForm'
+import { PageHeader } from '@/components/common'
 import { ROUTES } from '@/utils/constants'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -13,17 +14,14 @@ export default function LoginPage() {
   return (
     <div className='container mx-auto max-w-md py-8'>
       <div className='space-y-6'>
-        <div className='text-center space-y-2'>
-          <h1 className='text-3xl font-bold'>Witaj ponownie</h1>
-          <p className='text-muted-foreground'>
-            zaloguj się, aby uzyskać dostęp do swojego konta i kontynuować
-            transkrypcję
-          </p>
-        </div>
+        <PageHeader
+          title='Witaj ponownie'
+          description='zaloguj się, aby uzyskać dostęp do swojego konta i kontynuować transkrypcję'
+        />
 
         <LoginForm />
 
-        <div className='text-center text-sm space-y-2'>
+        <div className='text-center text-sm space-y-2 mt-4'>
           <div>
             <span className='text-muted-foreground'>Nie masz konta? </span>
             <Link

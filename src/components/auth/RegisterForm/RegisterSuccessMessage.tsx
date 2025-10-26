@@ -47,7 +47,7 @@ export function RegisterSuccessMessage() {
   const isCountdownActive = countdown !== null
 
   return (
-    <AnimatedSection isVisible className='space-y-4'>
+    <AnimatedSection isVisible>
       <SuccessCard
         title='Rejestracja zakończona pomyślnie!'
         description='twoje konto zostało utworzone pomyślnie'
