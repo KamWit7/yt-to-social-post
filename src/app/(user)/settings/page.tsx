@@ -27,9 +27,9 @@ export default async function SettingsPage() {
 
   return (
     <div className='flex flex-col-reverse lg:flex-row gap-4'>
-      <ApiKeyInstructions className='max-w-md' />
+      <ApiKeyInstructions className='w-md' />
 
-      <Card className='max-w-md'>
+      <Card className='w-md'>
         <CardHeader>
           <CardTitle>Użyj własnego klucza (BYOK)</CardTitle>
           <CardDescription>

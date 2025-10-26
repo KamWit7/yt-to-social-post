@@ -1,4 +1,5 @@
 import { RegisterForm } from '@/components/auth/RegisterForm'
+import { PageHeader } from '@/components/common'
 import { ROUTES } from '@/utils/constants'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -13,12 +14,10 @@ export default function RegisterPage() {
   return (
     <div className='container mx-auto max-w-md py-8'>
       <div className='space-y-6'>
-        <div className='text-center space-y-2'>
-          <h1 className='text-3xl font-bold'>Utwórz konto</h1>
-          <p className='text-muted-foreground'>
-            dołącz do YT Scribe, aby rozpocząć transkrypcję filmów YouTube z AI
-          </p>
-        </div>
+        <PageHeader
+          title='Utwórz konto'
+          description='dołącz do YT Scribe, aby rozpocząć transkrypcję filmów YouTube z AI'
+        />
 
         <RegisterForm />
 

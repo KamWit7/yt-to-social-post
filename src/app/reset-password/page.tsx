@@ -1,4 +1,5 @@
 import { ResetPasswordForm } from '@/components/auth/ResetPasswordForm'
+import { PageHeader } from '@/components/common'
 import { ROUTES } from '@/utils/constants'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -12,12 +13,10 @@ export default function ResetPasswordPage() {
   return (
     <div className='container mx-auto max-w-md py-8'>
       <div className='space-y-6'>
-        <div className='text-center space-y-2'>
-          <h1 className='text-3xl font-bold'>Resetuj hasło</h1>
-          <p className='text-muted-foreground'>
-            wprowadź swój email, a wyślemy Ci link do resetowania hasła
-          </p>
-        </div>
+        <PageHeader
+          title='Resetuj hasło'
+          description='wprowadź swój email, a wyślemy Ci link do resetowania hasła'
+        />
 
         <ResetPasswordForm />
 

@@ -85,15 +85,15 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <Card className='w-full max-w-md mx-auto'>
-      <CardHeader>
-        <CardTitle>Resetuj hasło</CardTitle>
-        <CardDescription>
-          wprowadź swój adres email, a wyślemy Ci link do resetowania hasła
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <AnimatedSection isVisible>
+    <AnimatedSection isVisible >
+      <Card className='w-full max-w-md mx-auto my-2'>
+        <CardHeader>
+          <CardTitle>Resetuj hasło</CardTitle>
+          <CardDescription>
+            wprowadź swój adres email, a wyślemy Ci link do resetowania hasła
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onFormSubmit)} className='space-y-4'>
               <div className='space-y-4'>
@@ -120,8 +120,8 @@ export function ResetPasswordForm() {
               />
             </form>
           </FormProvider>
-        </AnimatedSection>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </AnimatedSection>
   )
 }

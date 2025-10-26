@@ -15,10 +15,10 @@ export function UsageStatusMessage({
   const StatusIcon = status.icon
 
   return (
-    <div className='flex items-center justify-center gap-3 border-t pt-2'>
+    <div className='flex items-start justify-start gap-3 border-t pt-2'>
       <StatusIcon
         className={cn(
-          'my-auto w-16',
+          'my-auto',
           !isFreeAccount && 'text-green-500',
           isFreeAccount && status.level === UsageLevel.SAFE && 'text-green-500',
           isFreeAccount &&
