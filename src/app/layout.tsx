@@ -1,4 +1,5 @@
 import InitialTransition from '@/components/animation/InitialTransition'
+import { CookieBanner } from '@/components/common/CookieBanner'
 import Footer from '@/components/common/Footer'
 import Header from '@/components/common/Header/Header'
 import { Dictionary } from '@/components/dashboard/TranscriptionForms/forms/Form.constants'
@@ -46,6 +47,7 @@ export default async function RootLayout({
                 <Footer />
               </div>
               <InitialTransition />
+              <CookieBanner />
             </UsageProvider>
           </QueryProvider>
         </SessionProvider>

@@ -2,6 +2,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@keyframes modal-animation {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -40,6 +51,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --animate-modal: modal-animation 0.2s ease-in-out;
 }
 
 :root {
@@ -119,8 +131,15 @@
     @apply bg-background text-foreground;
     margin-right: 0px !important;
   }
+
   html {
     scrollbar-gutter: stable;
     overflow-y: auto;
+  }
+
+  /* Hide scroll when dialog is open */
+  html:has(body > div[role='dialog'][data-state='open']) {
+    overflow-y: hidden !important;
+    scrollbar-gutter: auto;
   }
 }

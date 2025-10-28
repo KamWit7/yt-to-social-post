@@ -10,8 +10,8 @@ const serverEnvSchema = z.object({
   NEXTAUTH_URL: z.string().min(1, 'NEXTAUTH_URL is required'),
 
   // Google OAuth (opcjonalne)
-  GOOGLE_CLIENT_ID: z.string().optional(),
-  GOOGLE_CLIENT_SECRET: z.string().optional(),
+  GOOGLE_CLIENT_ID: z.string().min(1, 'GOOGLE_CLIENT_ID is required'),
+  GOOGLE_CLIENT_SECRET: z.string().min(1, 'GOOGLE_CLIENT_SECRET is required'),
 
   // API Encryption Key
   API_ENCRYPTION_KEY: z
@@ -63,7 +63,7 @@ export function getGoogleOAuthCredentials(): {
   }
 
   return {
-    clientId: serverEnv.GOOGLE_CLIENT_ID!,
-    clientSecret: serverEnv.GOOGLE_CLIENT_SECRET!,
+    clientId: serverEnv.GOOGLE_CLIENT_ID,
+    clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
   }
 }

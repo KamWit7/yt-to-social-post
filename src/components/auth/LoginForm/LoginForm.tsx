@@ -13,7 +13,11 @@ import { AnimatedSection } from '@/components/animation'
 import { CredentialAuth } from './components/CredentialAuth'
 import { GoogleAuth } from './components/GoogleAuth'
 
-export function LoginForm() {
+interface LoginFormProps {
+  initialError?: string
+}
+
+export function LoginForm({ initialError }: LoginFormProps) {
   const [isAnyLoading, setIsAnyLoading] = useState(false)
 
   const handleLoadingChange = (loading: boolean) => {
@@ -37,6 +41,7 @@ export function LoginForm() {
           <GoogleAuth
             onLoadingChange={handleLoadingChange}
             isDisabled={isAnyLoading}
+            initialError={initialError}
           />
         </CardContent>
       </Card>

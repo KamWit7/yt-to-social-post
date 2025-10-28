@@ -10,7 +10,14 @@ export const metadata: Metadata = {
     'zaloguj się do swojego konta, aby uzyskać dostęp do transkrypcji i podsumowań',
 }
 
-export default function LoginPage() {
+interface LoginPageProps {
+  searchParams: Promise<{ error?: string }>
+}
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const params = await searchParams
+  const error = params.error
+
   return (
     <div className='container mx-auto max-w-md py-8'>
       <div className='space-y-6'>
@@ -19,7 +26,7 @@ export default function LoginPage() {
           description='zaloguj się, aby uzyskać dostęp do swojego konta i kontynuować transkrypcję'
         />
 
-        <LoginForm />
+        <LoginForm initialError={error} />
 
         <div className='text-center text-sm space-y-2 mt-4'>
           <div>
