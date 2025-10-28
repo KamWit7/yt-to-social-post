@@ -1,4 +1,3 @@
-import { findUserByEmail } from '@/lib/db/users'
 import { serverEnv } from '@/lib/env/server-env'
 import { prisma } from '@/lib/prisma'
 import { ROUTES } from '@/utils/constants'
@@ -17,13 +16,37 @@ export async function POST(request: NextRequest) {
     const unsafeBody = await request.json()
     const body = requestResetSchema.parse(unsafeBody)
 
-    const user = await findUserByEmail(body.email)
+    const user = await prisma.user.findUnique({
+      where: { email: body.email },
+      include: {
+        usage: true,
+        accounts: true,
+      },
+    })
 
     if (!user) {
       return new Response(
         JSON.stringify({ message: 'Podany adres email jest nieprawidłowy' }),
         {
           status: 404,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+    }
+
+    const isGoogleAccount = user?.accounts?.some(
+      (account) => account.provider === 'google'
+    )
+
+    if (isGoogleAccount) {
+      return new Response(
+        JSON.stringify({
+          message: 'Nie można zresetować hasła dla konta Google',
+        }),
+        {
+          status: 400,
           headers: {
             'Content-Type': 'application/json',
           },

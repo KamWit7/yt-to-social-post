@@ -21,4 +21,5 @@ export const ROUTES = {
   SETTINGS: '/settings',
   RESET_PASSWORD: '/reset-password',
   NEW_RESET_PASSWORD: '/reset-password/new',
+  PRIVACY_POLICY: '/privacy-policy',
 } as const

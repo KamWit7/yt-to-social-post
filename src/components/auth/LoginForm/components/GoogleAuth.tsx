@@ -3,24 +3,50 @@
 import { FormServerError } from '@/components/common'
 import { Button } from '@/components/ui/button'
 import { signIn } from 'next-auth/react'
-import React, { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { ROUTES } from '@/utils/constants'
-import { LOGIN_AUTH_ERRORS } from '../LoginForm.helpers'
 
 interface GoogleAuthProps {
   onLoadingChange?: (isLoading: boolean) => void
   isDisabled?: boolean
+  initialError?: string
+}
+
+// Map NextAuth OAuth error codes to user-friendly messages
+const OAUTH_ERROR_MESSAGES: Record<string, string> = {
+  OAuthCallback:
+    'Błąd podczas logowania przez Google. Spróbuj ponownie. Jeśli problem będzie się powtarzać, sprawdź swoje połączenie internetowe.',
+  OAuthSignin:
+    'Nie udało się połączyć z Google. Sprawdź swoje połączenie internetowe i spróbuj ponownie.',
+  OAuthAccountNotLinked:
+    'Email jest już powiązany z innym kontem. Zaloguj się za pomocą oryginalnej metody.',
+  Callback: 'Błąd podczas logowania. Spróbuj ponownie za chwilę.',
+  Timeout:
+    'Żądanie przeroczyło limit czasu. Sprawdź swoje połączenie internetowe i spróbuj ponownie.',
+  EmailSignInError: 'Błąd podczas wysyłania maila logowania. Spróbuj ponownie.',
+  CredentialsSignin:
+    'Logowanie nie powiodło się. Sprawdź swoje dane i spróbuj ponownie.',
+  default: 'Logowanie przez Google nie powiodło się. Spróbuj ponownie.',
 }
 
 export function GoogleAuth({
   onLoadingChange,
   isDisabled = false,
+  initialError,
 }: GoogleAuthProps) {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  React.useEffect(() => {
+  // Handle initial error from URL params
+  useEffect(() => {
+    if (!initialError) {
+      return
+    }
+    setError(OAUTH_ERROR_MESSAGES[initialError] || OAUTH_ERROR_MESSAGES.default)
+  }, [initialError])
+
+  useEffect(() => {
     onLoadingChange?.(isLoading)
   }, [isLoading, onLoadingChange])
 
@@ -29,11 +55,25 @@ export function GoogleAuth({
     setIsLoading(true)
 
     try {
-      await signIn('google', { callbackUrl: ROUTES.DASHBOARD })
+      const result = await signIn('google', {
+        callbackUrl: ROUTES.DASHBOARD,
+        redirect: false,
+      })
+
+      // Handle errors from signIn
+      if (result?.error) {
+        const errorMessage =
+          OAUTH_ERROR_MESSAGES[result.error] || OAUTH_ERROR_MESSAGES.default
+        setError(errorMessage)
+        setIsLoading(false)
+      } else if (result?.ok) {
+        // If successful, redirect will happen automatically
+        window.location.href = result.url || ROUTES.DASHBOARD
+      }
     } catch (authError) {
       console.error('Google authentication error:', authError)
-      setError(LOGIN_AUTH_ERRORS.GOOGLE_AUTH_FAILED)
-    } finally {
+
+      setError(OAUTH_ERROR_MESSAGES.default)
       setIsLoading(false)
     }
   }, [])

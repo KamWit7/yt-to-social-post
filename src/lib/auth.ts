@@ -42,7 +42,12 @@ export const authOptions: NextAuthOptions = {
         return null
       },
     }),
-    GoogleProvider(getGoogleOAuthCredentials()),
+    GoogleProvider({
+      ...getGoogleOAuthCredentials(),
+      httpOptions: {
+        timeout: 10_000,
+      },
+    }),
   ],
   session: {
     strategy: 'jwt',

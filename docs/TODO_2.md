@@ -27,7 +27,7 @@ BIG
 [+] rozwiązać TODO
 [+] resetowanie użyca po miesiąciu (ostanie TODO)
 [+] poprawa aniamcja stan ładowania komponetów
-[in_progress] resetowanie hasła 
+[+] resetowanie hasła 
   [+] dodanie migracji w github pipeline dla neon 
   [+] czy wsszystko działa na producji 
   [+] spujność wizualna (rejestracaj z resete hasła)
@@ -37,8 +37,14 @@ BIG
   [+] podział bazy danych na lokalny/develop/produkcje
   [+] usawienie .env na github w odpowiedni sposób 
 [+] add favicon
+[+] goole oAuth nie działa 
+[in_progress] ten sam mail dla oAuth oraz creadencials - jak to obsłużyć 
+  [+] zablokować resetowanie hasła dla konta google
+  [ ] dodanie możliości mergu konta google i credencial 
 [ ] stworzyć ikone dla strony
-[ ] co z cookies?
+[in_porgress] co z cookies - dodać baner
+  [+] dodanie baneru
+  [ ] przetestowanie działania
 [ ] test dla zapisywanie w LS kiedy user się zaloguje przedzie propces skopiuje dane z LS i wkleji jak nie jest zalogowany oczekiwany rezulata - endpoint z transkrypcją wali błąd
 
 FIX THIS :
