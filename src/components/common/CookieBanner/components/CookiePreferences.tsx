@@ -25,8 +25,7 @@ export default function CookiePreferencesModal({
   isOpen,
   onClose,
 }: CookiePreferencesModalProps) {
-  const { savePreferences: saveCookiePreferences, acceptAll } =
-    useCookieConsent()
+  const { savePreferences, acceptAll } = useCookieConsent()
   const [preferences, setPreferences] = useState<CookiePreferences>(
     getDefaultPreferences()
   )
@@ -39,7 +38,7 @@ export default function CookiePreferencesModal({
   }, [isOpen])
 
   const handleSave = () => {
-    saveCookiePreferences(preferences)
+    savePreferences(preferences)
     onClose()
   }
 
