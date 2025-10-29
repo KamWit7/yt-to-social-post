@@ -7,9 +7,13 @@ import { useEffect, useState } from 'react'
 import CookiePreferencesModal from './components/CookiePreferences'
 
 export default function CookieBanner() {
-  const { hasConsent, acceptAll, denyAll } = useCookieConsent()
+  const { hasConsent, acceptAll } = useCookieConsent()
   const [isVisible, setIsVisible] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
+
+  const handleCloseBanner = () => {
+    setIsVisible(false)
+  }
 
   useEffect(() => {
     if (hasConsent) {
@@ -26,12 +30,7 @@ export default function CookieBanner() {
 
   const handleAcceptAll = () => {
     acceptAll()
-    setIsVisible(false)
-  }
-
-  const handleDeny = () => {
-    denyAll()
-    setIsVisible(false)
+    handleCloseBanner()
   }
 
   const handleOpenPreferences = () => {
@@ -42,7 +41,6 @@ export default function CookieBanner() {
     setShowPreferences(false)
   }
 
-  // Don't render anything if consent already given
   if (hasConsent) {
     return null
   }
@@ -67,11 +65,11 @@ export default function CookieBanner() {
                 </p>
 
                 {/* Buttons */}
-                <div className='flex flex-wrap items-center justify-center gap-3'>
+                <div className='flex flex-wrap items-center justify-start gap-3'>
                   <Button
                     variant='ghost'
                     size='sm'
-                    onClick={handleDeny}
+                    onClick={handleCloseBanner}
                     aria-label='Odrzuć wszystkie pliki cookie'>
                     Odrzuć
                   </Button>
