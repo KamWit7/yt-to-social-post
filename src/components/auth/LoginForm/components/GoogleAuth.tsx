@@ -3,7 +3,7 @@
 import { FormServerError } from '@/components/common'
 import { Button } from '@/components/ui/button'
 import { signIn } from 'next-auth/react'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { ROUTES } from '@/utils/constants'
 
@@ -50,7 +50,7 @@ export function GoogleAuth({
     onLoadingChange?.(isLoading)
   }, [isLoading, onLoadingChange])
 
-  const signInWithGoogle = useCallback(async () => {
+  const signInWithGoogle = async () => {
     setError(null)
     setIsLoading(true)
 
@@ -76,7 +76,7 @@ export function GoogleAuth({
       setError(OAUTH_ERROR_MESSAGES.default)
       setIsLoading(false)
     }
-  }, [])
+  }
 
   return (
     <div className='mt-4'>

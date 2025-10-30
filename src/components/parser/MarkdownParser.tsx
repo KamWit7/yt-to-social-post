@@ -4,7 +4,7 @@ import CopyButton from '@/components/common/CopyButton'
 import { cn } from '@/lib/utils'
 import Prism from 'prismjs'
 import 'prismjs/themes/prism-tomorrow.css'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import Markdown, { Components } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
@@ -124,7 +124,7 @@ const getMarkdownComponents = (): Components => {
 }
 
 export function MarkdownParser({ text, className }: MarkdownParserProps) {
-  const components = useMemo(() => getMarkdownComponents(), [])
+  const components = getMarkdownComponents()
 
   // Highlight code blocks after render
   useEffect(() => {

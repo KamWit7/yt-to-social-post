@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export interface CookiePreferences {
   essential: boolean // always true
@@ -98,18 +98,18 @@ export function useCookieConsent() {
     }
   }, [])
 
-  const acceptAll = useCallback(() => {
+  const acceptAll = () => {
     const allEnabled = getDefaultPreferences()
     setCookiePreferences(allEnabled)
     setPreferences(allEnabled)
     setHasConsent(true)
-  }, [])
+  }
 
-  const savePreferences = useCallback((prefs: CookiePreferences) => {
+  const savePreferences = (prefs: CookiePreferences) => {
     setCookiePreferences(prefs)
     setPreferences(prefs)
     setHasConsent(true)
-  }, [])
+  }
 
   return {
     preferences,

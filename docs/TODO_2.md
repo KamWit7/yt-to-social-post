@@ -46,6 +46,7 @@ BIG
   [+] dodanie baneru
   [ ] przetestowanie działania
 [ ] test dla zapisywanie w LS kiedy user się zaloguje przedzie propces skopiuje dane z LS i wkleji jak nie jest zalogowany oczekiwany rezulata - endpoint z transkrypcją wali błąd
+[ ] na zapisz atomatycznie przechodzi na cel - nie powinno 
 
 FIX THIS :
  GET /api/auth/providers 200 in 53ms
