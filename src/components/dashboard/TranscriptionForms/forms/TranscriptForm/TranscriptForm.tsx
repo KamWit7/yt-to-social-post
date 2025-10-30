@@ -83,7 +83,8 @@ export function TranscriptForm() {
     }
   }
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
     setHasUnsavedChanges(false)
     handleTranscriptUpdate(currentTranscriptValue)
   }

@@ -44,9 +44,9 @@ BIG
 [ ] stworzyć ikone dla strony
 [in_porgress] co z cookies - dodać baner
   [+] dodanie baneru
-  [ ] przetestowanie działania
+  [+] przetestowanie działania
 [ ] test dla zapisywanie w LS kiedy user się zaloguje przedzie propces skopiuje dane z LS i wkleji jak nie jest zalogowany oczekiwany rezulata - endpoint z transkrypcją wali błąd
-[ ] na zapisz atomatycznie przechodzi na cel - nie powinno 
+[+] na zapisz atomatycznie przechodzi na cel - nie powinno 
 
 FIX THIS :
  GET /api/auth/providers 200 in 53ms
